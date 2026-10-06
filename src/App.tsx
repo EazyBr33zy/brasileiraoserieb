@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { standings, topScorers, topAssists, squadStats, topDefenders, topCrossers } from './data/serieB2026';
 import { criciumaPlayers, criciumaTeamStats } from './data/criciumaPlayers';
+import PassMap from './components/PassMap';
 
-type TabType = 'overview' | 'standings' | 'scorers' | 'assists' | 'squads' | 'defenders' | 'criciuma';
+type TabType = 'overview' | 'standings' | 'scorers' | 'assists' | 'squads' | 'defenders' | 'criciuma' | 'passmap';
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabType>('overview');
@@ -45,6 +46,7 @@ function App() {
               { id: 'squads' as TabType, label: '👥 Equipes', icon: '' },
               { id: 'defenders' as TabType, label: '🛡️ Defensores', icon: '' },
               { id: 'criciuma' as TabType, label: '🔴 Criciúma', icon: '' },
+              { id: 'passmap' as TabType, label: '🗺️ Passes Fellipe', icon: '' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -71,6 +73,7 @@ function App() {
         {activeTab === 'squads' && <SquadsTab />}
         {activeTab === 'defenders' && <DefendersTab />}
         {activeTab === 'criciuma' && <CriciumaTab />}
+        {activeTab === 'passmap' && <PassMap />}
       </main>
 
       {/* Footer */}
