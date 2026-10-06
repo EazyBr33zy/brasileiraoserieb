@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { standings, topScorers, topAssists, squadStats, topDefenders, topCrossers } from './data/serieB2026';
+import { criciumaPlayers, criciumaTeamStats } from './data/criciumaPlayers';
 
-type TabType = 'overview' | 'standings' | 'scorers' | 'assists' | 'squads' | 'defenders';
+type TabType = 'overview' | 'standings' | 'scorers' | 'assists' | 'squads' | 'defenders' | 'criciuma';
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabType>('overview');
@@ -43,6 +44,7 @@ function App() {
               { id: 'assists' as TabType, label: '🎯 Assistências', icon: '' },
               { id: 'squads' as TabType, label: '👥 Equipes', icon: '' },
               { id: 'defenders' as TabType, label: '🛡️ Defensores', icon: '' },
+              { id: 'criciuma' as TabType, label: '🔴 Criciúma', icon: '' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -68,6 +70,7 @@ function App() {
         {activeTab === 'assists' && <AssistsTab />}
         {activeTab === 'squads' && <SquadsTab />}
         {activeTab === 'defenders' && <DefendersTab />}
+        {activeTab === 'criciuma' && <CriciumaTab />}
       </main>
 
       {/* Footer */}
@@ -741,6 +744,365 @@ function StatCard({ title, value, subtitle, color, icon }: { title: string; valu
           <p className="text-xs text-gray-400 mt-1">{subtitle}</p>
         </div>
         <span className="text-2xl">{icon}</span>
+      </div>
+    </div>
+  );
+}
+
+function CriciumaTab() {
+  const [sortBy, setSortBy] = useState<keyof typeof criciumaPlayers[0]>('minutesPlayed');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+  const [positionFilter, setPositionFilter] = useState<string>('all');
+
+  const filteredPlayers = criciumaPlayers
+    .filter(p => positionFilter === 'all' || p.position === positionFilter)
+    .sort((a, b) => {
+      const aVal = a[sortBy];
+      const bVal = b[sortBy];
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return sortDir === 'desc' ? bVal - aVal : aVal - bVal;
+      }
+      return 0;
+    });
+
+  const handleSort = (key: keyof typeof criciumaPlayers[0]) => {
+    if (sortBy === key) {
+      setSortDir(sortDir === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortBy(key);
+      setSortDir('desc');
+    }
+  };
+
+  const getPositionLabel = (pos: string) => {
+    switch (pos) {
+      case 'G': return { label: 'Goleiro', color: 'bg-yellow-600' };
+      case 'D': return { label: 'Defensor', color: 'bg-blue-600' };
+      case 'M': return { label: 'Meio-campo', color: 'bg-green-600' };
+      case 'F': return { label: 'Atacante', color: 'bg-red-600' };
+      default: return { label: pos, color: 'bg-gray-600' };
+    }
+  };
+
+  const getRatingColor = (rating: number) => {
+    if (rating >= 7.5) return 'text-green-400 bg-green-900/50';
+    if (rating >= 7.0) return 'text-green-300 bg-green-900/30';
+    if (rating >= 6.5) return 'text-yellow-400 bg-yellow-900/30';
+    return 'text-red-400 bg-red-900/30';
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Team Header */}
+      <div className="bg-gradient-to-r from-red-800 to-red-900 rounded-xl p-6 border border-red-700">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="text-5xl">🔴</div>
+            <div>
+              <h2 className="text-2xl font-bold text-white">{criciumaTeamStats.team}</h2>
+              <p className="text-red-200 text-sm">
+                {criciumaTeamStats.season} • {criciumaTeamStats.position}º lugar • Técnico: {criciumaTeamStats.manager}
+              </p>
+              <p className="text-red-300 text-xs mt-1">
+                Capitão: {criciumaTeamStats.captain} • Formação: {criciumaTeamStats.formation}
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="bg-black/20 rounded-lg px-4 py-2 text-center">
+              <p className="text-2xl font-bold text-white">{criciumaTeamStats.points}</p>
+              <p className="text-xs text-red-200">Pontos</p>
+            </div>
+            <div className="bg-black/20 rounded-lg px-4 py-2 text-center">
+              <p className="text-2xl font-bold text-white">{criciumaTeamStats.goalsFor}</p>
+              <p className="text-xs text-red-200">Gols</p>
+            </div>
+            <div className="bg-black/20 rounded-lg px-4 py-2 text-center">
+              <p className="text-2xl font-bold text-white">{criciumaTeamStats.goalsAgainst}</p>
+              <p className="text-xs text-red-200">Gols Sofridos</p>
+            </div>
+            <div className="bg-black/20 rounded-lg px-4 py-2 text-center">
+              <p className="text-2xl font-bold text-white">+{criciumaTeamStats.goalDiff}</p>
+              <p className="text-xs text-red-200">Saldo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 text-center">
+          <p className="text-3xl font-bold text-white">{criciumaTeamStats.wins}</p>
+          <p className="text-sm text-gray-400">Vitórias</p>
+        </div>
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 text-center">
+          <p className="text-3xl font-bold text-white">{criciumaTeamStats.draws}</p>
+          <p className="text-sm text-gray-400">Empates</p>
+        </div>
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 text-center">
+          <p className="text-3xl font-bold text-white">{criciumaTeamStats.losses}</p>
+          <p className="text-sm text-gray-400">Derrotas</p>
+        </div>
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 text-center">
+          <p className="text-3xl font-bold text-white">{criciumaTeamStats.cleanSheets}</p>
+          <p className="text-sm text-gray-400">Jogos Sem Sofrer Gol</p>
+        </div>
+      </div>
+
+      {/* Position Filter */}
+      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm text-gray-400 mr-2">Filtrar por posição:</span>
+          {[
+            { id: 'all', label: 'Todos', color: 'bg-gray-600' },
+            { id: 'G', label: '🧤 Goleiros', color: 'bg-yellow-600' },
+            { id: 'D', label: '🛡️ Defensores', color: 'bg-blue-600' },
+            { id: 'M', label: '🎯 Meio-campo', color: 'bg-green-600' },
+            { id: 'F', label: '⚡ Atacantes', color: 'bg-red-600' },
+          ].map((filter) => (
+            <button
+              key={filter.id}
+              onClick={() => setPositionFilter(filter.id)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                positionFilter === filter.id
+                  ? `${filter.color} text-white shadow-lg`
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+            >
+              {filter.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Player Stats Table */}
+      <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+        <div className="p-6 border-b border-gray-700">
+          <h2 className="text-xl font-bold text-white">📊 Estatísticas Detalhadas dos Jogadores</h2>
+          <p className="text-gray-400 text-sm mt-1">
+            Dados de passes, toques e classificação • Clique nos cabeçalhos para ordenar
+          </p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-700/50">
+              <tr>
+                <th className="px-3 py-3 text-left text-gray-300 font-medium">Jogador</th>
+                <th className="px-3 py-3 text-center text-gray-300 font-medium">Pos</th>
+                <th 
+                  className="px-3 py-3 text-center text-gray-300 font-medium cursor-pointer hover:text-white"
+                  onClick={() => handleSort('totalPass')}
+                >
+                  Total Passes {sortBy === 'totalPass' && (sortDir === 'desc' ? '↓' : '↑')}
+                </th>
+                <th 
+                  className="px-3 py-3 text-center text-gray-300 font-medium cursor-pointer hover:text-white"
+                  onClick={() => handleSort('accuratePass')}
+                >
+                  Passes Certos {sortBy === 'accuratePass' && (sortDir === 'desc' ? '↓' : '↑')}
+                </th>
+                <th className="px-3 py-3 text-center text-gray-300 font-medium">Precisão%</th>
+                <th 
+                  className="px-3 py-3 text-center text-gray-300 font-medium cursor-pointer hover:text-white"
+                  onClick={() => handleSort('totalLongBalls')}
+                >
+                  Bolas Longas {sortBy === 'totalLongBalls' && (sortDir === 'desc' ? '↓' : '↑')}
+                </th>
+                <th 
+                  className="px-3 py-3 text-center text-gray-300 font-medium cursor-pointer hover:text-white"
+                  onClick={() => handleSort('accurateLongBalls')}
+                >
+                  BL Certas {sortBy === 'accurateLongBalls' && (sortDir === 'desc' ? '↓' : '↑')}
+                </th>
+                <th 
+                  className="px-3 py-3 text-center text-gray-300 font-medium cursor-pointer hover:text-white"
+                  onClick={() => handleSort('minutesPlayed')}
+                >
+                  Minutos {sortBy === 'minutesPlayed' && (sortDir === 'desc' ? '↓' : '↑')}
+                </th>
+                <th 
+                  className="px-3 py-3 text-center text-gray-300 font-medium cursor-pointer hover:text-white"
+                  onClick={() => handleSort('touches')}
+                >
+                  Toques {sortBy === 'touches' && (sortDir === 'desc' ? '↓' : '↑')}
+                </th>
+                <th 
+                  className="px-3 py-3 text-center text-gray-300 font-medium cursor-pointer hover:text-white"
+                  onClick={() => handleSort('rating')}
+                >
+                  Nota {sortBy === 'rating' && (sortDir === 'desc' ? '↓' : '↑')}
+                </th>
+                <th 
+                  className="px-3 py-3 text-center text-gray-300 font-medium cursor-pointer hover:text-white"
+                  onClick={() => handleSort('possessionLostCtrl')}
+                >
+                  Posse Perdida {sortBy === 'possessionLostCtrl' && (sortDir === 'desc' ? '↓' : '↑')}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPlayers.map((player) => {
+                const posInfo = getPositionLabel(player.position);
+                return (
+                  <tr key={player.name} className="border-t border-gray-700/50 hover:bg-gray-700/30 transition-colors">
+                    <td className="px-3 py-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500 w-6">#{player.jerseyNumber}</span>
+                        <span className="font-medium text-white whitespace-nowrap">{player.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-3 py-3 text-center">
+                      <span className={`${posInfo.color} text-white text-xs px-2 py-0.5 rounded font-medium`}>
+                        {posInfo.label}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3 text-center font-medium text-white">{player.totalPass}</td>
+                    <td className="px-3 py-3 text-center text-green-400">{player.accuratePass}</td>
+                    <td className="px-3 py-3 text-center">
+                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                        player.accuratePassPercent >= 80 ? 'bg-green-900/50 text-green-400' :
+                        player.accuratePassPercent >= 70 ? 'bg-yellow-900/50 text-yellow-400' :
+                        'bg-red-900/50 text-red-400'
+                      }`}>
+                        {player.accuratePassPercent}%
+                      </span>
+                    </td>
+                    <td className="px-3 py-3 text-center text-gray-300">{player.totalLongBalls}</td>
+                    <td className="px-3 py-3 text-center text-blue-400">{player.accurateLongBalls}</td>
+                    <td className="px-3 py-3 text-center text-gray-300">{player.minutesPlayed}'</td>
+                    <td className="px-3 py-3 text-center text-gray-300">{player.touches}</td>
+                    <td className="px-3 py-3 text-center">
+                      <span className={`px-2 py-1 rounded text-xs font-bold ${getRatingColor(player.rating)}`}>
+                        {player.rating.toFixed(1)}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3 text-center text-orange-400">{player.possessionLostCtrl}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Visual Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Pass Accuracy Chart */}
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <h3 className="text-lg font-bold text-white mb-4">🎯 Precisão de Passes (%)</h3>
+          <div className="space-y-2">
+            {[...filteredPlayers]
+              .sort((a, b) => b.accuratePassPercent - a.accuratePassPercent)
+              .slice(0, 10)
+              .map((player) => (
+                <div key={player.name} className="flex items-center gap-3">
+                  <span className="text-sm text-gray-300 w-32 truncate">{player.name}</span>
+                  <div className="flex-1 bg-gray-700 rounded-full h-5 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full flex items-center justify-end pr-2 ${
+                        player.accuratePassPercent >= 80 ? 'bg-gradient-to-r from-green-600 to-green-400' :
+                        player.accuratePassPercent >= 70 ? 'bg-gradient-to-r from-yellow-600 to-yellow-400' :
+                        'bg-gradient-to-r from-red-600 to-red-400'
+                      }`}
+                      style={{ width: `${player.accuratePassPercent}%` }}
+                    >
+                      <span className="text-xs font-bold text-white">{player.accuratePassPercent}%</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        {/* Rating Chart */}
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <h3 className="text-lg font-bold text-white mb-4">⭐ Classificação (Rating)</h3>
+          <div className="space-y-2">
+            {[...filteredPlayers]
+              .sort((a, b) => b.rating - a.rating)
+              .slice(0, 10)
+              .map((player) => (
+                <div key={player.name} className="flex items-center gap-3">
+                  <span className="text-sm text-gray-300 w-32 truncate">{player.name}</span>
+                  <div className="flex-1 bg-gray-700 rounded-full h-5 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full flex items-center justify-end pr-2 ${
+                        player.rating >= 7.0 ? 'bg-gradient-to-r from-green-600 to-green-400' :
+                        player.rating >= 6.5 ? 'bg-gradient-to-r from-yellow-600 to-yellow-400' :
+                        'bg-gradient-to-r from-red-600 to-red-400'
+                      }`}
+                      style={{ width: `${(player.rating / 10) * 100}%` }}
+                    >
+                      <span className="text-xs font-bold text-white">{player.rating.toFixed(1)}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Long Balls Chart */}
+      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <h3 className="text-lg font-bold text-white mb-4">📐 Bolas Longas - Total vs Precisas</h3>
+        <div className="space-y-3">
+          {[...filteredPlayers]
+            .sort((a, b) => b.totalLongBalls - a.totalLongBalls)
+            .slice(0, 10)
+            .map((player) => (
+              <div key={player.name} className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-white">{player.name}</span>
+                  <span className="text-xs text-gray-400">{player.totalLongBalls} total • {player.accurateLongBalls} certas</span>
+                </div>
+                <div className="flex gap-1">
+                  <div className="flex-1 bg-gray-700 rounded-full h-4 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-blue-600 to-blue-400 rounded-full"
+                      style={{ width: `${(player.totalLongBalls / 285) * 100}%` }}
+                    />
+                  </div>
+                  <div className="flex-1 bg-gray-700 rounded-full h-4 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-green-600 to-green-400 rounded-full"
+                      style={{ width: `${(player.accurateLongBalls / 142) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          <div className="flex gap-4 mt-3 text-xs text-gray-400">
+            <span className="flex items-center gap-1">
+              <span className="w-3 h-3 rounded bg-blue-500"></span> Total Bolas Longas
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-3 h-3 rounded bg-green-500"></span> Bolas Longas Certas
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Data Source */}
+      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <h3 className="text-lg font-bold text-white mb-3">📡 Fonte dos Dados</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+          <div className="flex items-start gap-2">
+            <span className="text-green-400">✓</span>
+            <p>Minutos jogados e gols extraídos do <strong className="text-white">FBref.com</strong></p>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-green-400">✓</span>
+            <p>Stats de passes no formato <strong className="text-white">SofaScore API</strong> (igual ao repositório)</p>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-green-400">✓</span>
+            <p>Inclui: totalPass, accuratePass, totalLongBalls, accurateLongBalls, touches, rating, possessionLostCtrl</p>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-green-400">✓</span>
+            <p>Dados do <strong className="text-white">Criciúma Esporte Clube</strong> na Série B 2026</p>
+          </div>
+        </div>
       </div>
     </div>
   );
