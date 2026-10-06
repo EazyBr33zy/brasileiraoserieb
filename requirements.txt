@@ -1,0 +1,24 @@
+# Dependências para Análise de Passes - Criciúma
+# Instale com: pip install -r requirements.txt
+
+# Jupyter Notebook
+jupyter>=1.0.0
+ipykernel>=6.0.0
+
+# Web Scraping
+requests>=2.31.0
+
+# Manipulação de Dados
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Visualização
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.14.0
+
+# Widgets Interativos
+ipywidgets>=8.0.0
+
+# Utilitários
+python-dateutil>=2.8.0
