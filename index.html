@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Busca Decode - Injeção Eletrônica | Montadora, UCE, Aparelho e Memória</title>
+<meta name="description" content="Pesquise por montadora ou sistema de injeção (UCE) e descubra se existe decode, qual aparelho faz a leitura e qual memória é utilizada.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <h1>🔍 Busca de Decode — Injeção Eletrônica</h1>
+  <p>Pesquise por <strong>montadora</strong> ou <strong>sistema de injeção (UCE)</strong> e veja
+     se existe decode, <strong>qual aparelho faz a leitura</strong> e <strong>qual memória usa</strong>.</p>
+
+  <div class="search-box">
+    <input type="text" id="busca" placeholder="Ex.: Golf, VW, Fiat, Uno, Siena, Fiesta, Ka, Palio, Celta, Corsa, Astra, Vectra, Sandero, Logan, Duster, HB20, Picanto, 325i... ou a UCE: ME7.5, MED17.5.20, SIMOS, MA1.0, EDC17, MS43, MP9, IAW..." autocomplete="off">
+    <button id="btn-limpar" title="Limpar busca">✕</button>
+  </div>
+
+  <div class="filtros">
+    <span class="filtro-label">Montadora:</span>
+    <select id="filtro-montadora">
+      <option value="">Todas</option>
+    </select>
+    <label class="chk"><input type="checkbox" id="filtro-so-decode"> Mostrar apenas com decode / IMO OFF</label>
+  </div>
+
+  <div id="resumo" class="resumo"></div>
+</header>
+
+<main>
+  <div id="lista" class="cards"></div>
+  <div id="vazio" class="vazio oculto">
+    <h2>😕 Nenhum resultado encontrado</h2>
+    <p>Tente abreviar a busca (ex.: <em>ME7</em>, <em>MED17</em>, <em>MP9</em>) ou verifique a grafia do sistema de injeção.</p>
+  </div>
+</main>
+
+<footer>
+  <p>Fonte: planilha "todo carro tem decode.xlsx" — tabela de decodes por montadora, equipamento de leitura e tipo de memória.</p>
+  <p>⚠️ Confirme sempre a versão da UCE antes de executar qualquer procedimento.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
