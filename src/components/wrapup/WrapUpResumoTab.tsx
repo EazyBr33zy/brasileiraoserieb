@@ -1,8 +1,9 @@
 import React from 'react';
-import { ChevronRight, Star, Clock, Trophy } from 'lucide-react';
+import { ChevronRight, Clock } from 'lucide-react';
 import { fmtH, parseTime } from '../../utils/markdownParser';
 import { getScoreLabel } from '../../utils/platformStyles';
 import { GameItem } from '../../types/game';
+import { GotWinnerCard } from './GotWinnerCard';
 
 interface WrapUpResumoTabProps {
   ANO: number;
@@ -251,54 +252,7 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
         <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-4">
           {/* GOTY Supreme Card */}
           {gotAwards.goty && (
-            <div
-              onClick={() => onGameClick(gotAwards.goty!.id)}
-              className="group relative flex cursor-pointer flex-col justify-between gap-4 overflow-hidden rounded-2xl border-2 border-[#eeff00] bg-gradient-to-br from-[#eeff00]/20 via-[#ff7a00]/10 to-[#0e131d] p-4 shadow-[0_0_28px_rgba(238,255,0,0.3)] transition-all hover:shadow-[0_0_44px_rgba(238,255,0,0.45)] sm:p-5"
-            >
-              <div className="pointer-events-none absolute -right-2 -top-4 select-none font-heading text-6xl font-black text-[#eeff00]/10 sm:text-7xl" aria-hidden="true">
-                GOTY
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="h-28 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-[#ffd700]/50 bg-black shadow-lg">
-                  <img
-                    src={gotAwards.goty.capa}
-                    alt={gotAwards.goty.title}
-                    referrerPolicy="no-referrer"
-                    className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                  />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#ffd700]">
-                    <Trophy className="h-3.5 w-3.5" />
-                    <span className="truncate">Game of the Year · {ANO}</span>
-                  </div>
-                  <h3 className="mt-1 truncate font-heading text-xl font-black uppercase tracking-wide text-white transition-colors group-hover:text-[#ffd700] sm:text-2xl" title={gotAwards.goty.title}>
-                    {gotAwards.goty.title}
-                  </h3>
-                  <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs text-slate-300">
-                    <span className="rounded bg-black/60 px-2 py-0.5 border border-white/10">{gotAwards.goty.console}</span>
-                    <span className="text-slate-500">•</span>
-                    <span className="truncate">{gotAwards.goty.genero}</span>
-                    {gotAwards.goty.tempo && (
-                      <>
-                        <span className="text-slate-500">•</span>
-                        <span className="font-bold text-emerald-400">⏱ {gotAwards.goty.tempo}</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between border-t border-white/10 pt-3">
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#ffd700]/80">
-                  Vencedor Supremo
-                </span>
-                <span className="flex items-center gap-1.5 font-mono text-2xl font-bold tabular-nums text-[#ffd700] text-glow-gold sm:text-3xl">
-                  <Star className="h-5 w-5 fill-[#ffd700] stroke-[#ffd700]" />
-                  {gotAwards.goty.nota !== undefined ? gotAwards.goty.nota.toFixed(1) : '10'}
-                </span>
-              </div>
-            </div>
+            <GotWinnerCard game={gotAwards.goty} ano={ANO} onClick={() => onGameClick(gotAwards.goty!.id)} />
           )}
 
           {/* Grade de prêmios especializados */}
