@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0d1117;
+  --color-surface: #161b22;
+  --color-surface-2: #21262d;
+  --color-border: #30363d;
+  --color-text: #f0f6fc;
+  --color-text-muted: #9aa4b2;
+  --color-accent: #22d3ee;
+  --color-accent-hover: #67e8f9;
+  --color-accent-active: #06b6d4;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #f43f5e;
+  --color-purple: #a855f7;
+  --color-gold: #ffd700;
+
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Rajdhani', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --text-micro: 0.75rem;
+  --text-sub: 0.8125rem;
+}
+
+@layer base {
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-2: #21262d;
+    --border: #30363d;
+    --text: #f0f6fc;
+    --text-muted: #9aa4b2;
+    --accent: #22d3ee;
+    --accent-hover: #67e8f9;
+    --accent-active: #06b6d4;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #f43f5e;
+    --purple: #a855f7;
+    --gold: #ffd700;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #0d1117;
+    color: #f0f6fc;
+    min-height: 100dvh;
+  }
+
+  h1, h2, h3, h4, .font-heading {
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #22d3ee;
+}
+
+/* Subtle glow for large titles and featured cards only */
+.glow-accent {
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.25);
+}
+.text-glow-accent {
+  text-shadow: 0 0 16px rgba(34, 211, 238, 0.45);
+}
+.text-glow-gold {
+  text-shadow: 0 0 16px rgba(255, 215, 0, 0.5);
+}
+
+/* Background subtle grid */
+.cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+/* Dashboard hero ambient glows */
+.hero-glow {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.hero-glow::before {
+  content: '';
+  position: absolute;
+  inset: -40%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(600px 300px at 8% -10%, rgba(34, 211, 238, 0.16), transparent 60%),
+    radial-gradient(500px 280px at 95% 110%, rgba(168, 85, 247, 0.14), transparent 60%),
+    radial-gradient(380px 220px at 60% 40%, rgba(16, 185, 129, 0.06), transparent 65%);
+}
+
+/* Animated conic ring for the annual goal */
+@property --ring-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.goal-ring {
+  background: conic-gradient(
+    from var(--ring-angle),
+    #22d3ee calc(var(--goal-percent) * 1%),
+    #21262d 0
+  );
+  animation: ring-spin 12s linear infinite;
+}
+@keyframes ring-spin {
+  to { --ring-angle: 360deg; }
+}
+
+/* Soft entrance animation for dashboard sections */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Accessibility: Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-pulse, .animate-ping, .animate-spin {
+    animation: none !important;
+  }
+}
