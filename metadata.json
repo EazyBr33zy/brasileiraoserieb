@@ -1,0 +1,6 @@
+{
+  "name": "GameHub",
+  "description": "GameHub — Dashboard pessoal de telemetria de jogos, rastreamento de backlog e estatísticas de gameplay.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
