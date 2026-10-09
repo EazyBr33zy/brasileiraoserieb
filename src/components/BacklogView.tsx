@@ -639,7 +639,7 @@ export const BacklogView: React.FC = () => {
                                   src={game.capa}
                                   title={game.title}
                                   consoleName={game.console}
-                                  size="card"
+                                  size="lg"
                                   grayscale={game.status === 'zerado'}
                                 />
 

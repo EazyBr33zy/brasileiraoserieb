@@ -88,7 +88,7 @@ export const UpcomingGamesSection: React.FC<UpcomingGamesSectionProps> = ({ game
                     src={game.capa}
                     title={game.title}
                     consoleName={game.console}
-                    size="card"
+                    size="lg"
                   />
                   <div className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 z-10 flex items-center justify-center rounded-md bg-black/80 px-1 py-1 text-amber-400 border border-amber-400/40 shadow-xs">
                     <Star className="h-3 w-3 fill-amber-400 text-amber-400" aria-hidden="true" />

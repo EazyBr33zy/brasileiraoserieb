@@ -278,7 +278,7 @@ export const PlayDaysCalendar: React.FC<PlayDaysCalendarProps> = ({ games }) => 
                         src={topGame.capa}
                         title={topGame.title}
                         consoleName={topGame.console}
-                        size="card"
+                        size="lg"
                         className="h-full w-full object-cover rounded-md sm:rounded-xl"
                       />
                       {/* Dark gradient for text legibility */}

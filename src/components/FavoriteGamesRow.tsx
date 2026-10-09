@@ -119,7 +119,7 @@ export const FavoriteGamesRow: React.FC = () => {
                   src={g.capa}
                   title={g.title}
                   consoleName={g.console}
-                  size="thumb"
+                  size="lg"
                   className="!rounded-lg border border-[#30363d] shadow-md shadow-black/30 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:border-[#fbbf24]/50"
                 />
                 {/* Selo dourado ★ 11 */}

@@ -25,7 +25,7 @@ function getTitleInitials(title: string): string {
 }
 
 // Optimize IGDB cover URLs based on display size
-function optimizeCoverUrl(url: string | null | undefined, size: 'sm' | 'md' | 'lg' | 'hero' | 'card' | 'thumb'): string | null {
+export function optimizeCoverUrl(url: string | null | undefined, size: 'sm' | 'md' | 'lg' | 'hero' | 'card' | 'thumb'): string | null {
   if (!url || typeof url !== 'string' || !url.trim()) return null;
   let cleanUrl = url.trim();
 
