@@ -1,5 +1,8 @@
-node_modules/
+# Build outputs
 dist/
-*.patch
-*.tar.gz
+
+# Dependencies
+node_modules/
+
+# Compressed archives
 *.zip

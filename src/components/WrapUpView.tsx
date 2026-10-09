@@ -172,6 +172,7 @@ export const WrapUpView: React.FC = () => {
     .filter((g) => g.nota !== undefined && !isNaN(g.nota))
     .sort((a, b) => (b.nota || 0) - (a.nota || 0));
   const melhor = comNota[0] || null;
+  const piorNota = comNota.length ? comNota[comNota.length - 1] : null;
   const top10Notas = comNota.slice(0, 10);
 
   // Platform and genre aggregations
@@ -458,6 +459,8 @@ export const WrapUpView: React.FC = () => {
           plataformaDoAno={plataformaDoAno}
           generoDoAno={generoDoAno}
           maisLongo={maisLongo}
+          maisCurto={maisCurto}
+          piorNota={piorNota}
           melhor={melhor}
           slogan={slogan}
           gotAwards={gotAwards}
