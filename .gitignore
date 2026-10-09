@@ -1,1 +1,10 @@
-(empty)
+# Dependências
+node_modules/
+
+# Build (gere localmente com npm run build)
+dist/
+
+# Logs e temporários
+npm-debug.log*
+.vite/
+.DS_Store
