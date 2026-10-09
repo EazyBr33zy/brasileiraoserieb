@@ -35,6 +35,7 @@ import { PlayDaysCalendar } from './PlayDaysCalendar';
 import { UpcomingGamesSection } from './UpcomingGamesSection';
 import { RecentBeatenSection } from './RecentBeatenSection';
 import { StatCard } from './StatCard';
+import { FavoriteGamesRow } from './FavoriteGamesRow';
 
 interface PlatformSlice {
   name: string;
@@ -444,31 +445,39 @@ export const DashboardView: React.FC = () => {
         </div>
 
         {/* Linha Principal: identidade (esquerda) + cartões de dados (direita) */}
-        <div className="mt-5 grid gap-3 sm:mt-6 lg:grid-cols-[minmax(0,1fr)_clamp(320px,26vw,340px)] lg:items-stretch">
-          {/* COLUNA ESQUERDA — cartão grande (intocado) */}
-          <div className="rounded-2xl border border-[#30363d] bg-[#0d1117]/60 p-4 sm:p-5 xl:p-6">
-            <p className="text-xs font-mono uppercase tracking-[0.3em] text-[#22d3ee]/80">// Sistema de backlog</p>
-            <div className="mt-3 flex items-center gap-4 sm:gap-6">
+        <div className="mt-5 grid gap-3 sm:mt-6 lg:grid-cols-[minmax(0,1fr)_clamp(320px,26vw,340px)] xl:grid-cols-[minmax(0,1fr)_clamp(340px,28vw,380px)] lg:items-stretch">
+          {/* COLUNA ESQUERDA — cartão de identidade + favoritos */}
+          <div className="flex h-full flex-col rounded-2xl border border-[#30363d] bg-[#0d1117]/60 p-4 sm:p-5 lg:p-6">
+            <div className="mt-3 flex items-center gap-4 sm:gap-6 lg:mt-0">
               <ProfileAvatar
                 googlePhotoUrl={currentUser?.photoURL ?? null}
                 editable={isOwner}
-                className="h-28 w-28 sm:h-36 sm:w-36 shrink-0"
+                className="h-[104px] w-[104px] shrink-0 sm:h-36 sm:w-36 lg:h-44 lg:w-44"
               />
-              <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight text-[#f0f6fc] text-glow-accent leading-[0.95]">
-                Bem-vindo,{' '}
-                <span className="block bg-gradient-to-r from-[#22d3ee] via-[#67e8f9] to-[#a855f7] bg-clip-text text-transparent">
-                  {PROFILE_NAME}.
-                </span>
-              </h1>
+              <div className="min-w-0">
+                <h1 className="font-heading text-[clamp(1.75rem,5vw,2.25rem)] font-extrabold uppercase tracking-tight text-[#f0f6fc] text-glow-accent leading-[0.95] sm:text-[clamp(2.5rem,4vw,3.75rem)]">
+                  Bem-vindo,{' '}
+                  <span className="block bg-gradient-to-r from-[#22d3ee] via-[#67e8f9] to-[#a855f7] bg-clip-text text-transparent">
+                    {PROFILE_NAME}.
+                  </span>
+                </h1>
+                <p className="mt-2 text-[15px] text-[#9aa4b2] sm:text-base">Santuário e backlog de games</p>
+              </div>
             </div>
+
+            {/* Linha divisória fina */}
+            <hr className="my-4 border-0 border-t border-[#30363d]" aria-hidden="true" />
+
+            {/* JOGOS FAVORITOS (empurrada para o fundo do cartão) */}
+            <FavoriteGamesRow />
           </div>
 
           {/* ── TELEMETRIA: COLUNA DIREITA COM OS 4 CARTÕES (META · ANDAMENTO · ACERVO · TEMPO) ── */}
           <div className="grid content-start gap-3 sm:grid-cols-2 lg:content-stretch lg:grid-cols-1 lg:grid-rows-[auto_1fr_1fr_1fr]">
           {/* META ANUAL — mais alto por causa da barra de progresso */}
           <StatCard
-            label={`Meta Anual ${currentCycleYear}`}
-            description={goalRemaining > 0 ? `${goalRemaining} zeramentos restantes no ciclo` : 'Meta alcançada neste ciclo'}
+            label="Meta Anual"
+            description={`${currentCycleYear} · ${goalRemaining > 0 ? `faltam ${goalRemaining}` : 'meta alcançada'}`}
             icon={<Trophy className="h-5 w-5" aria-hidden="true" />}
             accent="cyan"
             value={

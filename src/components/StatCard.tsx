@@ -62,15 +62,15 @@ export function StatCard({
         </span>
 
         <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-wider text-[#c9d1d9]">{label}</p>
-          <p className="truncate text-[13px] leading-snug text-[#9aa4b2]" title={description}>
+          <p className="whitespace-nowrap text-xs font-bold uppercase tracking-wider text-[#c9d1d9]">{label}</p>
+          <p className="line-clamp-2 text-[13px] leading-snug text-[#9aa4b2]" title={description}>
             {description}
           </p>
         </div>
 
-        <div className="flex items-center justify-end gap-1">
+        <div className="flex shrink-0 items-center justify-end gap-1">
           {action}
-          <div className="whitespace-nowrap text-right font-mono text-2xl font-bold tabular-nums leading-none text-[#f0f6fc] lg:text-[28px]">
+          <div className="whitespace-nowrap text-right font-mono text-xl font-bold tabular-nums leading-none text-[#f0f6fc] sm:text-2xl lg:text-[28px]">
             {value}
           </div>
         </div>

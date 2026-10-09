@@ -83,8 +83,8 @@ export function buildFavoriteUpdates(
         id: sub.id,
         updates: {
           nota: restoreNota as unknown as number | undefined,
-          notaAnterior: null,
-          favoritoEm: null,
+          notaAnterior: undefined,
+          favoritoEm: undefined,
         },
       });
     }
@@ -106,8 +106,8 @@ export function buildUnfavoriteUpdates(game: GameItem): { id: string; updates: P
     id: game.id,
     updates: {
       nota: restoreNota as unknown as number | undefined,
-      notaAnterior: null,
-      favoritoEm: null,
+      notaAnterior: undefined,
+      favoritoEm: undefined,
     },
   };
 }

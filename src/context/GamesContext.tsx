@@ -531,6 +531,11 @@ export const GamesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         fieldsToUpdate.prioridade = deleteField();
         fieldsToUpdate.prioridadeEm = deleteField();
       }
+      // Nota 11 (favorito): null em `nota` significa remover o campo nota
+      // (jogo volta a "não avaliado") ao desmarcar/substituir um favorito.
+      if ('nota' in updates && updates.nota === null) {
+        fieldsToUpdate.nota = deleteField();
+      }
       if (isTransitioningFromZerado) {
         delete fieldsToUpdate.data_zerado;
         delete fieldsToUpdate.ano_zerado;
