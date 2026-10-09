@@ -6,4 +6,8 @@ node_modules/
 
 # Compressed files
 *.tar.gz
+*.zipnode_modules/
+dist/
+*.tar.gz
 *.zip
+*.patch
