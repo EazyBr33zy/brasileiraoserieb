@@ -1,0 +1,503 @@
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..c5dd4d1
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,5 @@
++# Dependency directories
++node_modules/
++
++# Build output (gere localmente com npm run build)
++dist/
+diff --git a/src/components/DashboardView.tsx b/src/components/DashboardView.tsx
+index 0079c57..d872cfd 100644
+--- a/src/components/DashboardView.tsx
++++ b/src/components/DashboardView.tsx
+@@ -375,72 +375,147 @@ export const DashboardView: React.FC = () => {
+     return platformDonutData.slices.find((s) => s.name === selectedPlatform) || null;
+   }, [selectedPlatform, platformDonutData.slices]);
+ 
++  // ── GOAL RING (SVG) ──
++  const goalPercentRaw = currentGoal > 0 ? (totalZerados2026 / currentGoal) * 100 : 0;
++  const goalPercent = Math.min(100, Math.round(goalPercentRaw));
++  const goalRemaining = Math.max(0, currentGoal - totalZerados2026);
++  const RING_R = 42;
++  const ringCircumference = 2 * Math.PI * RING_R;
++
+   return (
+     <div className="space-y-4 sm:space-y-6 pb-16 font-sans">
+-      {/* ── 1. CONTAINER UNIFICADO: HERO & STATS PRINCIPAIS ── */}
+-      <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 md:p-7 shadow-xl space-y-5 sm:space-y-6">
+-        {/* HERO BANNER (BOAS-VINDAS) */}
+-        <div>
+-          {/* Top Badges */}
+-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
+-            <div className="flex items-center gap-1.5 rounded-md bg-[#0f291e] border border-[#10b981]/40 px-2 py-0.5 sm:px-2.5 sm:py-1 font-bold uppercase tracking-wider text-[#34d399]">
+-              <span className="h-1.5 w-1.5 rounded-full bg-[#10b981] animate-pulse" aria-hidden="true" />
+-              <span>TELEMETRIA ATIVA</span>
+-            </div>
++      {/* ── 1. HERO PANEL: IDENTIDADE, AÇÕES & TELEMETRIA ── */}
++      <section
++        className="hero-glow cyber-grid animate-fade-up rounded-3xl border border-[#30363d] bg-gradient-to-br from-[#161b22] via-[#131a22] to-[#0d1117] p-4 sm:p-6 md:p-8 shadow-2xl"
++        aria-label="Visão geral do painel"
++      >
++        {/* Top Badges */}
++        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
++          <div className="flex items-center gap-1.5 rounded-full bg-[#10b981]/10 border border-[#10b981]/40 px-2.5 py-1 sm:px-3 font-bold uppercase tracking-wider text-[#34d399]">
++            <span className="relative flex h-2 w-2" aria-hidden="true">
++              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-60" />
++              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10b981]" />
++            </span>
++            <span>Telemetria Ativa</span>
++          </div>
+ 
+-            <div className="flex items-center gap-1.5 rounded-md bg-[#2c1810] border border-[#f97316]/40 px-2 py-0.5 sm:px-2.5 sm:py-1 font-bold uppercase tracking-wider text-[#fb923c]">
+-              <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#f97316]" aria-hidden="true" />
+-              <span>CICLO {currentCycleYear}</span>
+-            </div>
++          <div className="flex items-center gap-1.5 rounded-full bg-[#f97316]/10 border border-[#f97316]/40 px-2.5 py-1 sm:px-3 font-bold uppercase tracking-wider text-[#fb923c]">
++            <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#f97316]" aria-hidden="true" />
++            <span>Ciclo {currentCycleYear}</span>
+           </div>
+ 
+-          {/* Linha Principal: Título à Esquerda + Botões à Direita */}
+-          <div className="mt-3 sm:mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6">
+-            <div className="max-w-2xl">
+-              <h1 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-[#f0f6fc]">
+-                BEM-VINDO, COMMANDER.
+-              </h1>
+-              <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-[#9aa4b2] leading-relaxed">
+-                Backlog centralizado com telemetria gamer. {activeGamesList.length} jogos em andamento e {totalZerados2026} concluídos neste ciclo.
+-              </p>
+-            </div>
++          <div className="hidden sm:flex items-center gap-1.5 rounded-full bg-[#22d3ee]/10 border border-[#22d3ee]/40 px-3 py-1 font-bold uppercase tracking-wider text-[#67e8f9] font-mono">
++            <Activity className="h-3.5 w-3.5" aria-hidden="true" />
++            <span>{goalRemaining > 0 ? `faltam ${goalRemaining} para a meta` : 'meta batida 🏆'}</span>
++          </div>
++        </div>
++
++        {/* Linha Principal: Título + Capas decorativas + Botões */}
++        <div className="mt-4 sm:mt-5 flex flex-col lg:flex-row lg:items-center gap-6">
++          <div className="flex-1 max-w-2xl">
++            <p className="text-xs font-mono uppercase tracking-[0.3em] text-[#22d3ee]/80">// Sistema de backlog</p>
++            <h1 className="mt-2 font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-tight text-[#f0f6fc] text-glow-accent">
++              Bem-vindo,{' '}
++              <span className="bg-gradient-to-r from-[#22d3ee] via-[#67e8f9] to-[#a855f7] bg-clip-text text-transparent">
++                Commander.
++              </span>
++            </h1>
++            <p className="mt-2 sm:mt-3 text-sm sm:text-base text-[#9aa4b2] leading-relaxed">
++              Backlog centralizado com telemetria gamer —{' '}
++              <strong className="text-white font-semibold">{activeGamesList.length} jogos</strong> em andamento e{' '}
++              <strong className="text-white font-semibold">{totalZerados2026} concluídos</strong> neste ciclo.
++            </p>
+ 
+             {/* Ações Rápidas Hero */}
+-            <div className="flex items-center gap-2.5 sm:gap-3">
++            <div className="mt-5 flex flex-wrap items-center gap-2.5 sm:gap-3">
+               {isOwner && (
+                 <button
+                   type="button"
+                   onClick={() => setIsNewGameModalOpen(true)}
+-                  className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-[#22d3ee] hover:bg-[#06b6d4] px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider text-[#0d1117] shadow-lg shadow-[#22d3ee]/25 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-white focus:outline-none"
++                  className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-[#22d3ee] hover:bg-[#06b6d4] px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider text-[#0d1117] shadow-lg shadow-[#22d3ee]/25 transition-all hover:-translate-y-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-white focus:outline-none"
+                 >
+                   <Plus className="h-4 w-4 stroke-[3]" aria-hidden="true" />
+-                  <span>NOVO JOGO</span>
++                  <span>Novo Jogo</span>
+                 </button>
+               )}
+ 
+               <a
+                 href="#/backlog"
+-                className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl border border-[#30363d] bg-[#0d1117] hover:bg-white/5 px-4 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-200 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none"
++                className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl border border-[#30363d] bg-[#0d1117]/80 hover:border-[#22d3ee]/60 hover:bg-white/5 px-4 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-200 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none"
+               >
+                 <Layers className="h-4 w-4 text-[#22d3ee]" aria-hidden="true" />
+                 <span>Explorar Acervo</span>
+               </a>
++
++              <a
++                href="#/wrapup"
++                className="min-h-[44px] flex items-center justify-center gap-2 px-2 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#f59e0b] hover:text-[#fbbf24] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#f59e0b] focus:outline-none rounded-xl"
++              >
++                <Trophy className="h-4 w-4" aria-hidden="true" />
++                <span>Retrospectiva</span>
++              </a>
+             </div>
+           </div>
++
++          {/* Fanned cover strip — visual flourish built from real data */}
++          {slideGames.length > 0 && (
++            <div className="hidden md:flex items-end justify-center shrink-0 pr-2" aria-hidden="true">
++              {slideGames.slice(0, 4).map((g, i) => (
++                <div
++                  key={g.id}
++                  className="w-24 h-32 rounded-xl overflow-hidden border border-[#30363d] shadow-2xl transition-transform duration-300 hover:!rotate-0 hover:scale-105 hover:z-10"
++                  style={{
++                    transform: `rotate(${(i - 1.5) * 7}deg) translateY(${Math.abs(i - 1.5) * 6}px)`,
++                    marginLeft: i === 0 ? 0 : '-1.75rem',
++                    zIndex: i === 0 ? 1 : 0,
++                  }}
++                >
++                  <GameCover src={g.capa} title={g.title} consoleName={g.console} size="thumb" />
++                </div>
++              ))}
++            </div>
++          )}
+         </div>
+ 
+-        {/* ── 4 STATS CARDS PRINCIPAIS ── */}
+-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+-          {/* CARD 1 - META ANUAL (EDITÁVEL PARA O DONO) */}
+-          <div className="relative rounded-xl border border-[#30363d] bg-[#0d1117]/80 p-3 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden">
+-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#22d3ee]" />
+-            <div>
+-              <div className="flex items-center justify-between text-[#9aa4b2]">
++        {/* ── PAINEL DE TELEMETRIA: ANEL DA META + STAT PILLS ── */}
++        <div className="mt-6 grid grid-cols-1 xl:grid-cols-12 gap-4">
++          {/* CARD DESTACADO - META ANUAL COM ANEL SVG (EDITÁVEL PARA O DONO) */}
++          <div className="xl:col-span-4 relative rounded-2xl border border-[#22d3ee]/30 bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex items-center gap-4 sm:gap-5 overflow-hidden">
++            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#22d3ee] via-[#67e8f9] to-[#a855f7]" />
++
++            {/* Anel de progresso */}
++            <div className="relative h-28 w-28 shrink-0">
++              <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90" role="img" aria-label={`Meta anual: ${totalZerados2026} de ${currentGoal} jogos, ${goalPercent}% concluído`}>
++                <circle cx="50" cy="50" r={RING_R} fill="none" stroke="#21262d" strokeWidth="9" />
++                <circle
++                  cx="50" cy="50" r={RING_R}
++                  fill="none"
++                  stroke="url(#goalGradient)"
++                  strokeWidth="9"
++                  strokeLinecap="round"
++                  strokeDasharray={ringCircumference}
++                  strokeDashoffset={ringCircumference * (1 - goalPercent / 100)}
++                  className="transition-all duration-700"
++                />
++                <defs>
++                  <linearGradient id="goalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
++                    <stop offset="0%" stopColor="#22d3ee" />
++                    <stop offset="100%" stopColor="#a855f7" />
++                  </linearGradient>
++                </defs>
++              </svg>
++              <div className="absolute inset-0 flex flex-col items-center justify-center">
++                <span className="font-heading text-2xl font-black text-white leading-none">{goalPercent}%</span>
++                <span className="text-[10px] font-mono text-[#9aa4b2] mt-0.5">da meta</span>
++              </div>
++            </div>
++
++            {/* Texto da meta */}
++            <div className="min-w-0 flex-1">
++              <div className="flex items-center justify-between gap-2">
+                 <span className="text-xs font-bold uppercase tracking-widest text-[#9aa4b2]">
+-                  META ANUAL {currentCycleYear}
++                  Meta Anual {currentCycleYear}
+                 </span>
+-
+-                {/* Botão com ícone de lápis: VISÍVEL SOMENTE PARA O DONO */}
+                 {isOwner ? (
+                   <button
+                     type="button"
+@@ -452,131 +527,129 @@ export const DashboardView: React.FC = () => {
+                     <Pencil className="h-4 w-4" aria-hidden="true" />
+                   </button>
+                 ) : (
+-                  <Trophy className="h-3.5 w-3.5 text-[#22d3ee]" aria-hidden="true" />
++                  <Trophy className="h-4 w-4 text-[#22d3ee] shrink-0" aria-hidden="true" />
+                 )}
+               </div>
+ 
+-              <div className="mt-2 sm:mt-3 flex items-baseline">
+-                <span className="font-heading text-2xl sm:text-3xl font-extrabold text-[#f0f6fc]">
++              <div className="mt-1.5 flex items-baseline gap-1.5">
++                <span className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none">
+                   {totalZerados2026}
+                 </span>
+-                <span className="ml-1 text-xs font-bold text-[#9aa4b2]">
+-                  / {currentGoal}
+-                </span>
++                <span className="text-sm font-bold text-[#9aa4b2] font-mono">/ {currentGoal} jogos</span>
+               </div>
+ 
+-              {/* Progress bar com a meta salva */}
+-              <div className="mt-2.5 flex items-center gap-2">
+-                <div className="h-2 w-full rounded-full bg-[#21262d] overflow-hidden">
+-                  <div
+-                    className="h-full rounded-full bg-gradient-to-r from-[#0891b2] to-[#22d3ee] transition-all duration-500"
+-                    style={{ width: `${Math.min(100, Math.round((totalZerados2026 / currentGoal) * 100))}%` }}
+-                  />
+-                </div>
+-                <span className="text-xs font-bold font-mono text-[#22d3ee] shrink-0">
+-                  {Math.round((totalZerados2026 / currentGoal) * 100)}%
+-                </span>
+-              </div>
+-            </div>
++              <p className="mt-2 text-xs text-[#9aa4b2] leading-relaxed">
++                {goalRemaining > 0 ? (
++                  <>Faltam <strong className="text-[#22d3ee] font-mono">{goalRemaining}</strong> zeramentos para fechar o ciclo.</>
++                ) : (
++                  <>Meta alcançada — ciclo <strong className="text-emerald-400">concluído com sucesso</strong>.</>
++                )}
++              </p>
+ 
+-            <div className="mt-2.5 pt-2 sm:mt-4 sm:pt-3 flex items-center justify-between text-xs border-t border-[#30363d]/40 text-[#9aa4b2]">
+-              <span>Ano {currentCycleYear}</span>
+-              <span className="font-mono font-bold text-[#22d3ee]">{uniqueZerados.length} zerados na história</span>
++              <div className="mt-2 pt-2 border-t border-[#30363d]/40 text-xs font-mono text-[#9aa4b2]">
++                <span className="text-[#22d3ee] font-bold">{uniqueZerados.length}</span> zerados na história
++              </div>
+             </div>
+           </div>
+ 
+-          {/* CARD 2 - EM ANDAMENTO */}
+-          <div className="relative rounded-xl border border-[#30363d] bg-[#0d1117]/80 p-3 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden">
+-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#a855f7]" />
+-            <div>
+-              <div className="flex items-center justify-between text-[#9aa4b2]">
+-                <span className="text-xs font-bold uppercase tracking-widest text-[#9aa4b2]">
+-                  EM ANDAMENTO
+-                </span>
+-                <Layers className="h-3.5 w-3.5 text-[#a855f7]" aria-hidden="true" />
+-              </div>
++          {/* GRID DE STATS SECUNDÁRIOS */}
++          <div className="xl:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
++            {/* CARD - EM ANDAMENTO */}
++            <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#a855f7]/50 transition-colors">
++              <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#a855f7]" />
++              <div>
++                <div className="flex items-center gap-2 text-[#9aa4b2]">
++                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#a855f7]/15 border border-[#a855f7]/30 shrink-0">
++                    <Layers className="h-4 w-4 text-[#a855f7]" aria-hidden="true" />
++                  </span>
++                  <span className="text-xs font-bold uppercase tracking-widest">Em Andamento</span>
++                </div>
+ 
+-              <div className="mt-2 sm:mt-3 flex items-baseline gap-2">
+-                <span className="font-heading text-2xl sm:text-3xl font-extrabold text-[#22d3ee]">
+-                  {activeGamesList.length}
+-                </span>
+-                <span className="text-xs font-bold uppercase text-[#9aa4b2]">jogando</span>
++                <div className="mt-3 flex items-baseline gap-2">
++                  <span className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#d8b4fe] transition-colors">
++                    {activeGamesList.length}
++                  </span>
++                  <span className="text-xs font-bold uppercase text-[#9aa4b2]">jogando</span>
++                </div>
+               </div>
+-            </div>
+ 
+-            <div className="mt-2.5 pt-2 sm:mt-6 sm:pt-3 flex items-center justify-between text-xs border-t border-[#30363d]/40 text-[#9aa4b2]">
+-              <span className="truncate">Sessões ativas</span>
+-              <span className="font-mono text-[#a855f7] font-bold">Foco prioritário</span>
+-            </div>
+-          </div>
+-
+-          {/* CARD 3 - BIBLIOTECA TOTAL */}
+-          <div className="relative rounded-xl border border-[#30363d] bg-[#0d1117]/80 p-3 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden">
+-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#22d3ee]" />
+-            <div>
+-              <div className="flex items-center justify-between text-[#9aa4b2]">
+-                <span className="text-xs font-bold uppercase tracking-widest text-[#9aa4b2]">
+-                  ACERVO TOTAL
+-                </span>
+-                <Gamepad2 className="h-3.5 w-3.5 text-[#22d3ee]" aria-hidden="true" />
++              <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 text-xs text-[#9aa4b2]">
++                <span className="font-mono text-[#a855f7] font-bold">Foco prioritário</span> · sessões ativas
+               </div>
++            </div>
+ 
+-              <div className="mt-2 sm:mt-3">
+-                <div className="font-heading text-2xl sm:text-3xl font-extrabold text-[#f0f6fc] tracking-tight">
+-                  {games.length}
++            {/* CARD - ACERVO TOTAL */}
++            <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#22d3ee]/50 transition-colors">
++              <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#22d3ee]" />
++              <div>
++                <div className="flex items-center gap-2 text-[#9aa4b2]">
++                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#22d3ee]/15 border border-[#22d3ee]/30 shrink-0">
++                    <Gamepad2 className="h-4 w-4 text-[#22d3ee]" aria-hidden="true" />
++                  </span>
++                  <span className="text-xs font-bold uppercase tracking-widest">Acervo Total</span>
+                 </div>
+-                <div className="text-xs text-[#9aa4b2] mt-0.5">
+-                  jogos catalogados
++
++                <div className="mt-3 flex items-baseline gap-2">
++                  <span className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#67e8f9] transition-colors">
++                    {games.length}
++                  </span>
++                  <span className="text-xs font-bold uppercase text-[#9aa4b2]">catalogados</span>
+                 </div>
+               </div>
+-            </div>
+-
+-            <div className="mt-2.5 pt-2 sm:mt-6 sm:pt-3 flex items-center justify-between text-xs border-t border-[#30363d]/40 text-[#9aa4b2]">
+-              <span className="truncate">Vault sincronizado</span>
+-              <span className="font-mono text-emerald-400 font-bold">100% Online</span>
+-            </div>
+-          </div>
+ 
+-          {/* CARD 4 - TEMPO INVESTIDO (SUBSTITUI TAXA DE CONCLUSÃO) */}
+-          <div className="relative rounded-xl border border-[#30363d] bg-[#0d1117]/80 p-3 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden">
+-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#fbbf24]" />
+-            <div>
+-              <div className="flex items-center justify-between text-[#9aa4b2]">
+-                <span className="text-xs font-bold uppercase tracking-widest text-[#9aa4b2]">
+-                  TEMPO INVESTIDO
++              <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 flex items-center justify-between text-xs text-[#9aa4b2]">
++                <span className="truncate">Vault sincronizado</span>
++                <span className="flex items-center gap-1.5 font-mono text-emerald-400 font-bold">
++                  <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
++                  Online
+                 </span>
+-                <Clock className="h-3.5 w-3.5 text-[#fbbf24]" aria-hidden="true" />
+               </div>
++            </div>
+ 
+-              <div className="mt-2 sm:mt-3">
+-                <div className="font-heading text-2xl sm:text-3xl font-extrabold text-[#f0f6fc]">
+-                  {cycleInvestedTime.formatted}
++            {/* CARD - TEMPO INVESTIDO */}
++            <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#fbbf24]/50 transition-colors sm:col-span-3 lg:col-span-1">
++              <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#fbbf24]" />
++              <div>
++                <div className="flex items-center gap-2 text-[#9aa4b2]">
++                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fbbf24]/15 border border-[#fbbf24]/30 shrink-0">
++                    <Clock className="h-4 w-4 text-[#fbbf24]" aria-hidden="true" />
++                  </span>
++                  <span className="text-xs font-bold uppercase tracking-widest">Tempo Investido</span>
+                 </div>
+-                <div className="text-xs text-[#9aa4b2] mt-0.5">
+-                  em {cycleInvestedTime.beatenCount} jogos zerados em {currentCycleYear}
+-                  {cycleInvestedTime.semTempoCount > 0 && (
+-                    <span> · {cycleInvestedTime.semTempoCount} sem tempo</span>
+-                  )}
++
++                <div className="mt-3">
++                  <div className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#fde68a] transition-colors">
++                    {cycleInvestedTime.formatted}
++                  </div>
++                  <div className="text-xs text-[#9aa4b2] mt-1.5">
++                    em {cycleInvestedTime.beatenCount} zerados em {currentCycleYear}
++                    {cycleInvestedTime.semTempoCount > 0 && (
++                      <span> · {cycleInvestedTime.semTempoCount} sem tempo</span>
++                    )}
++                  </div>
+                 </div>
+               </div>
+-            </div>
+ 
+-            <div className="mt-2.5 pt-2 sm:mt-6 sm:pt-3 flex items-center gap-1.5 text-xs border-t border-[#30363d]/40 text-[#10b981]">
+-              <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+-              <span className="text-slate-300 truncate">Telemetria consistente</span>
++              <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 flex items-center gap-1.5 text-xs text-[#10b981]">
++                <Activity className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
++                <span className="text-slate-300 truncate">Telemetria consistente</span>
++              </div>
+             </div>
+           </div>
+         </div>
+-      </div>
++      </section>
+ 
+       {/* ── 2. CONTAINER UNIFICADO: JOGANDO AGORA & EM ANDAMENTO ── */}
+       {currentFeaturedGame && (
+-        <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-3 sm:p-5 md:p-6 shadow-xl">
++        <section className="animate-fade-up rounded-3xl border border-[#30363d] bg-[#161b22] p-3 sm:p-5 md:p-6 shadow-xl" style={{ animationDelay: '80ms' }} aria-label="Jogando agora">
+           <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-2 mb-3 sm:mb-4">
+             <div className="flex items-center gap-2">
+-              <span className="h-2.5 w-2.5 rounded-full bg-[#22d3ee] shadow-[0_0_8px_#22d3ee]" aria-hidden="true" />
++              <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
++                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22d3ee] opacity-60" />
++                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#22d3ee] shadow-[0_0_8px_#22d3ee]" />
++              </span>
+               <h2 className="text-sm sm:text-xl font-black uppercase tracking-wide text-white">
+-                JOGANDO AGORA
++                Jogando Agora
+               </h2>
+             </div>
+ 
+@@ -805,7 +878,7 @@ export const DashboardView: React.FC = () => {
+               </div>
+             </div>
+           </div>
+-        </div>
++        </section>
+       )}
+ 
+       {/* ── RECÉM ZERADOS (7 JOGOS MAIS RECENTES) ── */}
+@@ -818,7 +891,7 @@ export const DashboardView: React.FC = () => {
+       <UpcomingGamesSection games={games} />
+ 
+       {/* ── 4. ANALYTICS & TELEMETRIA DO CICLO ── */}
+-      <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl">
++      <section className="animate-fade-up rounded-3xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl" style={{ animationDelay: '160ms' }} aria-label="Analytics e telemetria do ciclo">
+         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#30363d]/60 pb-3 mb-4">
+           <div className="flex items-center gap-2.5">
+             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#10b981]/15 border border-[#10b981]/30 text-[#10b981] shrink-0">
+@@ -1140,7 +1213,7 @@ export const DashboardView: React.FC = () => {
+             </div>
+           </div>
+         </div>
+-      </div>
++      </section>
+ 
+       {/* ── MODAL: EDITAR META ANUAL (SOMENTE DONO) ── */}
+       <EditGoalModal
+diff --git a/src/index.css b/src/index.css
+index 723a6ab..a14c05a 100644
+--- a/src/index.css
++++ b/src/index.css
+@@ -93,6 +93,51 @@
+     linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+ }
+ 
++/* Dashboard hero ambient glows */
++.hero-glow {
++  position: relative;
++  isolation: isolate;
++  overflow: hidden;
++}
++.hero-glow::before {
++  content: '';
++  position: absolute;
++  inset: -40%;
++  z-index: -1;
++  pointer-events: none;
++  background:
++    radial-gradient(600px 300px at 8% -10%, rgba(34, 211, 238, 0.16), transparent 60%),
++    radial-gradient(500px 280px at 95% 110%, rgba(168, 85, 247, 0.14), transparent 60%),
++    radial-gradient(380px 220px at 60% 40%, rgba(16, 185, 129, 0.06), transparent 65%);
++}
++
++/* Animated conic ring for the annual goal */
++@property --ring-angle {
++  syntax: '<angle>';
++  inherits: false;
++  initial-value: 0deg;
++}
++.goal-ring {
++  background: conic-gradient(
++    from var(--ring-angle),
++    #22d3ee calc(var(--goal-percent) * 1%),
++    #21262d 0
++  );
++  animation: ring-spin 12s linear infinite;
++}
++@keyframes ring-spin {
++  to { --ring-angle: 360deg; }
++}
++
++/* Soft entrance animation for dashboard sections */
++@keyframes fade-up {
++  from { opacity: 0; transform: translateY(14px); }
++  to { opacity: 1; transform: translateY(0); }
++}
++.animate-fade-up {
++  animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
++}
++
+ /* Accessibility: Prefers reduced motion */
+ @media (prefers-reduced-motion: reduce) {
+   *, ::before, ::after {
