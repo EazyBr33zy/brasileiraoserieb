@@ -1,5 +1,16 @@
 import { GameItem, GameReviewRubric, GameplayDaySession, GameplaySessionInterval } from '../types/game';
 
+/**
+ * Validação central da nota pessoal de um jogo.
+ * Aceita 0 a NOTA_MAX (11 = favorito); rejeita NaN e fora da faixa.
+ */
+export function validateGameForSave(nota: number | undefined | null): { ok: boolean; value?: number } {
+  if (nota === undefined || nota === null) return { ok: true };
+  if (typeof nota !== 'number' || isNaN(nota)) return { ok: false };
+  if (nota < 0 || nota > 11) return { ok: false };
+  return { ok: true, value: nota };
+}
+
 // Parse time string or number to total integer minutes
 export function parseToMinutes(t: string | number | undefined | null): number {
   if (t === undefined || t === null) return 0;

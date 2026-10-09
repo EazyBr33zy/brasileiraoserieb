@@ -77,6 +77,10 @@ export interface GameItem {
   prioridade?: boolean;
   prioridadeEm?: number;
 
+  // Favoritos (nota 11): nota anterior guardada e data em que virou favorito
+  notaAnterior?: number | null;
+  favoritoEm?: number | null;
+
   // UI & Live Session Tracker fields
   developer?: string;
   publisher?: string;
