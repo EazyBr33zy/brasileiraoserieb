@@ -1,8 +1,6 @@
-# Build outputs
-dist/
-
-# Dependencies
 node_modules/
-
-# Compressed archives
+dist/
 *.zip
+.DS_Store
+*.log
+test.png
