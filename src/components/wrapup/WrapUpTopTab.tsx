@@ -19,6 +19,13 @@ interface WrapUpTopTabProps {
   onGameClick: (id: string) => void;
 }
 
+const POS_STYLE = [
+  { medal: '🥇', label: 'GOTY Crítico', cor: '#ffd700' },
+  { medal: '🥈', label: 'Vice-Líder', cor: '#c0c0c0' },
+  { medal: '🥉', label: 'Terceiro Lugar', cor: '#cd7f32' },
+  { medal: '🏅', label: 'Quarto Lugar', cor: '#00f5ff' },
+];
+
 export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
   ANO,
   top10Notas,
@@ -26,121 +33,146 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
   onGameClick,
 }) => {
   return (
-    <div className="space-y-6">
-      {/* Top 4 Podium */}
-      <div>
-        <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white mb-3">
+    <div className="space-y-4 sm:space-y-6">
+      {/* ── Pódio: 1º em destaque + demais posições ── */}
+      <section className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
+        <div className="mb-3 flex items-center gap-2 font-heading text-base sm:text-lg font-black uppercase text-white">
           <span className="h-1.5 w-1.5 rounded-full bg-[#ffd700]"></span>
-          Melhores Avaliados
+          Melhores Avaliados — {ANO}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {[
-            { label: '🥇 GOTY Crítico', g: top10Notas[0], cor: '#ffd700' },
-            { label: '🥈 Vice-Líder', g: top10Notas[1], cor: '#c0c0c0' },
-            { label: '🥉 Terceiro Lugar', g: top10Notas[2], cor: '#cd7f32' },
-            { label: '🏅 Quarto Lugar', g: top10Notas[3], cor: '#00f5ff' },
-          ].map((pos, idx) => (
-            <div
-              key={idx}
-              onClick={() => pos.g && onGameClick(pos.g.id)}
-              className="rounded-xl border border-white/10 bg-[#0e131d] p-3 flex gap-3 cursor-pointer hover:border-[#ffd700] transition-all"
-            >
-              <div className="h-20 w-14 rounded-md overflow-hidden bg-black flex-shrink-0">
-                {pos.g?.capa ? (
-                  <img
-                    src={pos.g.capa}
-                    alt={pos.g.title}
-                    referrerPolicy="no-referrer"
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="h-full w-full flex items-center justify-center text-xs">🎮</div>
-                )}
-              </div>
-              <div className="flex flex-col justify-between min-w-0">
-                <div>
-                  <div className="text-xs font-black uppercase" style={{ color: pos.cor }}>
-                    {pos.label}
+        {top10Notas.length === 0 ? (
+          <p className="py-6 text-center text-xs text-slate-400">Nenhum jogo avaliado neste ciclo.</p>
+        ) : (
+          <div className="grid gap-3 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)]">
+            {/* 1º lugar — card grande */}
+            {top10Notas[0] && (
+              <div
+                onClick={() => onGameClick(top10Notas[0].id)}
+                className="group relative flex cursor-pointer items-center gap-4 overflow-hidden rounded-2xl border-2 border-[#ffd700]/50 bg-gradient-to-br from-[#ffd700]/15 via-[#0e131d] to-[#0e131d] p-4 shadow-xl shadow-[#ffd700]/10 transition-all hover:border-[#ffd700]"
+              >
+                <div className="absolute right-3 top-2 font-heading text-5xl font-black text-[#ffd700]/15 select-none">
+                  01
+                </div>
+                <div className="h-32 w-[96px] flex-shrink-0 overflow-hidden rounded-xl border border-[#ffd700]/40 bg-black shadow-lg">
+                  {top10Notas[0].capa ? (
+                    <img
+                      src={top10Notas[0].capa}
+                      alt={top10Notas[0].title}
+                      referrerPolicy="no-referrer"
+                      className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-2xl">🎮</div>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-black uppercase tracking-widest text-[#ffd700]">
+                    🥇 {POS_STYLE[0].label}
                   </div>
-                  <div className="font-heading text-sm font-bold text-white truncate">
-                    {pos.g?.title || '—'}
+                  <h3 className="mt-1 truncate font-heading text-xl font-black uppercase text-white transition-colors group-hover:text-[#ffd700] sm:text-2xl" title={top10Notas[0].title}>
+                    {top10Notas[0].title}
+                  </h3>
+                  <div className="mt-1 truncate font-mono text-xs text-slate-400">{top10Notas[0].console}</div>
+                  <div
+                    className="mt-2 font-mono text-3xl font-bold tabular-nums text-glow-gold"
+                    style={{ color: POS_STYLE[0].cor }}
+                  >
+                    ★ {top10Notas[0].nota !== undefined ? top10Notas[0].nota.toFixed(1) : '—'}
                   </div>
                 </div>
-                <div className="font-heading text-2xl font-black" style={{ color: pos.cor }}>
-                  {pos.g?.nota !== undefined ? `★ ${pos.g.nota.toFixed(1)}` : '—'}
-                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
+            )}
 
-      {/* 👑 GAMES OF THE YEAR — GOTY HERO CARD */}
-      <div className="space-y-4 pt-4 border-t border-white/10">
-        <div className="flex items-center gap-2 font-heading text-xl font-black uppercase text-[#ffd700]">
-          <span>👑</span>
-          Games of the Year — {ANO}
-        </div>
-
-        {gotAwards.goty && (
-          <div
-            onClick={() => onGameClick(gotAwards.goty!.id)}
-            className="relative overflow-hidden rounded-2xl border-2 border-[#ffd700]/50 bg-gradient-to-r from-[#ffd700]/10 via-[#ff6400]/10 to-[#0e131d] p-6 cursor-pointer hover:border-[#ffd700] transition-all shadow-xl shadow-[#ffd700]/10 flex flex-col sm:flex-row gap-5 items-center justify-between"
-          >
-            <div className="flex items-center gap-5">
-              <div className="h-28 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-[#ffd700]/40 bg-black">
-                <img
-                  src={gotAwards.goty.capa}
-                  alt={gotAwards.goty.title}
-                  referrerPolicy="no-referrer"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#ffd700]">
-                  <span>👑</span>
-                  Game of the Year
-                </div>
-                <h3 className="font-heading text-2xl sm:text-3xl font-black text-white uppercase tracking-wide mt-1">
-                  {gotAwards.goty.title}
-                </h3>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300 mt-2 font-mono">
-                  <span>{gotAwards.goty.console}</span>
-                  <span>•</span>
-                  <span>{gotAwards.goty.genero}</span>
-                  <span>•</span>
-                  <span>⏱ {gotAwards.goty.tempo}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="font-heading text-5xl font-black text-[#ffd700] text-glow-gold flex flex-col items-center">
-              <span>{gotAwards.goty.nota !== undefined ? gotAwards.goty.nota.toFixed(1) : '10'}★</span>
-              <span className="text-xs tracking-widest font-black uppercase text-[#ffd700]/80">GOTY</span>
+            {/* 2º–4º lugares */}
+            <div className="grid content-start gap-2.5">
+              {[1, 2, 3].map((idx) => {
+                const g = top10Notas[idx];
+                const pos = POS_STYLE[idx];
+                if (!g) {
+                  return (
+                    <div
+                      key={idx}
+                      className="flex min-h-[72px] items-center gap-3 rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-4 text-xs text-slate-500"
+                    >
+                      {pos.medal} {pos.label} — sem dados suficientes
+                    </div>
+                  );
+                }
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => onGameClick(g.id)}
+                    className="group flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-[#0e131d] p-3 transition-all hover:border-white/30"
+                  >
+                    <div
+                      className="w-8 flex-shrink-0 text-center font-mono text-lg font-bold tabular-nums"
+                      style={{ color: pos.cor }}
+                    >
+                      0{idx + 1}
+                    </div>
+                    <div className="h-16 w-12 flex-shrink-0 overflow-hidden rounded-md border border-white/10 bg-black">
+                      {g.capa ? (
+                        <img
+                          src={g.capa}
+                          alt={g.title}
+                          referrerPolicy="no-referrer"
+                          className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-xs">🎮</div>
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-[10px] sm:text-xs font-black uppercase tracking-wider" style={{ color: pos.cor }}>
+                        {pos.medal} {pos.label}
+                      </div>
+                      <div className="mt-0.5 truncate font-heading text-sm font-bold text-white transition-colors group-hover:text-[#ffd700]" title={g.title}>
+                        {g.title}
+                      </div>
+                      <div className="truncate font-mono text-[10px] text-slate-400">{g.console}</div>
+                    </div>
+                    <div
+                      className="flex-shrink-0 font-mono text-xl font-bold tabular-nums"
+                      style={{ color: pos.cor }}
+                    >
+                      ★ {g.nota !== undefined ? g.nota.toFixed(1) : '—'}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
+      </section>
 
-        {/* Other GOT Categories Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* ── Games of the Year: categorias ── */}
+      <section className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
+        <div className="mb-3 flex items-center gap-2 font-heading text-base sm:text-lg font-black uppercase text-[#ffd700]">
+          <span>👑</span>
+          <span className="truncate">Games of the Year — {ANO}</span>
+        </div>
+
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { title: 'Melhor Gameplay', g: gotAwards.gameplay, ico: '🕹️', cor: '#00f5ff' },
             { title: 'Melhor Narrativa', g: gotAwards.narrativa, ico: '📖', cor: '#bc13fe' },
             { title: 'Direção de Arte', g: gotAwards.arte, ico: '🎨', cor: '#ff6400' },
             { title: 'Indie do Ano', g: gotAwards.indie, ico: '🌱', cor: '#00ff9f' },
             { title: 'Surpresa do Ano', g: gotAwards.surpresa, ico: '💥', cor: '#ff0055' },
-            { title: 'Retro do Ano', g: gotAwards.retro, ico: '🕹️', cor: '#a78bfa' },
+            { title: 'Retro do Ano', g: gotAwards.retro, ico: '📼', cor: '#a78bfa' },
             { title: 'Mais Difícil', g: gotAwards.dificil, ico: '💀', cor: '#f97316' },
             { title: 'Pior do Ano', g: gotAwards.pior, ico: '💩', cor: '#64748b' },
           ].map((award, i) => (
             <div
               key={i}
-              onClick={() => award.g && onGameClick(award.g.id)}
-              className="rounded-xl border border-white/10 bg-[#0e131d] p-3 flex items-center gap-3 cursor-pointer hover:border-white/30 transition-all relative overflow-hidden"
+              onClick={() => award.g && onGameClick(award.g!.id)}
+              className={`relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-[#0e131d] p-3 transition-all ${
+                award.g ? 'cursor-pointer hover:border-white/30' : 'opacity-60'
+              }`}
             >
-              <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: award.cor }}></div>
-              <div className="h-14 w-10 flex-shrink-0 overflow-hidden rounded bg-black">
+              <div className="absolute bottom-0 left-0 top-0 w-1" style={{ backgroundColor: award.cor }}></div>
+              <div className="h-14 w-10 flex-shrink-0 overflow-hidden rounded-md bg-black">
                 {award.g?.capa ? (
                   <img
                     src={award.g.capa}
@@ -149,19 +181,19 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="h-full w-full flex items-center justify-center text-xs">🎮</div>
+                  <div className="flex h-full w-full items-center justify-center text-xs">🎮</div>
                 )}
               </div>
-              <div className="flex-1 min-w-0">
-                <span className="text-xs font-bold uppercase tracking-wider block" style={{ color: award.cor }}>
+              <div className="min-w-0 flex-1">
+                <span className="block truncate text-[10px] sm:text-xs font-bold uppercase tracking-wider" style={{ color: award.cor }}>
                   {award.ico} {award.title}
                 </span>
-                <div className="font-heading text-xs font-bold text-white truncate mt-0.5">
+                <div className="mt-0.5 truncate font-heading text-sm font-bold text-white" title={award.g?.title}>
                   {award.g?.title || 'Não definido'}
                 </div>
                 {award.g?.nota !== undefined && (
                   <div
-                    className="text-xs font-mono font-bold mt-0.5"
+                    className="mt-0.5 font-mono text-xs font-bold tabular-nums"
                     style={{ color: getScoreColor(award.g.nota) }}
                   >
                     ★ {award.g.nota.toFixed(1)}
@@ -171,7 +203,7 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
             </div>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 };

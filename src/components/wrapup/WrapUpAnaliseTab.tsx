@@ -60,61 +60,66 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
   onGameClick,
 }) => {
   return (
-    <div className="space-y-6">
-      {/* Seção 1: Distribuição de Notas */}
-      <div className="rounded-xl border border-white/10 bg-[#0e131d] p-5">
-        <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white mb-4">
+    <div className="space-y-4 sm:space-y-6">
+      {/* Seção 1: Distribuição de Notas — painel com barra lateral de contexto */}
+      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
+        <div className="mb-4 flex items-center gap-2 font-heading text-base font-black uppercase text-white">
           <span className="h-1.5 w-1.5 rounded-full bg-[#ffd700]"></span>
           Distribuição de Notas
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
           {/* Histogram bars */}
-          <div className="md:col-span-8 grid grid-cols-7 gap-2 items-end h-36 border-b border-white/10 pb-2">
-            {Object.entries(notasHist).map(([faixa, qtd]) => {
-              const pct = Math.max(qtd ? 15 : 4, Math.round((qtd / maxNH) * 100));
-              const cor = notaHistCores[faixa];
-              return (
-                <div key={faixa} className="flex flex-col items-center gap-1.5 h-full justify-end">
-                  <span className="font-mono text-xs font-bold" style={{ color: cor }}>
-                    {qtd || ''}
-                  </span>
-                  <div
-                    className="w-full rounded-t-md transition-all"
-                    style={{ height: `${pct}%`, backgroundColor: cor, boxShadow: `0 0 10px ${cor}33` }}
-                  ></div>
-                  <span className="text-xs font-bold text-slate-400">{faixa}</span>
-                </div>
-              );
-            })}
+          <div className="rounded-xl border border-white/10 bg-black/30 p-3 sm:p-4">
+            <div className="grid grid-cols-7 items-end gap-1.5 sm:gap-2 border-b border-white/10 pb-2" style={{ minHeight: '9rem' }}>
+              {Object.entries(notasHist).map(([faixa, qtd]) => {
+                const pct = Math.max(qtd ? 15 : 4, Math.round((qtd / maxNH) * 100));
+                const cor = notaHistCores[faixa];
+                return (
+                  <div key={faixa} className="flex h-full flex-col items-center justify-end gap-1.5">
+                    <span className="font-mono text-xs font-bold tabular-nums" style={{ color: cor }}>
+                      {qtd || ''}
+                    </span>
+                    <div
+                      className="w-full rounded-t-md transition-all"
+                      style={{ height: `${pct}%`, backgroundColor: cor, boxShadow: `0 0 10px ${cor}33` }}
+                    ></div>
+                    <span className="text-[10px] sm:text-xs font-bold text-slate-400">{faixa}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-2 text-center text-[10px] uppercase tracking-widest text-slate-500">
+              Jogos zerados por faixa de nota · {ANO}
+            </div>
           </div>
 
           {/* Context card */}
-          <div className="md:col-span-4 rounded-xl border border-white/10 bg-black/40 p-4 space-y-3 text-xs">
-            <div className="text-center pb-2 border-b border-white/10">
-              <div className="text-xs uppercase font-bold text-slate-500">Média Geral</div>
-              <div className="font-heading text-4xl font-black text-[#ffd700]">
+          <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-black/40 p-4 text-xs">
+            <div className="text-center pb-3 border-b border-white/10">
+              <div className="text-[10px] uppercase font-bold tracking-widest text-slate-500">Média Geral</div>
+              <div className="mt-1 font-mono text-4xl font-bold tabular-nums text-[#ffd700] text-glow-gold">
                 {media ? media.toFixed(2) : '—'}
               </div>
-              <div className="inline-block rounded-full bg-[#ffd700]/15 text-[#ffd700] px-2 py-0.5 text-xs font-bold mt-1">
+              <div className="mt-2 inline-block rounded-full bg-[#ffd700]/15 px-3 py-1 text-xs font-bold text-[#ffd700]">
                 {getScoreLabel(media)}
               </div>
             </div>
 
-            <div className="space-y-1.5 text-slate-400">
-              <div className="flex justify-between">
-                <span>🏆 Nota Máxima:</span>
-                <strong className="text-white">
+            <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
+              <div className="flex flex-col gap-1 rounded-lg border border-white/5 bg-white/[0.02] p-2.5 lg:flex-row lg:items-center lg:justify-between">
+                <span className="text-slate-400">🏆 Máxima</span>
+                <strong className="text-right font-mono tabular-nums text-white lg:text-right">
                   {notasArr.length ? Math.max(...notasArr).toFixed(1) : '—'}
                 </strong>
               </div>
-              <div className="flex justify-between">
-                <span>⭐ Masterpieces (10★):</span>
-                <strong className="text-emerald-400">{notas10}</strong>
+              <div className="flex flex-col gap-1 rounded-lg border border-white/5 bg-white/[0.02] p-2.5 lg:flex-row lg:items-center lg:justify-between">
+                <span className="text-slate-400">⭐ 10★+</span>
+                <strong className="text-right font-mono tabular-nums text-emerald-400">{notas10}</strong>
               </div>
-              <div className="flex justify-between">
-                <span>📉 Nota Mínima:</span>
-                <strong className="text-red-400">
+              <div className="flex flex-col gap-1 rounded-lg border border-white/5 bg-white/[0.02] p-2.5 lg:flex-row lg:items-center lg:justify-between">
+                <span className="text-slate-400">📉 Mínima</span>
+                <strong className="text-right font-mono tabular-nums text-red-400">
                   {notasArr.length ? Math.min(...notasArr).toFixed(1) : '—'}
                 </strong>
               </div>
@@ -124,58 +129,65 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
       </div>
 
       {/* Seção 2: Atividade Mensal */}
-      <div className="rounded-xl border border-white/10 bg-[#0e131d] p-5">
-        <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white mb-4">
+      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
+        <div className="mb-4 flex items-center gap-2 font-heading text-base font-black uppercase text-white">
           <span className="h-1.5 w-1.5 rounded-full bg-[#00f5ff]"></span>
           Atividade Mensal
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
-          <div className="md:col-span-8 grid grid-cols-12 gap-1.5 items-end h-36 border-b border-white/10 pb-2">
-            {meses.map((m) => {
-              const pct = Math.max(m.qtd ? 15 : 4, Math.round((m.qtd / maxMes) * 100));
-              const isPico = m.qtd === mesPico.qtd && m.qtd > 0;
-              return (
-                <div key={m.nome} className="flex flex-col items-center gap-1 h-full justify-end">
-                  <span
-                    className="font-mono text-xs font-bold"
-                    style={{ color: isPico ? '#ffd700' : '#00f5ff' }}
-                  >
-                    {m.qtd || '·'}
-                  </span>
-                  <div
-                    className="w-full rounded-t-sm"
-                    style={{
-                      height: `${pct}%`,
-                      backgroundColor: isPico
-                        ? '#ffd700'
-                        : m.qtd > 0
-                        ? '#00f5ff'
-                        : 'rgba(255,255,255,0.05)',
-                      boxShadow: isPico ? '0 0 10px rgba(255,215,0,0.5)' : undefined,
-                    }}
-                  ></div>
-                  <span className="text-xs font-bold uppercase text-slate-400">{m.nome}</span>
-                </div>
-              );
-            })}
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <div className="rounded-xl border border-white/10 bg-black/30 p-3 sm:p-4">
+            <div className="grid grid-cols-12 items-end gap-1 sm:gap-1.5 border-b border-white/10 pb-2" style={{ minHeight: '9rem' }}>
+              {meses.map((m) => {
+                const pct = Math.max(m.qtd ? 15 : 4, Math.round((m.qtd / maxMes) * 100));
+                const isPico = m.qtd === mesPico.qtd && m.qtd > 0;
+                return (
+                  <div key={m.nome} className="flex h-full flex-col items-center justify-end gap-1">
+                    <span
+                      className="font-mono text-[10px] sm:text-xs font-bold tabular-nums"
+                      style={{ color: isPico ? '#ffd700' : '#00f5ff' }}
+                    >
+                      {m.qtd || '·'}
+                    </span>
+                    <div
+                      className="w-full rounded-t-sm"
+                      style={{
+                        height: `${pct}%`,
+                        backgroundColor: isPico
+                          ? '#ffd700'
+                          : m.qtd > 0
+                          ? '#00f5ff'
+                          : 'rgba(255,255,255,0.05)',
+                        boxShadow: isPico ? '0 0 10px rgba(255,215,0,0.5)' : undefined,
+                      }}
+                    ></div>
+                    <span className="text-[9px] sm:text-xs font-bold uppercase text-slate-400">{m.nome}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-2 text-center text-[10px] uppercase tracking-widest text-slate-500">
+              Zeradas por mês · {ANO}
+            </div>
           </div>
 
-          <div className="md:col-span-4 rounded-xl border border-white/10 bg-black/40 p-4 space-y-2 text-xs">
-            <div className="flex justify-between">
-              <span className="text-slate-400">📅 Mês Pico:</span>
-              <strong className="text-[#ffd700]">
-                {mesPico.nome} ({mesPico.qtd} jogos)
+          <div className="grid grid-cols-3 gap-2 content-start rounded-xl border border-white/10 bg-black/40 p-4 text-xs lg:grid-cols-1 lg:gap-3">
+            <div className="flex flex-col gap-1 rounded-lg border border-white/5 bg-white/[0.02] p-2.5 lg:flex-row lg:items-center lg:justify-between">
+              <span className="text-slate-400">📅 Mês Pico</span>
+              <strong className="text-right font-mono tabular-nums text-[#ffd700]">
+                {mesPico.nome} ({mesPico.qtd})
               </strong>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">🔢 Meses Ativos:</span>
-              <strong className="text-[#00f5ff]">{meses.filter((m) => m.qtd > 0).length} / 12</strong>
+            <div className="flex flex-col gap-1 rounded-lg border border-white/5 bg-white/[0.02] p-2.5 lg:flex-row lg:items-center lg:justify-between">
+              <span className="text-slate-400">🔢 Meses Ativos</span>
+              <strong className="text-right font-mono tabular-nums text-[#00f5ff]">
+                {meses.filter((m) => m.qtd > 0).length} / 12
+              </strong>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">⚡ Ritmo Médio:</span>
-              <strong className="text-emerald-400">
-                {(total / (meses.filter((m) => m.qtd > 0).length || 1)).toFixed(1)} / mês
+            <div className="flex flex-col gap-1 rounded-lg border border-white/5 bg-white/[0.02] p-2.5 lg:flex-row lg:items-center lg:justify-between">
+              <span className="text-slate-400">⚡ Ritmo Médio</span>
+              <strong className="text-right font-mono tabular-nums text-emerald-400">
+                {(total / (meses.filter((m) => m.qtd > 0).length || 1)).toFixed(1)}/mês
               </strong>
             </div>
           </div>
@@ -183,8 +195,8 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
       </div>
 
       {/* Seção 3: Plataformas com Acordeão (2 colunas, 4 jogos por linha) */}
-      <div className="rounded-xl border border-white/10 bg-[#0e131d] p-5 space-y-3">
-        <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white mb-2">
+      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5 space-y-3">
+        <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white">
           <span className="h-1.5 w-1.5 rounded-full bg-orange-400"></span>
           Plataformas Zeradas em {ANO}
         </div>
@@ -201,7 +213,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
               <div key={nome} className="rounded-xl border border-white/10 bg-black/40 overflow-hidden">
                 <div
                   onClick={() => setOpenPlatforms((prev) => ({ ...prev, [nome]: !isOpen }))}
-                  className="flex items-center justify-between p-3.5 cursor-pointer hover:bg-white/[0.03] transition-colors"
+                  className="flex min-h-[44px] cursor-pointer items-center justify-between p-3 transition-colors hover:bg-white/[0.03]"
                 >
                   <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                     <span className="text-lg sm:text-xl flex-shrink-0">{s.ico}</span>
@@ -209,7 +221,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                       <div className="font-heading text-xs sm:text-sm font-bold text-white truncate">
                         {s.name}
                       </div>
-                      <div className="text-xs text-slate-500 font-bold uppercase truncate">
+                      <div className="truncate font-mono text-[10px] font-bold uppercase text-slate-500">
                         {pct}% dos jogos
                       </div>
                     </div>
@@ -217,19 +229,19 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
 
                   <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                     <div className="text-right">
-                      <div className="font-mono text-xs sm:text-xs font-bold text-white">
+                      <div className="font-mono text-xs font-bold tabular-nums text-white">
                         {fmtH(stats.hours)}
                       </div>
-                      <div className="text-xs text-slate-500 uppercase">Horas</div>
+                      <div className="text-[10px] uppercase text-slate-500">Horas</div>
                     </div>
-                    <div className="text-right border-l border-white/10 pl-2 sm:pl-3">
-                      <div className="font-heading text-sm sm:text-lg font-black" style={{ color: s.col }}>
+                    <div className="border-l border-white/10 pl-2 text-right sm:pl-3">
+                      <div className="font-mono text-base font-bold tabular-nums sm:text-lg" style={{ color: s.col }}>
                         {stats.count}
                       </div>
-                      <div className="text-xs text-slate-500 uppercase">Zerados</div>
+                      <div className="text-[10px] uppercase text-slate-500">Zerados</div>
                     </div>
                     <ChevronDown
-                      className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400 transition-transform ${
+                      className={`h-4 w-4 text-slate-400 transition-transform ${
                         isOpen ? 'rotate-180 text-white' : ''
                       }`}
                     />
@@ -243,8 +255,8 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
 
                 {/* Expanded game grid (4 jogos por linha) */}
                 {isOpen && (
-                  <div className="p-3.5 bg-black/60 border-t border-white/5">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <div className="border-t border-white/5 bg-black/60 p-3">
+                    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                       {platformGames.map((g) => (
                         <div
                           key={g.id}
@@ -260,16 +272,16 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
                             />
                             {g.nota !== undefined && !isNaN(g.nota) && (
-                              <div className="absolute top-1 right-1 rounded bg-black/85 px-1 py-0.2 text-xs font-heading font-black text-[#ffd700] border border-white/10">
+                              <div className="absolute right-1 top-1 rounded border border-white/10 bg-black/85 px-1 py-0.2 font-mono text-[10px] font-bold tabular-nums text-[#ffd700]">
                                 ★{g.nota.toFixed(1)}
                               </div>
                             )}
                           </div>
                           <div className="p-1.5">
-                            <div className="font-heading text-xs font-bold text-white truncate group-hover:text-[#00f5ff] transition-colors">
+                            <div className="truncate font-heading text-xs font-bold text-white transition-colors group-hover:text-[#00f5ff]">
                               {g.title}
                             </div>
-                            <div className="flex items-center justify-between text-xs text-slate-400 mt-0.5 font-mono">
+                            <div className="mt-0.5 flex items-center justify-between font-mono text-[10px] text-slate-400">
                               <span>{g.tempo ? `${g.tempo}` : '—'}</span>
                               {g.data_zerado && <span>{formatDateBR(g.data_zerado).slice(0, 5)}</span>}
                             </div>
@@ -286,8 +298,8 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
       </div>
 
       {/* Seção 4: Gêneros Zerados (2 colunas, 4 jogos por linha) */}
-      <div className="rounded-xl border border-white/10 bg-[#0e131d] p-5 space-y-3">
-        <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white mb-2">
+      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5 space-y-3">
+        <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white">
           <span className="h-1.5 w-1.5 rounded-full bg-[#bc13fe]"></span>
           Gêneros Zerados em {ANO}
         </div>
@@ -315,7 +327,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
               <div key={nome} className="rounded-xl border border-white/10 bg-black/40 overflow-hidden">
                 <div
                   onClick={() => setOpenGenres((prev) => ({ ...prev, [nome]: !isOpen }))}
-                  className="flex items-center justify-between p-3.5 cursor-pointer hover:bg-white/[0.03] transition-colors"
+                  className="flex min-h-[44px] cursor-pointer items-center justify-between p-3 transition-colors hover:bg-white/[0.03]"
                 >
                   <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                     <div
@@ -328,7 +340,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                       <div className="font-heading text-xs sm:text-sm font-bold text-white truncate">
                         {nome}
                       </div>
-                      <div className="text-xs text-slate-500 font-bold uppercase truncate">
+                      <div className="truncate font-mono text-[10px] font-bold uppercase text-slate-500">
                         {pct}% dos jogos
                       </div>
                     </div>
@@ -336,19 +348,19 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
 
                   <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                     <div className="text-right">
-                      <div className="font-mono text-xs sm:text-xs font-bold text-white">
+                      <div className="font-mono text-xs font-bold tabular-nums text-white">
                         {fmtH(stats.hours)}
                       </div>
-                      <div className="text-xs text-slate-500 uppercase">Horas</div>
+                      <div className="text-[10px] uppercase text-slate-500">Horas</div>
                     </div>
-                    <div className="text-right border-l border-white/10 pl-2 sm:pl-3">
-                      <div className="font-heading text-sm sm:text-lg font-black" style={{ color: col }}>
+                    <div className="border-l border-white/10 pl-2 text-right sm:pl-3">
+                      <div className="font-mono text-base font-bold tabular-nums sm:text-lg" style={{ color: col }}>
                         {stats.count}
                       </div>
-                      <div className="text-xs text-slate-500 uppercase">Zerados</div>
+                      <div className="text-[10px] uppercase text-slate-500">Zerados</div>
                     </div>
                     <ChevronDown
-                      className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400 transition-transform ${
+                      className={`h-4 w-4 text-slate-400 transition-transform ${
                         isOpen ? 'rotate-180 text-white' : ''
                       }`}
                     />
@@ -362,8 +374,8 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
 
                 {/* Expanded game grid (4 jogos por linha) */}
                 {isOpen && (
-                  <div className="p-3.5 bg-black/60 border-t border-white/5">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <div className="border-t border-white/5 bg-black/60 p-3">
+                    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                       {genreGames.map((g) => (
                         <div
                           key={g.id}
@@ -379,19 +391,19 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
                             />
                             {g.nota !== undefined && !isNaN(g.nota) && (
-                              <div className="absolute top-1 right-1 rounded bg-black/85 px-1 py-0.2 text-xs font-heading font-black text-[#ffd700] border border-white/10">
+                              <div className="absolute right-1 top-1 rounded border border-white/10 bg-black/85 px-1 py-0.2 font-mono text-[10px] font-bold tabular-nums text-[#ffd700]">
                                 ★{g.nota.toFixed(1)}
                               </div>
                             )}
-                            <div className="absolute bottom-1 left-1 rounded bg-black/80 px-1 py-0.2 text-xs font-mono text-slate-300 border border-white/10">
+                            <div className="absolute bottom-1 left-1 max-w-[80%] truncate rounded border border-white/10 bg-black/80 px-1 py-0.2 font-mono text-[10px] text-slate-300">
                               {g.console}
                             </div>
                           </div>
                           <div className="p-1.5">
-                            <div className="font-heading text-xs font-bold text-white truncate group-hover:text-[#bc13fe] transition-colors">
+                            <div className="truncate font-heading text-xs font-bold text-white transition-colors group-hover:text-[#bc13fe]">
                               {g.title}
                             </div>
-                            <div className="flex items-center justify-between text-xs text-slate-400 mt-0.5 font-mono">
+                            <div className="mt-0.5 flex items-center justify-between font-mono text-[10px] text-slate-400">
                               <span>{g.tempo ? `${g.tempo}` : '—'}</span>
                               {g.data_zerado && <span>{formatDateBR(g.data_zerado).slice(0, 5)}</span>}
                             </div>
