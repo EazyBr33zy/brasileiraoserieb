@@ -84,6 +84,17 @@
 .text-glow-gold {
   text-shadow: 0 0 16px rgba(255, 215, 0, 0.5);
 }
+.text-glow-cyan {
+  text-shadow: 0 0 14px rgba(0, 245, 255, 0.45);
+}
+
+/* Hide horizontal scrollbar on tab strips (keeps scrollability) */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
 
 /* Background subtle grid */
 .cyber-grid {
