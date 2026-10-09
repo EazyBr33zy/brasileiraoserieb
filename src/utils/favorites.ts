@@ -82,7 +82,7 @@ export function buildFavoriteUpdates(
       ops.push({
         id: sub.id,
         updates: {
-          nota: restoreNota,
+          nota: restoreNota as unknown as number | undefined,
           notaAnterior: null,
           favoritoEm: null,
         },
@@ -105,7 +105,7 @@ export function buildUnfavoriteUpdates(game: GameItem): { id: string; updates: P
   return {
     id: game.id,
     updates: {
-      nota: restoreNota,
+      nota: restoreNota as unknown as number | undefined,
       notaAnterior: null,
       favoritoEm: null,
     },

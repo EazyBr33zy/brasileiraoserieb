@@ -28,6 +28,8 @@ import {
 } from '../utils/markdownParser';
 import { getPlatformStyle } from '../utils/platformStyles';
 import { useIsOwner } from '../hooks/useIsOwner';
+import { PROFILE_NAME } from '../config/profile';
+import { ProfileAvatar } from './ProfileAvatar';
 import { Modal } from './Modal';
 import { GameCover } from './GameCover';
 import { PlayDaysCalendar } from './PlayDaysCalendar';
@@ -138,7 +140,8 @@ export const DashboardView: React.FC = () => {
     totalZerados2026, 
     setIsNewGameModalOpen, 
     annualGoal, 
-    updateAnnualGoal 
+    updateAnnualGoal, 
+    currentUser
   } = useGame();
 
   const { navigate } = useHashRoute();
@@ -410,16 +413,23 @@ export const DashboardView: React.FC = () => {
           </div>
         </div>
 
-        {/* Linha Principal: Título + Capas decorativas + Botões */}
+        {/* Linha Principal: Avatar + Título + Capas decorativas + Botões */}
         <div className="mt-4 sm:mt-5 flex flex-col lg:flex-row lg:items-center gap-6">
           <div className="flex-1 max-w-2xl">
             <p className="text-xs font-mono uppercase tracking-[0.3em] text-[#22d3ee]/80">// Sistema de backlog</p>
-            <h1 className="mt-2 font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-tight text-[#f0f6fc] text-glow-accent">
-              Bem-vindo,{' '}
-              <span className="bg-gradient-to-r from-[#22d3ee] via-[#67e8f9] to-[#a855f7] bg-clip-text text-transparent">
-                Commander.
-              </span>
-            </h1>
+            <div className="mt-2 flex items-center gap-4 sm:gap-5">
+              <ProfileAvatar
+                googlePhotoUrl={currentUser?.photoURL ?? null}
+                editable={isOwner}
+                className="h-20 w-20 sm:h-24 sm:w-24 shrink-0"
+              />
+              <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-tight text-[#f0f6fc] text-glow-accent leading-none">
+                Bem-vindo,{' '}
+                <span className="bg-gradient-to-r from-[#22d3ee] via-[#67e8f9] to-[#a855f7] bg-clip-text text-transparent">
+                  {PROFILE_NAME}.
+                </span>
+              </h1>
+            </div>
             <p className="mt-2 sm:mt-3 text-sm sm:text-base text-[#9aa4b2] leading-relaxed">
               Backlog centralizado com telemetria gamer —{' '}
               <strong className="text-white font-semibold">{activeGamesList.length} jogos</strong> em andamento e{' '}
@@ -641,27 +651,32 @@ export const DashboardView: React.FC = () => {
 
       {/* ── 2. CONTAINER UNIFICADO: JOGANDO AGORA & EM ANDAMENTO ── */}
       {currentFeaturedGame && (
-        <section className="animate-fade-up rounded-3xl border border-[#30363d] bg-[#161b22] p-3 sm:p-5 md:p-6 shadow-xl" style={{ animationDelay: '80ms' }} aria-label="Jogando agora">
-          <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-2 mb-3 sm:mb-4">
-            <div className="flex items-center gap-2">
+        <section className="hero-glow animate-fade-up rounded-3xl border border-[#a855f7]/40 bg-gradient-to-br from-[#1c1330] via-[#161b22] to-[#0d1117] p-3 sm:p-5 md:p-6 shadow-[0_0_40px_rgba(168,85,247,0.15)] relative overflow-hidden" style={{ animationDelay: '80ms' }} aria-label="Jogando agora">
+          {/* Glow decorativo no canto */}
+          <div className="pointer-events-none absolute -top-24 -right-24 h-56 w-56 rounded-full bg-[#22d3ee]/10 blur-3xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -bottom-24 -left-24 h-56 w-56 rounded-full bg-[#a855f7]/10 blur-3xl" aria-hidden="true" />
+
+          <div className="relative flex items-center justify-between border-b border-[#a855f7]/30 pb-2 mb-3 sm:mb-4">
+            <div className="flex items-center gap-2.5">
               <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22d3ee] opacity-60" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#22d3ee] shadow-[0_0_8px_#22d3ee]" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#f97316] shadow-[0_0_10px_#f97316]" />
               </span>
-              <h2 className="text-sm sm:text-xl font-black uppercase tracking-wide text-white">
+              <h2 className="text-sm sm:text-xl font-black uppercase tracking-wide bg-gradient-to-r from-[#fb923c] via-[#f472b6] to-[#a855f7] bg-clip-text text-transparent">
                 Jogando Agora
               </h2>
+              <Flame className="hidden sm:block h-4 w-4 text-[#fb923c]" aria-hidden="true" />
             </div>
 
             <div className="flex items-center gap-2 sm:gap-3">
-              <span className="text-xs font-mono font-bold text-[#22d3ee]">
+              <span className="text-xs font-mono font-bold text-[#f472b6]">
                 {safeSlideIndex + 1} / {slideGames.length}
               </span>
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={handlePrevSlide}
-                  className="h-7 w-7 rounded-lg border border-[#30363d] bg-[#0d1117] hover:border-[#22d3ee] text-[#9aa4b2] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                  className="h-9 w-9 sm:h-8 sm:w-8 rounded-lg border border-[#a855f7]/40 bg-[#0d1117] hover:border-[#f472b6] hover:bg-[#f472b6]/10 text-[#9aa4b2] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
                   title="Jogo Anterior"
                   aria-label="Jogo anterior"
                 >
@@ -670,7 +685,7 @@ export const DashboardView: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleNextSlide}
-                  className="h-7 w-7 rounded-lg border border-[#30363d] bg-[#0d1117] hover:border-[#22d3ee] text-[#9aa4b2] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                  className="h-9 w-9 sm:h-8 sm:w-8 rounded-lg border border-[#a855f7]/40 bg-[#0d1117] hover:border-[#f472b6] hover:bg-[#f472b6]/10 text-[#9aa4b2] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
                   title="Próximo Jogo"
                   aria-label="Próximo jogo"
                 >
@@ -680,19 +695,43 @@ export const DashboardView: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-5 items-stretch">
+          {/* Dots de navegação entre os jogos ativos */}
+          {slideGames.length > 1 && (
+            <div className="relative flex items-center gap-1.5 mb-3" role="tablist" aria-label="Selecionar jogo em andamento">
+              {slideGames.slice(0, 8).map((g, i) => (
+                <button
+                  key={g.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === safeSlideIndex}
+                  aria-label={`Ver ${cleanTitle(g.title)}`}
+                  title={cleanTitle(g.title)}
+                  onClick={() => setActiveSlideIndex(i)}
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer min-h-0 ${
+                    i === safeSlideIndex
+                      ? 'w-7 bg-gradient-to-r from-[#f97316] to-[#a855f7] shadow-[0_0_8px_rgba(249,115,22,0.6)]'
+                      : 'w-3 bg-[#30363d] hover:bg-[#9aa4b2]'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
+          <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-5 items-stretch">
             {/* CARD PRINCIPAL DO JOGO (FEATURED) */}
-            <div className="lg:col-span-8 rounded-xl border border-[#30363d]/80 bg-[#0d1117]/60 p-3 sm:p-5 flex flex-col justify-between h-full">
+            <div className="lg:col-span-8 rounded-xl border border-[#a855f7]/30 bg-[#0d1117]/70 p-3 sm:p-5 flex flex-col justify-between h-full shadow-inner">
               <div className="flex flex-col md:flex-row gap-4 sm:gap-6 items-center">
                 {/* Capa */}
                 <div className="w-full md:w-56 shrink-0 max-w-[240px] mx-auto">
-                  <GameCover
-                    src={currentFeaturedGame.capa}
-                    title={currentFeaturedGame.title}
-                    consoleName={currentFeaturedGame.console}
-                    size="hero"
-                    className="rounded-xl shadow-2xl"
-                  />
+                  <div className="rounded-xl bg-gradient-to-br from-[#f97316]/40 via-[#a855f7]/40 to-[#22d3ee]/40 p-[2px] shadow-[0_0_28px_rgba(168,85,247,0.35)] transition-transform duration-300 hover:scale-[1.02]">
+                    <GameCover
+                      src={currentFeaturedGame.capa}
+                      title={currentFeaturedGame.title}
+                      consoleName={currentFeaturedGame.console}
+                      size="hero"
+                      className="rounded-[10px]"
+                    />
+                  </div>
                 </div>
 
                 {/* Detalhes */}
@@ -706,7 +745,7 @@ export const DashboardView: React.FC = () => {
                         {currentFeaturedGame.genero || 'Geral'}
                       </span>
                       {currentFeaturedGame.nota !== undefined && (
-                        <span className="rounded-md bg-[#ffd700]/20 border border-[#ffd700]/40 px-2 py-0.5 text-xs font-black text-[#ffd700]">
+                        <span className="rounded-md bg-[#ffd700]/20 border border-[#ffd700]/40 px-2 py-0.5 text-xs font-black text-[#ffd700] shadow-[0_0_10px_rgba(255,215,0,0.25)]">
                           ★ {currentFeaturedGame.nota.toFixed(1)}
                         </span>
                       )}
@@ -722,22 +761,22 @@ export const DashboardView: React.FC = () => {
 
                   {/* Stats */}
                   <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#30363d]/50 text-xs">
-                    <div className="bg-black/30 p-2.5 rounded-lg border border-[#30363d]/40">
+                    <div className="bg-black/30 p-2.5 rounded-lg border border-[#22d3ee]/25">
                       <div className="text-[#9aa4b2] uppercase font-bold text-xs flex items-center gap-1">
                         <Clock className="h-3.5 w-3.5 text-[#22d3ee]" />
                         <span>TEMPO REGISTRADO</span>
                       </div>
-                      <div className="text-base sm:text-lg font-bold text-white mt-0.5 font-mono">
+                      <div className="text-base sm:text-lg font-bold text-[#67e8f9] mt-0.5 font-mono drop-shadow-[0_0_6px_rgba(34,211,238,0.4)]">
                         {currentFeaturedGame.tempo ? formatTempoDisplay(currentFeaturedGame.tempo) : '0h00'}
                       </div>
                     </div>
 
-                    <div className="bg-black/30 p-2.5 rounded-lg border border-[#30363d]/40">
+                    <div className="bg-black/30 p-2.5 rounded-lg border border-emerald-400/25">
                       <div className="text-[#9aa4b2] uppercase font-bold text-xs flex items-center gap-1">
                         <Trophy className="h-3.5 w-3.5 text-emerald-400" />
                         <span>STATUS</span>
                       </div>
-                      <div className="text-base sm:text-lg font-bold text-[#22d3ee] mt-0.5 uppercase">
+                      <div className="text-base sm:text-lg font-bold text-emerald-400 mt-0.5 uppercase">
                         {currentFeaturedGame.status}
                       </div>
                     </div>
@@ -751,10 +790,10 @@ export const DashboardView: React.FC = () => {
                     const remainingMin = Math.max(0, hltbMin - playedMin);
 
                     return (
-                      <div className="rounded-xl bg-black/40 border border-[#30363d]/60 p-3 space-y-2">
+                      <div className="rounded-xl bg-black/40 border border-[#a855f7]/25 p-3 space-y-2">
                         <div className="flex items-center justify-between text-xs">
                           <div className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-[#9aa4b2]">
-                            <span className="h-2 w-2 rounded-full bg-[#22d3ee] shadow-[0_0_6px_#22d3ee]" aria-hidden="true" />
+                            <span className="h-2 w-2 rounded-full bg-[#f97316] shadow-[0_0_6px_#f97316]" aria-hidden="true" />
                             <span>PROGRESSO HLTB</span>
                           </div>
                           <div className="font-mono font-bold text-xs">
@@ -817,30 +856,39 @@ export const DashboardView: React.FC = () => {
             </div>
 
             {/* LISTA EM ANDAMENTO (COLUNA DIREITA) - ORDENADO POR SESSÃO RECENTE */}
-            <div className="lg:col-span-4 rounded-xl border border-[#30363d]/80 bg-[#0d1117]/60 p-3 sm:p-4 flex flex-col justify-between">
-              <div className="flex items-center justify-between border-b border-[#30363d]/50 pb-2 mb-2.5">
+            <div className="lg:col-span-4 rounded-xl border border-[#22d3ee]/25 bg-[#0d1117]/70 p-3 sm:p-4 flex flex-col justify-between">
+              <div className="flex items-center justify-between border-b border-[#22d3ee]/25 pb-2 mb-2.5">
                 <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
-                  <span>≡</span>
+                  <span className="text-[#f97316]" aria-hidden="true">≡</span>
                   <span>OUTROS EM ANDAMENTO</span>
                 </h3>
-                <span className="text-xs font-mono font-bold text-[#22d3ee]">
+                <span className="rounded-md bg-[#a855f7]/15 border border-[#a855f7]/30 px-1.5 py-0.5 text-[10px] font-mono font-bold text-[#d8b4fe]">
                   {activeGamesList.length} ATIVOS
                 </span>
               </div>
 
               <div className="space-y-2 flex-1 flex flex-col justify-between">
-                {otherActiveGames.map((g) => {
+                {otherActiveGames.map((g, gi) => {
                   const pStyle = getPlatformStyle(g.console);
                   const gPlayedMin = parseToMinutes(g.tempo);
                   const gHltbMin = parseToMinutes(g.hltb);
                   const gPercent = gHltbMin > 0 ? Math.round((gPlayedMin / gHltbMin) * 100) : 0;
+                  // Paleta rotativa para dar personalidade a cada item da lista
+                  const accents = [
+                    { ring: 'hover:border-[#22d3ee]', bar: 'bg-gradient-to-r from-[#22d3ee] to-[#a855f7]', pct: 'text-[#22d3ee]' },
+                    { ring: 'hover:border-[#f97316]', bar: 'bg-gradient-to-r from-[#f97316] to-[#fbbf24]', pct: 'text-[#fb923c]' },
+                    { ring: 'hover:border-[#a855f7]', bar: 'bg-gradient-to-r from-[#a855f7] to-[#f472b6]', pct: 'text-[#d8b4fe]' },
+                    { ring: 'hover:border-emerald-400', bar: 'bg-gradient-to-r from-emerald-400 to-[#22d3ee]', pct: 'text-emerald-400' },
+                    { ring: 'hover:border-[#f472b6]', bar: 'bg-gradient-to-r from-[#f472b6] to-[#a855f7]', pct: 'text-[#f472b6]' },
+                  ];
+                  const accent = accents[gi % accents.length];
                   return (
                     <a
                       key={g.id}
                       href={`#/jogo/${encodeURIComponent(g.id)}`}
-                      className="flex items-center gap-2.5 p-2 rounded-xl border border-[#30363d] bg-[#161b22] hover:border-[#22d3ee] transition-all group cursor-pointer"
+                      className={`flex items-center gap-2.5 p-2 rounded-xl border border-[#30363d] bg-[#161b22] ${accent.ring} transition-all group cursor-pointer`}
                     >
-                      <div className="h-12 w-9 rounded-lg overflow-hidden shrink-0 border border-[#30363d]">
+                      <div className="h-12 w-9 rounded-lg overflow-hidden shrink-0 border border-[#30363d] group-hover:border-transparent group-hover:shadow-[0_0_10px_rgba(34,211,238,0.35)]">
                         <GameCover
                           src={g.capa}
                           title={g.title}
@@ -849,7 +897,7 @@ export const DashboardView: React.FC = () => {
                         />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-xs font-mono font-bold text-[#9aa4b2]">
+                        <div className="text-xs font-mono font-bold text-[#9aa4b2] group-hover:text-white/80 transition-colors">
                           {pStyle.name}
                         </div>
                         <div className="font-heading text-xs font-bold text-white group-hover:text-[#22d3ee] truncate">
@@ -858,7 +906,7 @@ export const DashboardView: React.FC = () => {
                         <div className="text-xs text-[#9aa4b2] font-mono mt-0.5 flex items-center justify-between">
                           <span>⏱ {g.tempo ? formatTempoDisplay(g.tempo) : '0h00'}</span>
                           {gHltbMin > 0 && (
-                            <span className={gPercent >= 100 ? 'text-emerald-400 font-bold' : 'text-[#22d3ee] font-bold'}>
+                            <span className={`${gPercent >= 100 ? 'text-emerald-400' : accent.pct} font-bold`}>
                               {gPercent}% HLTB
                             </span>
                           )}
@@ -866,7 +914,7 @@ export const DashboardView: React.FC = () => {
                         {gHltbMin > 0 && (
                           <div className="h-1 w-full rounded-full bg-black/60 overflow-hidden mt-1">
                             <div
-                              className={`h-full rounded-full ${gPercent >= 100 ? 'bg-emerald-400' : 'bg-[#22d3ee]'}`}
+                              className={`h-full rounded-full ${gPercent >= 100 ? 'bg-emerald-400' : accent.bar}`}
                               style={{ width: `${Math.min(100, Math.max(gPlayedMin > 0 ? 5 : 0, gPercent))}%` }}
                             />
                           </div>
