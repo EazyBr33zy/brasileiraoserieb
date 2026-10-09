@@ -1,4 +1,5 @@
-# Patch and archive files
-*.patch
-*.tar.gznode_modules/
+node_modules/
 dist/
+*.patch
+*.tar.gz
+*.zip
