@@ -1,9 +1,10 @@
-# Build artifacts
-dist/
-
-# Dependencies
+# Dependências
 node_modules/
 
-# Compressed files
+# Build (gerar com npm run build)
+dist/
+
+# Artefatos e backups
 *.tar.gz
 *.zip
+test.png
