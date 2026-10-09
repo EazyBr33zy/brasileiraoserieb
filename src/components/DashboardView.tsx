@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import { useHashRoute } from '../hooks/useHashRoute';
 import { 
-  CheckCircle2, 
   Clock, 
   Trophy, 
   Layers, 
@@ -35,6 +34,7 @@ import { GameCover } from './GameCover';
 import { PlayDaysCalendar } from './PlayDaysCalendar';
 import { UpcomingGamesSection } from './UpcomingGamesSection';
 import { RecentBeatenSection } from './RecentBeatenSection';
+import { StatCard } from './StatCard';
 
 interface PlatformSlice {
   name: string;
@@ -382,8 +382,6 @@ export const DashboardView: React.FC = () => {
   const goalPercentRaw = currentGoal > 0 ? (totalZerados2026 / currentGoal) * 100 : 0;
   const goalPercent = Math.min(100, Math.round(goalPercentRaw));
   const goalRemaining = Math.max(0, currentGoal - totalZerados2026);
-  const RING_R = 42;
-  const ringCircumference = 2 * Math.PI * RING_R;
 
   return (
     <div className="space-y-4 sm:space-y-6 pb-16 font-sans">
@@ -445,9 +443,10 @@ export const DashboardView: React.FC = () => {
           </div>
         </div>
 
-        {/* Linha Principal: Avatar + Título */}
-        <div className="mt-5 sm:mt-6 flex flex-col lg:flex-row lg:items-center gap-6">
-          <div className="flex-1 max-w-2xl">
+        {/* Linha Principal: identidade (esquerda) + cartões de dados (direita) */}
+        <div className="mt-5 grid gap-3 sm:mt-6 lg:grid-cols-[minmax(0,1fr)_clamp(320px,26vw,340px)] lg:items-stretch">
+          {/* COLUNA ESQUERDA — cartão grande (intocado) */}
+          <div className="rounded-2xl border border-[#30363d] bg-[#0d1117]/60 p-4 sm:p-5 xl:p-6">
             <p className="text-xs font-mono uppercase tracking-[0.3em] text-[#22d3ee]/80">// Sistema de backlog</p>
             <div className="mt-3 flex items-center gap-4 sm:gap-6">
               <ProfileAvatar
@@ -463,163 +462,77 @@ export const DashboardView: React.FC = () => {
               </h1>
             </div>
           </div>
-        </div>
 
-        {/* ── PAINEL DE TELEMETRIA: META ANUAL COM ANEL SVG (DESTAQUE) ── */}
-        <div className="mt-6 relative rounded-2xl border border-[#22d3ee]/30 bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex items-center gap-4 sm:gap-5 overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#22d3ee] via-[#67e8f9] to-[#a855f7]" />
+          {/* ── TELEMETRIA: COLUNA DIREITA COM OS 4 CARTÕES (META · ANDAMENTO · ACERVO · TEMPO) ── */}
+          <div className="grid content-start gap-3 sm:grid-cols-2 lg:content-stretch lg:grid-cols-1 lg:grid-rows-[auto_1fr_1fr_1fr]">
+          {/* META ANUAL — mais alto por causa da barra de progresso */}
+          <StatCard
+            label={`Meta Anual ${currentCycleYear}`}
+            description={goalRemaining > 0 ? `${goalRemaining} zeramentos restantes no ciclo` : 'Meta alcançada neste ciclo'}
+            icon={<Trophy className="h-5 w-5" aria-hidden="true" />}
+            accent="cyan"
+            value={
+              <>
+                {totalZerados2026}
+                <span className="text-base font-bold text-[#9aa4b2]">/ {currentGoal}</span>
+              </>
+            }
+            progress={goalPercent}
+            progressLabel={`${goalPercent}%`}
+            action={isOwner ? (
+              <button
+                type="button"
+                onClick={() => setIsEditingGoal(true)}
+                className="-mr-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-[#22d3ee] transition-colors hover:bg-white/5 hover:text-[#06b6d4] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none"
+                aria-label="Editar meta anual"
+                title="Editar meta anual"
+              >
+                <Pencil className="h-4 w-4" aria-hidden="true" />
+              </button>
+            ) : undefined}
+          />
 
-            {/* Anel de progresso */}
-            <div className="relative h-28 w-28 shrink-0">
-              <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90" role="img" aria-label={`Meta anual: ${totalZerados2026} de ${currentGoal} jogos, ${goalPercent}% concluído`}>
-                <circle cx="50" cy="50" r={RING_R} fill="none" stroke="#21262d" strokeWidth="9" />
-                <circle
-                  cx="50" cy="50" r={RING_R}
-                  fill="none"
-                  stroke="url(#goalGradient)"
-                  strokeWidth="9"
-                  strokeLinecap="round"
-                  strokeDasharray={ringCircumference}
-                  strokeDashoffset={ringCircumference * (1 - goalPercent / 100)}
-                  className="transition-all duration-700"
-                />
-                <defs>
-                  <linearGradient id="goalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#22d3ee" />
-                    <stop offset="100%" stopColor="#a855f7" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-heading text-2xl font-black text-white leading-none">{goalPercent}%</span>
-                <span className="text-[10px] font-mono text-[#9aa4b2] mt-0.5">da meta</span>
-              </div>
-            </div>
+          {/* EM ANDAMENTO */}
+          <StatCard
+            label="Em Andamento"
+            description="jogando agora"
+            icon={<Layers className="h-5 w-5" aria-hidden="true" />}
+            accent="purple"
+            value={activeGamesList.length}
+          />
 
-            {/* Texto da meta */}
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#9aa4b2]">
-                  Meta Anual {currentCycleYear}
-                </span>
-                {isOwner ? (
-                  <button
-                    type="button"
-                    onClick={() => setIsEditingGoal(true)}
-                    className="min-h-[44px] min-w-[44px] -mr-2 -mt-2 flex items-center justify-center text-[#22d3ee] hover:text-[#06b6d4] hover:bg-white/5 rounded-lg transition-colors cursor-pointer"
-                    aria-label="Editar meta anual"
-                    title="Editar meta anual"
-                  >
-                    <Pencil className="h-4 w-4" aria-hidden="true" />
-                  </button>
-                ) : (
-                  <Trophy className="h-4 w-4 text-[#22d3ee] shrink-0" aria-hidden="true" />
-                )}
-              </div>
+          {/* ACERVO TOTAL */}
+          <StatCard
+            label="Acervo Total"
+            description={`${uniqueZerados.length} zerados · ${Math.max(0, games.length - uniqueZerados.length)} na fila`}
+            icon={<Gamepad2 className="h-5 w-5" aria-hidden="true" />}
+            accent="blue"
+            value={games.length}
+          />
 
-              <div className="mt-1.5 flex items-baseline gap-1.5">
-                <span className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none">
-                  {totalZerados2026}
-                </span>
-                <span className="text-sm font-bold text-[#9aa4b2] font-mono">/ {currentGoal} jogos</span>
-              </div>
-
-              <p className="mt-2 text-xs text-[#9aa4b2] leading-relaxed">
-                {goalRemaining > 0 ? (
-                  <>Faltam <strong className="text-[#22d3ee] font-mono">{goalRemaining}</strong> zeramentos para fechar o ciclo.</>
-                ) : (
-                  <>Meta alcançada — ciclo <strong className="text-emerald-400">concluído com sucesso</strong>.</>
-                )}
-              </p>
-
-              <div className="mt-2 pt-2 border-t border-[#30363d]/40 text-xs font-mono text-[#9aa4b2]">
-                <span className="text-[#22d3ee] font-bold">{uniqueZerados.length}</span> zerados na história
-              </div>
-            </div>
-        </div>
-
-        {/* GRID DE STATS SECUNDÁRIOS: EM ANDAMENTO · ACERVO TOTAL · TEMPO INVESTIDO */}
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {/* CARD - EM ANDAMENTO */}
-          <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#a855f7]/50 transition-colors">
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#a855f7]" />
-            <div>
-              <div className="flex items-center gap-2 text-[#9aa4b2]">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#a855f7]/15 border border-[#a855f7]/30 shrink-0">
-                  <Layers className="h-4 w-4 text-[#a855f7]" aria-hidden="true" />
-                </span>
-                <span className="text-xs font-bold uppercase tracking-widest">Em Andamento</span>
-              </div>
-
-              <div className="mt-3 flex items-baseline gap-2">
-                <span className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#d8b4fe] transition-colors">
-                  {activeGamesList.length}
-                </span>
-                <span className="text-xs font-bold uppercase text-[#9aa4b2]">jogando</span>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 text-xs text-[#9aa4b2]">
-              <span className="font-mono text-[#a855f7] font-bold">Foco prioritário</span> · sessões ativas
-            </div>
-          </div>
-
-          {/* CARD - ACERVO TOTAL */}
-          <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#22d3ee]/50 transition-colors">
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#22d3ee]" />
-            <div>
-              <div className="flex items-center gap-2 text-[#9aa4b2]">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#22d3ee]/15 border border-[#22d3ee]/30 shrink-0">
-                  <Gamepad2 className="h-4 w-4 text-[#22d3ee]" aria-hidden="true" />
-                </span>
-                <span className="text-xs font-bold uppercase tracking-widest">Acervo Total</span>
-              </div>
-
-              <div className="mt-3 flex items-baseline gap-2">
-                <span className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#67e8f9] transition-colors">
-                  {games.length}
-                </span>
-                <span className="text-xs font-bold uppercase text-[#9aa4b2]">catalogados</span>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 flex items-center justify-between text-xs text-[#9aa4b2]">
-              <span className="truncate">{uniqueZerados.length} zerados · {Math.max(0, games.length - uniqueZerados.length)} na fila</span>
-              <span className="flex items-center gap-1.5 font-mono text-emerald-400 font-bold">
-                <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                Online
-              </span>
-            </div>
-          </div>
-
-          {/* CARD - TEMPO INVESTIDO */}
-          <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#fbbf24]/50 transition-colors">
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#fbbf24]" />
-            <div>
-              <div className="flex items-center gap-2 text-[#9aa4b2]">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fbbf24]/15 border border-[#fbbf24]/30 shrink-0">
-                  <Clock className="h-4 w-4 text-[#fbbf24]" aria-hidden="true" />
-                </span>
-                <span className="text-xs font-bold uppercase tracking-widest">Tempo Investido</span>
-              </div>
-
-              <div className="mt-3">
-                <div className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#fde68a] transition-colors">
-                  {cycleInvestedTime.formatted}
-                </div>
-                <div className="text-xs text-[#9aa4b2] mt-1.5">
-                  em {cycleInvestedTime.beatenCount} zerados em {currentCycleYear}
-                  {cycleInvestedTime.semTempoCount > 0 && (
-                    <span> · {cycleInvestedTime.semTempoCount} sem tempo</span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 flex items-center gap-1.5 text-xs text-[#10b981]">
-              <Activity className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-              <span className="text-slate-300 truncate">Telemetria consistente</span>
-            </div>
+          {/* TEMPO INVESTIDO */}
+          <StatCard
+            label="Tempo Investido"
+            description={`em ${cycleInvestedTime.beatenCount} zerados em ${currentCycleYear}${cycleInvestedTime.semTempoCount > 0 ? ` · ${cycleInvestedTime.semTempoCount} sem tempo` : ''}`}
+            icon={<Clock className="h-5 w-5" aria-hidden="true" />}
+            accent="amber"
+            value={(() => {
+              const t = cycleInvestedTime.formatted;
+              const iH = t.indexOf('h');
+              const iM = t.indexOf('m');
+              if (iH === -1 || iM === -1) return t;
+              const hours = t.slice(0, iH);
+              const mins = t.slice(iH + 1, iM);
+              return (
+                <>
+                  {hours}
+                  <span className="text-base text-[#9aa4b2]">h</span>
+                  {mins}
+                  <span className="text-base text-[#9aa4b2]">m</span>
+                </>
+              );
+            })()}
+          />
           </div>
         </div>
       </section>
