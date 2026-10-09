@@ -461,7 +461,7 @@ export const DashboardView: React.FC = () => {
                 </span>
               </h1>
             </div>
-        </div>
+          </div>
 
           {/* ── TELEMETRIA: COLUNA DIREITA COM OS 4 CARTÕES (META · ANDAMENTO · ACERVO · TEMPO) ── */}
           <div className="grid content-start gap-3 sm:grid-cols-2 lg:content-stretch lg:grid-cols-1 lg:grid-rows-[auto_1fr_1fr_1fr]">
@@ -534,65 +534,6 @@ export const DashboardView: React.FC = () => {
             })()}
           />
           </div>
-
-          {/* CARD - ACERVO TOTAL */}
-          <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#22d3ee]/50 transition-colors">
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#22d3ee]" />
-            <div>
-              <div className="flex items-center gap-2 text-[#9aa4b2]">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#22d3ee]/15 border border-[#22d3ee]/30 shrink-0">
-                  <Gamepad2 className="h-4 w-4 text-[#22d3ee]" aria-hidden="true" />
-                </span>
-                <span className="text-xs font-bold uppercase tracking-widest">Acervo Total</span>
-              </div>
-
-              <div className="mt-3 flex items-baseline gap-2">
-                <span className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#67e8f9] transition-colors">
-                  {games.length}
-                </span>
-                <span className="text-xs font-bold uppercase text-[#9aa4b2]">catalogados</span>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 flex items-center justify-between text-xs text-[#9aa4b2]">
-              <span className="truncate">{uniqueZerados.length} zerados · {Math.max(0, games.length - uniqueZerados.length)} na fila</span>
-              <span className="flex items-center gap-1.5 font-mono text-emerald-400 font-bold">
-                <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                Online
-              </span>
-            </div>
-          </div>
-
-          {/* CARD - TEMPO INVESTIDO */}
-          <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#fbbf24]/50 transition-colors">
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#fbbf24]" />
-            <div>
-              <div className="flex items-center gap-2 text-[#9aa4b2]">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fbbf24]/15 border border-[#fbbf24]/30 shrink-0">
-                  <Clock className="h-4 w-4 text-[#fbbf24]" aria-hidden="true" />
-                </span>
-                <span className="text-xs font-bold uppercase tracking-widest">Tempo Investido</span>
-              </div>
-
-              <div className="mt-3">
-                <div className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#fde68a] transition-colors">
-                  {cycleInvestedTime.formatted}
-                </div>
-                <div className="text-xs text-[#9aa4b2] mt-1.5">
-                  em {cycleInvestedTime.beatenCount} zerados em {currentCycleYear}
-                  {cycleInvestedTime.semTempoCount > 0 && (
-                    <span> · {cycleInvestedTime.semTempoCount} sem tempo</span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 flex items-center gap-1.5 text-xs text-[#10b981]">
-              <Activity className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-              <span className="text-slate-300 truncate">Telemetria consistente</span>
-            </div>
-          </div>
-          </aside>
         </div>
       </section>
 
