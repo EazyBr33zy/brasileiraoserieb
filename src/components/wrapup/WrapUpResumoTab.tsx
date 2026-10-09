@@ -253,8 +253,11 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
           {gotAwards.goty && (
             <div
               onClick={() => onGameClick(gotAwards.goty!.id)}
-              className="group relative flex cursor-pointer flex-col justify-between gap-4 overflow-hidden rounded-2xl border-2 border-[#ffd700]/50 bg-gradient-to-br from-[#ffd700]/15 via-[#ff7a00]/10 to-[#0e131d] p-4 shadow-xl shadow-[#ffd700]/10 transition-all hover:border-[#ffd700] sm:p-5"
+              className="group relative flex cursor-pointer flex-col justify-between gap-4 overflow-hidden rounded-2xl border-2 border-[#eeff00] bg-gradient-to-br from-[#eeff00]/20 via-[#ff7a00]/10 to-[#0e131d] p-4 shadow-[0_0_28px_rgba(238,255,0,0.3)] transition-all hover:shadow-[0_0_44px_rgba(238,255,0,0.45)] sm:p-5"
             >
+              <div className="pointer-events-none absolute -right-2 -top-4 select-none font-heading text-6xl font-black text-[#eeff00]/10 sm:text-7xl" aria-hidden="true">
+                GOTY
+              </div>
               <div className="flex items-start gap-4">
                 <div className="h-28 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-[#ffd700]/50 bg-black shadow-lg">
                   <img
