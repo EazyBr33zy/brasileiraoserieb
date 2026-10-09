@@ -4,7 +4,8 @@ import { GameItem } from '../../types/game';
 
 interface WrapUpTopTabProps {
   ANO: number;
-  top10Notas: GameItem[];
+  /** @deprecated mantido por compatibilidade; a seção "Melhores Avaliados" foi removida do layout. */
+  top10Notas?: GameItem[];
   gotAwards: {
     goty: GameItem | null;
     gameplay: GameItem | null;
@@ -19,141 +20,67 @@ interface WrapUpTopTabProps {
   onGameClick: (id: string) => void;
 }
 
-const POS_STYLE = [
-  { medal: '🥇', label: 'GOTY Crítico', cor: '#ffd700' },
-  { medal: '🥈', label: 'Vice-Líder', cor: '#c0c0c0' },
-  { medal: '🥉', label: 'Terceiro Lugar', cor: '#cd7f32' },
-  { medal: '🏅', label: 'Quarto Lugar', cor: '#00f5ff' },
-];
-
 export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
   ANO,
-  top10Notas,
   gotAwards,
   onGameClick,
 }) => {
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* ── Pódio: 1º em destaque + demais posições ── */}
-      <section className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
-        <div className="mb-3 flex items-center gap-2 font-heading text-base sm:text-lg font-black uppercase text-white">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#ffd700]"></span>
-          Melhores Avaliados — {ANO}
-        </div>
-
-        {top10Notas.length === 0 ? (
-          <p className="py-6 text-center text-xs text-slate-400">Nenhum jogo avaliado neste ciclo.</p>
-        ) : (
-          <div className="grid gap-3 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)]">
-            {/* 1º lugar — card grande */}
-            {top10Notas[0] && (
-              <div
-                onClick={() => onGameClick(top10Notas[0].id)}
-                className="group relative flex cursor-pointer items-center gap-4 overflow-hidden rounded-2xl border-2 border-[#ffd700]/50 bg-gradient-to-br from-[#ffd700]/15 via-[#0e131d] to-[#0e131d] p-4 shadow-xl shadow-[#ffd700]/10 transition-all hover:border-[#ffd700]"
-              >
-                <div className="absolute right-3 top-2 font-heading text-5xl font-black text-[#ffd700]/15 select-none">
-                  01
-                </div>
-                <div className="h-32 w-[96px] flex-shrink-0 overflow-hidden rounded-xl border border-[#ffd700]/40 bg-black shadow-lg">
-                  {top10Notas[0].capa ? (
-                    <img
-                      src={top10Notas[0].capa}
-                      alt={top10Notas[0].title}
-                      referrerPolicy="no-referrer"
-                      className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-2xl">🎮</div>
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <div className="text-xs font-black uppercase tracking-widest text-[#ffd700]">
-                    🥇 {POS_STYLE[0].label}
-                  </div>
-                  <h3 className="mt-1 truncate font-heading text-xl font-black uppercase text-white transition-colors group-hover:text-[#ffd700] sm:text-2xl" title={top10Notas[0].title}>
-                    {top10Notas[0].title}
-                  </h3>
-                  <div className="mt-1 truncate font-mono text-xs text-slate-400">{top10Notas[0].console}</div>
-                  <div
-                    className="mt-2 font-mono text-3xl font-bold tabular-nums text-glow-gold"
-                    style={{ color: POS_STYLE[0].cor }}
-                  >
-                    ★ {top10Notas[0].nota !== undefined ? top10Notas[0].nota.toFixed(1) : '—'}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 2º–4º lugares */}
-            <div className="grid content-start gap-2.5">
-              {[1, 2, 3].map((idx) => {
-                const g = top10Notas[idx];
-                const pos = POS_STYLE[idx];
-                if (!g) {
-                  return (
-                    <div
-                      key={idx}
-                      className="flex min-h-[72px] items-center gap-3 rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-4 text-xs text-slate-500"
-                    >
-                      {pos.medal} {pos.label} — sem dados suficientes
-                    </div>
-                  );
-                }
-                return (
-                  <div
-                    key={idx}
-                    onClick={() => onGameClick(g.id)}
-                    className="group flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-[#0e131d] p-3 transition-all hover:border-white/30"
-                  >
-                    <div
-                      className="w-8 flex-shrink-0 text-center font-mono text-lg font-bold tabular-nums"
-                      style={{ color: pos.cor }}
-                    >
-                      0{idx + 1}
-                    </div>
-                    <div className="h-16 w-12 flex-shrink-0 overflow-hidden rounded-md border border-white/10 bg-black">
-                      {g.capa ? (
-                        <img
-                          src={g.capa}
-                          alt={g.title}
-                          referrerPolicy="no-referrer"
-                          className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-xs">🎮</div>
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-[10px] sm:text-xs font-black uppercase tracking-wider" style={{ color: pos.cor }}>
-                        {pos.medal} {pos.label}
-                      </div>
-                      <div className="mt-0.5 truncate font-heading text-sm font-bold text-white transition-colors group-hover:text-[#ffd700]" title={g.title}>
-                        {g.title}
-                      </div>
-                      <div className="truncate font-mono text-[10px] text-slate-400">{g.console}</div>
-                    </div>
-                    <div
-                      className="flex-shrink-0 font-mono text-xl font-bold tabular-nums"
-                      style={{ color: pos.cor }}
-                    >
-                      ★ {g.nota !== undefined ? g.nota.toFixed(1) : '—'}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </section>
-
-      {/* ── Games of the Year: categorias ── */}
+      {/* ── Games of the Year: GOTY em destaque + categorias ── */}
       <section className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
         <div className="mb-3 flex items-center gap-2 font-heading text-base sm:text-lg font-black uppercase text-[#ffd700]">
           <span>👑</span>
           <span className="truncate">Games of the Year — {ANO}</span>
         </div>
 
-        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+        {/* GOTY — caixa destacada com borda amarelo neon */}
+        <div
+          onClick={() => gotAwards.goty && onGameClick(gotAwards.goty.id)}
+          className={`group relative mb-3 flex items-center gap-4 overflow-hidden rounded-2xl border-2 p-4 shadow-[0_0_24px_rgba(255,255,0,0.25)] transition-all ${
+            gotAwards.goty
+              ? 'cursor-pointer border-[#eeff00] bg-gradient-to-br from-[#eeff00]/15 via-[#0e131d] to-[#0e131d] hover:shadow-[0_0_36px_rgba(255,255,0,0.4)]'
+              : 'border-dashed border-[#eeff00]/40 bg-[#0e131d] opacity-70'
+          }`}
+        >
+          <div className="pointer-events-none absolute -right-2 -top-4 select-none font-heading text-6xl font-black text-[#eeff00]/10 sm:text-7xl">
+            GOTY
+          </div>
+          <div className="h-28 w-[84px] flex-shrink-0 overflow-hidden rounded-xl border border-[#eeff00]/50 bg-black shadow-lg sm:h-32 sm:w-[96px]">
+            {gotAwards.goty?.capa ? (
+              <img
+                src={gotAwards.goty.capa}
+                alt={gotAwards.goty.title}
+                referrerPolicy="no-referrer"
+                className="h-full w-full object-cover transition-transform group-hover:scale-105"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-2xl">🏆</div>
+            )}
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs font-black uppercase tracking-widest text-[#eeff00]">
+              🏆 Game of the Year — {ANO}
+            </div>
+            <h3
+              className="mt-1 truncate font-heading text-xl font-black uppercase text-white drop-shadow-[0_0_10px_rgba(238,255,0,0.35)] sm:text-2xl"
+              title={gotAwards.goty?.title}
+            >
+              {gotAwards.goty?.title || 'Não definido'}
+            </h3>
+            {gotAwards.goty?.console && (
+              <div className="mt-1 truncate font-mono text-xs text-slate-400">{gotAwards.goty.console}</div>
+            )}
+            {gotAwards.goty?.nota !== undefined && (
+              <div className="mt-2 font-mono text-3xl font-bold tabular-nums text-[#eeff00]">
+                ★ {gotAwards.goty.nota.toFixed(1)}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Demais premiações — duas colunas */}
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           {[
             { title: 'Melhor Gameplay', g: gotAwards.gameplay, ico: '🕹️', cor: '#00f5ff' },
             { title: 'Melhor Narrativa', g: gotAwards.narrativa, ico: '📖', cor: '#bc13fe' },

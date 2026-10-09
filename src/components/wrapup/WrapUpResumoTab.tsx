@@ -1,6 +1,6 @@
 import React from 'react';
-import { Trophy, ChevronRight, Star } from 'lucide-react';
-import { fmtH } from '../../utils/markdownParser';
+import { ChevronRight, Star, Clock, Trophy } from 'lucide-react';
+import { fmtH, parseTime } from '../../utils/markdownParser';
 import { getScoreLabel } from '../../utils/platformStyles';
 import { GameItem } from '../../types/game';
 
@@ -14,6 +14,8 @@ interface WrapUpResumoTabProps {
   plataformaDoAno: [string, { count: number; hours: number }] | null;
   generoDoAno: [string, { count: number; hours: number }] | null;
   maisLongo: GameItem | null;
+  maisCurto: GameItem | null;
+  piorNota: GameItem | null;
   melhor: GameItem | null;
   slogan: string;
   gotAwards: {
@@ -30,6 +32,9 @@ interface WrapUpResumoTabProps {
   onGameClick: (id: string) => void;
   onOpenTopTab: () => void;
 }
+
+const gameHours = (g: GameItem): number =>
+  g.tempoMinutos ? g.tempoMinutos / 60 : parseTime(g.tempo);
 
 const KPI_CARDS = (
   ANO: number,
@@ -90,6 +95,8 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
   plataformaDoAno,
   generoDoAno,
   maisLongo,
+  maisCurto,
+  piorNota,
   melhor,
   slogan,
   gotAwards,
@@ -97,6 +104,39 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
   onOpenTopTab,
 }) => {
   const kpis = KPI_CARDS(ANO, total, horas, mediaTempo, media, notasArr, plataformaDoAno, generoDoAno, maisLongo);
+
+  // ── DESTAQUE DO ANO: 4 jogos — 2 em cada coluna (horizontal) ──
+  const destaques = [
+    {
+      cat: '⭐ Melhor Avaliado',
+      g: melhor,
+      valor: melhor?.nota !== undefined ? `★ ${melhor.nota.toFixed(1)}` : '—',
+      cor: '#ffd700',
+      icone: '🏆',
+    },
+    {
+      cat: '📉 Menor Nota',
+      g: piorNota,
+      valor: piorNota?.nota !== undefined ? `★ ${piorNota.nota.toFixed(1)}` : '—',
+      cor: '#ff3d6a',
+      icone: '💤',
+    },
+    {
+      cat: '⏳ Jogo Mais Longo',
+      g: maisLongo,
+      valor: maisLongo ? fmtH(gameHours(maisLongo)) : '—',
+      cor: '#bc13fe',
+      icone: '🗺️',
+    },
+    {
+      cat: '⚡ Jogo Mais Rápido',
+      g: maisCurto,
+      valor: maisCurto ? fmtH(gameHours(maisCurto)) : '—',
+      cor: '#00f5ff',
+      icone: '🚀',
+    },
+  ];
+
   const premiados = [
     { cat: '🕹️ Melhor Gameplay', g: gotAwards.gameplay, cor: '#00f5ff' },
     { cat: '📖 Melhor Narrativa', g: gotAwards.narrativa, cor: '#bc13fe' },
@@ -135,7 +175,63 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
         ))}
       </div>
 
-      {/* ── Destaque principal: GOTY + prêmios lado a lado no desktop ── */}
+      {/* ── DESTAQUE DO ANO: 4 jogos — 2 em cada coluna (horizontal) ── */}
+      <section className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 font-heading text-base sm:text-lg font-black uppercase text-[#00f5ff]">
+            <span>✨</span>
+            <span className="truncate">Destaque do Ano — {ANO}</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
+          {destaques.map((d, i) => (
+            <div
+              key={i}
+              onClick={() => d.g && onGameClick(d.g.id)}
+              className={`group relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-[#0e131d] p-3 transition-all ${
+                d.g ? 'cursor-pointer hover:border-white/30' : 'opacity-60'
+              }`}
+            >
+              <div className="absolute bottom-0 left-0 top-0 w-1" style={{ backgroundColor: d.cor }}></div>
+              <div className="h-20 w-15 sm:h-24 sm:w-[72px] shrink-0 overflow-hidden rounded-lg border border-white/10 bg-black">
+                {d.g?.capa ? (
+                  <img
+                    src={d.g.capa}
+                    alt={d.g.title}
+                    referrerPolicy="no-referrer"
+                    className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-lg">{d.icone}</div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <span
+                  className="block truncate text-[10px] sm:text-xs font-bold uppercase tracking-wider"
+                  style={{ color: d.cor }}
+                >
+                  {d.cat}
+                </span>
+                <h4
+                  className="mt-0.5 truncate font-heading text-sm sm:text-base font-bold text-white transition-colors group-hover:text-[#ffd700]"
+                  title={d.g?.title}
+                >
+                  {d.g?.title || 'Não definido'}
+                </h4>
+                <div className="mt-0.5 flex items-center justify-between gap-2 text-xs">
+                  <span className="truncate font-mono text-slate-400">{d.g?.console}</span>
+                  <span className="flex-shrink-0 font-mono font-bold tabular-nums" style={{ color: d.cor }}>
+                    {d.valor}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Prêmios do Ano: GOTY + prêmios lado a lado no desktop ── */}
       <section className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
         <div className="mb-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 font-heading text-base sm:text-lg font-black uppercase text-[#ffd700]">

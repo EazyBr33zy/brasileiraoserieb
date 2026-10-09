@@ -168,13 +168,13 @@ export const DashboardView: React.FC = () => {
   const safeSlideIndex = activeSlideIndex >= slideGames.length ? 0 : activeSlideIndex;
   const currentFeaturedGame: GameItem | undefined = slideGames[safeSlideIndex];
 
-  // Other active games for the right column ("Em Andamento") - Showing up to 5 games
+  // Other active games for the right column ("Em Andamento") - Showing up to 4 games
   const otherActiveGames = useMemo(() => {
     if (!currentFeaturedGame) return [];
     const list = slideGames.filter((g) => g.id !== currentFeaturedGame.id);
-    if (list.length >= 5) return list.slice(0, 5);
+    if (list.length >= 4) return list.slice(0, 4);
     const fallbackList = games.filter((g) => g.id !== currentFeaturedGame.id && !list.some(item => item.id === g.id));
-    return [...list, ...fallbackList].slice(0, 5);
+    return [...list, ...fallbackList].slice(0, 4);
   }, [slideGames, currentFeaturedGame, games]);
 
   const handlePrevSlide = () => {
@@ -392,106 +392,82 @@ export const DashboardView: React.FC = () => {
         className="hero-glow cyber-grid animate-fade-up rounded-3xl border border-[#30363d] bg-gradient-to-br from-[#161b22] via-[#131a22] to-[#0d1117] p-4 sm:p-6 md:p-8 shadow-2xl"
         aria-label="Visão geral do painel"
       >
-        {/* Top Badges */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
-          <div className="flex items-center gap-1.5 rounded-full bg-[#10b981]/10 border border-[#10b981]/40 px-2.5 py-1 sm:px-3 font-bold uppercase tracking-wider text-[#34d399]">
-            <span className="relative flex h-2 w-2" aria-hidden="true">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-60" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10b981]" />
-            </span>
-            <span>Telemetria Ativa</span>
+        {/* Top Badges + Ações Rápidas */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
+            <div className="flex items-center gap-1.5 rounded-full bg-[#f97316]/10 border border-[#f97316]/40 px-2.5 py-1 sm:px-3 font-bold uppercase tracking-wider text-[#fb923c]">
+              <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#f97316]" aria-hidden="true" />
+              <span>Ciclo {currentCycleYear}</span>
+            </div>
+
+            <div className="flex items-center gap-1.5 rounded-full bg-[#10b981]/10 border border-[#10b981]/40 px-2.5 py-1 sm:px-3 font-bold uppercase tracking-wider text-[#34d399]">
+              <span className="relative flex h-2 w-2" aria-hidden="true">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-60" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10b981]" />
+              </span>
+              <span>{games.length} jogos registrados</span>
+            </div>
+
+            <div className="hidden md:flex items-center gap-1.5 rounded-full bg-[#22d3ee]/10 border border-[#22d3ee]/40 px-3 py-1 font-bold uppercase tracking-wider text-[#67e8f9] font-mono">
+              <Activity className="h-3.5 w-3.5" aria-hidden="true" />
+              <span>{goalRemaining > 0 ? `faltam ${goalRemaining} para a meta` : 'meta batida 🏆'}</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-1.5 rounded-full bg-[#f97316]/10 border border-[#f97316]/40 px-2.5 py-1 sm:px-3 font-bold uppercase tracking-wider text-[#fb923c]">
-            <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#f97316]" aria-hidden="true" />
-            <span>Ciclo {currentCycleYear}</span>
-          </div>
+          {/* Ações Rápidas Hero */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            {isOwner && (
+              <button
+                type="button"
+                onClick={() => setIsNewGameModalOpen(true)}
+                className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-[#22d3ee] hover:bg-[#06b6d4] px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider text-[#0d1117] shadow-lg shadow-[#22d3ee]/25 transition-all hover:-translate-y-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-white focus:outline-none"
+              >
+                <Plus className="h-4 w-4 stroke-[3]" aria-hidden="true" />
+                <span>Novo Jogo</span>
+              </button>
+            )}
 
-          <div className="hidden sm:flex items-center gap-1.5 rounded-full bg-[#22d3ee]/10 border border-[#22d3ee]/40 px-3 py-1 font-bold uppercase tracking-wider text-[#67e8f9] font-mono">
-            <Activity className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>{goalRemaining > 0 ? `faltam ${goalRemaining} para a meta` : 'meta batida 🏆'}</span>
+            <a
+              href="#/backlog"
+              className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl border border-[#30363d] bg-[#0d1117]/80 hover:border-[#22d3ee]/60 hover:bg-white/5 px-4 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-200 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none"
+            >
+              <Layers className="h-4 w-4 text-[#22d3ee]" aria-hidden="true" />
+              <span>Explorar Acervo</span>
+            </a>
+
+            <a
+              href="#/wrapup"
+              className="min-h-[44px] flex items-center justify-center gap-2 px-2 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#f59e0b] hover:text-[#fbbf24] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#f59e0b] focus:outline-none rounded-xl"
+            >
+              <Trophy className="h-4 w-4" aria-hidden="true" />
+              <span>Retrospectiva</span>
+            </a>
           </div>
         </div>
 
-        {/* Linha Principal: Avatar + Título + Capas decorativas + Botões */}
-        <div className="mt-4 sm:mt-5 flex flex-col lg:flex-row lg:items-center gap-6">
+        {/* Linha Principal: Avatar + Título */}
+        <div className="mt-5 sm:mt-6 flex flex-col lg:flex-row lg:items-center gap-6">
           <div className="flex-1 max-w-2xl">
             <p className="text-xs font-mono uppercase tracking-[0.3em] text-[#22d3ee]/80">// Sistema de backlog</p>
-            <div className="mt-2 flex items-center gap-4 sm:gap-5">
+            <div className="mt-3 flex items-center gap-4 sm:gap-6">
               <ProfileAvatar
                 googlePhotoUrl={currentUser?.photoURL ?? null}
                 editable={isOwner}
-                className="h-20 w-20 sm:h-24 sm:w-24 shrink-0"
+                className="h-28 w-28 sm:h-36 sm:w-36 shrink-0"
               />
-              <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-tight text-[#f0f6fc] text-glow-accent leading-none">
+              <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight text-[#f0f6fc] text-glow-accent leading-[0.95]">
                 Bem-vindo,{' '}
-                <span className="bg-gradient-to-r from-[#22d3ee] via-[#67e8f9] to-[#a855f7] bg-clip-text text-transparent">
+                <span className="block bg-gradient-to-r from-[#22d3ee] via-[#67e8f9] to-[#a855f7] bg-clip-text text-transparent">
                   {PROFILE_NAME}.
                 </span>
               </h1>
             </div>
-            <p className="mt-2 sm:mt-3 text-sm sm:text-base text-[#9aa4b2] leading-relaxed">
-              Backlog centralizado com telemetria gamer —{' '}
-              <strong className="text-white font-semibold">{activeGamesList.length} jogos</strong> em andamento e{' '}
-              <strong className="text-white font-semibold">{totalZerados2026} concluídos</strong> neste ciclo.
-            </p>
-
-            {/* Ações Rápidas Hero */}
-            <div className="mt-5 flex flex-wrap items-center gap-2.5 sm:gap-3">
-              {isOwner && (
-                <button
-                  type="button"
-                  onClick={() => setIsNewGameModalOpen(true)}
-                  className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-[#22d3ee] hover:bg-[#06b6d4] px-5 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider text-[#0d1117] shadow-lg shadow-[#22d3ee]/25 transition-all hover:-translate-y-0.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-white focus:outline-none"
-                >
-                  <Plus className="h-4 w-4 stroke-[3]" aria-hidden="true" />
-                  <span>Novo Jogo</span>
-                </button>
-              )}
-
-              <a
-                href="#/backlog"
-                className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl border border-[#30363d] bg-[#0d1117]/80 hover:border-[#22d3ee]/60 hover:bg-white/5 px-4 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-200 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none"
-              >
-                <Layers className="h-4 w-4 text-[#22d3ee]" aria-hidden="true" />
-                <span>Explorar Acervo</span>
-              </a>
-
-              <a
-                href="#/wrapup"
-                className="min-h-[44px] flex items-center justify-center gap-2 px-2 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#f59e0b] hover:text-[#fbbf24] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#f59e0b] focus:outline-none rounded-xl"
-              >
-                <Trophy className="h-4 w-4" aria-hidden="true" />
-                <span>Retrospectiva</span>
-              </a>
-            </div>
           </div>
-
-          {/* Fanned cover strip — visual flourish built from real data */}
-          {slideGames.length > 0 && (
-            <div className="hidden md:flex items-end justify-center shrink-0 pr-2" aria-hidden="true">
-              {slideGames.slice(0, 4).map((g, i) => (
-                <div
-                  key={g.id}
-                  className="w-24 h-32 rounded-xl overflow-hidden border border-[#30363d] shadow-2xl transition-transform duration-300 hover:!rotate-0 hover:scale-105 hover:z-10"
-                  style={{
-                    transform: `rotate(${(i - 1.5) * 7}deg) translateY(${Math.abs(i - 1.5) * 6}px)`,
-                    marginLeft: i === 0 ? 0 : '-1.75rem',
-                    zIndex: i === 0 ? 1 : 0,
-                  }}
-                >
-                  <GameCover src={g.capa} title={g.title} consoleName={g.console} size="thumb" />
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
-        {/* ── PAINEL DE TELEMETRIA: ANEL DA META + STAT PILLS ── */}
-        <div className="mt-6 grid grid-cols-1 xl:grid-cols-12 gap-4">
-          {/* CARD DESTACADO - META ANUAL COM ANEL SVG (EDITÁVEL PARA O DONO) */}
-          <div className="xl:col-span-4 relative rounded-2xl border border-[#22d3ee]/30 bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex items-center gap-4 sm:gap-5 overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#22d3ee] via-[#67e8f9] to-[#a855f7]" />
+        {/* ── PAINEL DE TELEMETRIA: META ANUAL COM ANEL SVG (DESTAQUE) ── */}
+        <div className="mt-6 relative rounded-2xl border border-[#22d3ee]/30 bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex items-center gap-4 sm:gap-5 overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#22d3ee] via-[#67e8f9] to-[#a855f7]" />
 
             {/* Anel de progresso */}
             <div className="relative h-28 w-28 shrink-0">
@@ -560,90 +536,89 @@ export const DashboardView: React.FC = () => {
                 <span className="text-[#22d3ee] font-bold">{uniqueZerados.length}</span> zerados na história
               </div>
             </div>
+        </div>
+
+        {/* GRID DE STATS SECUNDÁRIOS: EM ANDAMENTO · ACERVO TOTAL · TEMPO INVESTIDO */}
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* CARD - EM ANDAMENTO */}
+          <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#a855f7]/50 transition-colors">
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#a855f7]" />
+            <div>
+              <div className="flex items-center gap-2 text-[#9aa4b2]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#a855f7]/15 border border-[#a855f7]/30 shrink-0">
+                  <Layers className="h-4 w-4 text-[#a855f7]" aria-hidden="true" />
+                </span>
+                <span className="text-xs font-bold uppercase tracking-widest">Em Andamento</span>
+              </div>
+
+              <div className="mt-3 flex items-baseline gap-2">
+                <span className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#d8b4fe] transition-colors">
+                  {activeGamesList.length}
+                </span>
+                <span className="text-xs font-bold uppercase text-[#9aa4b2]">jogando</span>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 text-xs text-[#9aa4b2]">
+              <span className="font-mono text-[#a855f7] font-bold">Foco prioritário</span> · sessões ativas
+            </div>
           </div>
 
-          {/* GRID DE STATS SECUNDÁRIOS */}
-          <div className="xl:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {/* CARD - EM ANDAMENTO */}
-            <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#a855f7]/50 transition-colors">
-              <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#a855f7]" />
-              <div>
-                <div className="flex items-center gap-2 text-[#9aa4b2]">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#a855f7]/15 border border-[#a855f7]/30 shrink-0">
-                    <Layers className="h-4 w-4 text-[#a855f7]" aria-hidden="true" />
-                  </span>
-                  <span className="text-xs font-bold uppercase tracking-widest">Em Andamento</span>
-                </div>
-
-                <div className="mt-3 flex items-baseline gap-2">
-                  <span className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#d8b4fe] transition-colors">
-                    {activeGamesList.length}
-                  </span>
-                  <span className="text-xs font-bold uppercase text-[#9aa4b2]">jogando</span>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 text-xs text-[#9aa4b2]">
-                <span className="font-mono text-[#a855f7] font-bold">Foco prioritário</span> · sessões ativas
-              </div>
-            </div>
-
-            {/* CARD - ACERVO TOTAL */}
-            <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#22d3ee]/50 transition-colors">
-              <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#22d3ee]" />
-              <div>
-                <div className="flex items-center gap-2 text-[#9aa4b2]">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#22d3ee]/15 border border-[#22d3ee]/30 shrink-0">
-                    <Gamepad2 className="h-4 w-4 text-[#22d3ee]" aria-hidden="true" />
-                  </span>
-                  <span className="text-xs font-bold uppercase tracking-widest">Acervo Total</span>
-                </div>
-
-                <div className="mt-3 flex items-baseline gap-2">
-                  <span className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#67e8f9] transition-colors">
-                    {games.length}
-                  </span>
-                  <span className="text-xs font-bold uppercase text-[#9aa4b2]">catalogados</span>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 flex items-center justify-between text-xs text-[#9aa4b2]">
-                <span className="truncate">Vault sincronizado</span>
-                <span className="flex items-center gap-1.5 font-mono text-emerald-400 font-bold">
-                  <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                  Online
+          {/* CARD - ACERVO TOTAL */}
+          <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#22d3ee]/50 transition-colors">
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#22d3ee]" />
+            <div>
+              <div className="flex items-center gap-2 text-[#9aa4b2]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#22d3ee]/15 border border-[#22d3ee]/30 shrink-0">
+                  <Gamepad2 className="h-4 w-4 text-[#22d3ee]" aria-hidden="true" />
                 </span>
+                <span className="text-xs font-bold uppercase tracking-widest">Acervo Total</span>
+              </div>
+
+              <div className="mt-3 flex items-baseline gap-2">
+                <span className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#67e8f9] transition-colors">
+                  {games.length}
+                </span>
+                <span className="text-xs font-bold uppercase text-[#9aa4b2]">catalogados</span>
               </div>
             </div>
 
-            {/* CARD - TEMPO INVESTIDO */}
-            <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#fbbf24]/50 transition-colors sm:col-span-3 lg:col-span-1">
-              <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#fbbf24]" />
-              <div>
-                <div className="flex items-center gap-2 text-[#9aa4b2]">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fbbf24]/15 border border-[#fbbf24]/30 shrink-0">
-                    <Clock className="h-4 w-4 text-[#fbbf24]" aria-hidden="true" />
-                  </span>
-                  <span className="text-xs font-bold uppercase tracking-widest">Tempo Investido</span>
-                </div>
+            <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 flex items-center justify-between text-xs text-[#9aa4b2]">
+              <span className="truncate">{uniqueZerados.length} zerados · {Math.max(0, games.length - uniqueZerados.length)} na fila</span>
+              <span className="flex items-center gap-1.5 font-mono text-emerald-400 font-bold">
+                <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                Online
+              </span>
+            </div>
+          </div>
 
-                <div className="mt-3">
-                  <div className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#fde68a] transition-colors">
-                    {cycleInvestedTime.formatted}
-                  </div>
-                  <div className="text-xs text-[#9aa4b2] mt-1.5">
-                    em {cycleInvestedTime.beatenCount} zerados em {currentCycleYear}
-                    {cycleInvestedTime.semTempoCount > 0 && (
-                      <span> · {cycleInvestedTime.semTempoCount} sem tempo</span>
-                    )}
-                  </div>
-                </div>
+          {/* CARD - TEMPO INVESTIDO */}
+          <div className="relative rounded-2xl border border-[#30363d] bg-[#0d1117]/80 p-4 sm:p-5 shadow-lg flex flex-col justify-between overflow-hidden group hover:border-[#fbbf24]/50 transition-colors">
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#fbbf24]" />
+            <div>
+              <div className="flex items-center gap-2 text-[#9aa4b2]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fbbf24]/15 border border-[#fbbf24]/30 shrink-0">
+                  <Clock className="h-4 w-4 text-[#fbbf24]" aria-hidden="true" />
+                </span>
+                <span className="text-xs font-bold uppercase tracking-widest">Tempo Investido</span>
               </div>
 
-              <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 flex items-center gap-1.5 text-xs text-[#10b981]">
-                <Activity className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-                <span className="text-slate-300 truncate">Telemetria consistente</span>
+              <div className="mt-3">
+                <div className="font-heading text-3xl sm:text-4xl font-extrabold text-[#f0f6fc] leading-none group-hover:text-[#fde68a] transition-colors">
+                  {cycleInvestedTime.formatted}
+                </div>
+                <div className="text-xs text-[#9aa4b2] mt-1.5">
+                  em {cycleInvestedTime.beatenCount} zerados em {currentCycleYear}
+                  {cycleInvestedTime.semTempoCount > 0 && (
+                    <span> · {cycleInvestedTime.semTempoCount} sem tempo</span>
+                  )}
+                </div>
               </div>
+            </div>
+
+            <div className="mt-4 pt-2.5 border-t border-[#30363d]/40 flex items-center gap-1.5 text-xs text-[#10b981]">
+              <Activity className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+              <span className="text-slate-300 truncate">Telemetria consistente</span>
             </div>
           </div>
         </div>
@@ -669,7 +644,7 @@ export const DashboardView: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2 sm:gap-3">
-              <span className="text-xs font-mono font-bold text-[#f472b6]">
+              <span className="rounded-full border border-[#f472b6]/40 bg-[#f472b6]/10 px-3 py-1 text-xs font-mono font-bold text-[#f472b6]">
                 {safeSlideIndex + 1} / {slideGames.length}
               </span>
               <div className="flex items-center gap-1">
@@ -695,9 +670,9 @@ export const DashboardView: React.FC = () => {
             </div>
           </div>
 
-          {/* Dots de navegação entre os jogos ativos */}
+          {/* Mini-capas clicáveis para navegar entre os jogos ativos */}
           {slideGames.length > 1 && (
-            <div className="relative flex items-center gap-1.5 mb-3" role="tablist" aria-label="Selecionar jogo em andamento">
+            <div className="relative flex items-center gap-2 mb-3 sm:mb-4 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }} role="tablist" aria-label="Selecionar jogo em andamento">
               {slideGames.slice(0, 8).map((g, i) => (
                 <button
                   key={g.id}
@@ -707,22 +682,26 @@ export const DashboardView: React.FC = () => {
                   aria-label={`Ver ${cleanTitle(g.title)}`}
                   title={cleanTitle(g.title)}
                   onClick={() => setActiveSlideIndex(i)}
-                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer min-h-0 ${
+                  className={`shrink-0 rounded-lg overflow-hidden border-2 transition-all duration-300 cursor-pointer min-h-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee] ${
                     i === safeSlideIndex
-                      ? 'w-7 bg-gradient-to-r from-[#f97316] to-[#a855f7] shadow-[0_0_8px_rgba(249,115,22,0.6)]'
-                      : 'w-3 bg-[#30363d] hover:bg-[#9aa4b2]'
+                      ? 'border-[#f97316] shadow-[0_0_14px_rgba(249,115,22,0.55)] scale-100 opacity-100'
+                      : 'border-[#30363d] opacity-50 grayscale hover:opacity-90 hover:grayscale-0 hover:border-[#a855f7]/60'
                   }`}
-                />
+                >
+                  <span className="block w-10 h-14 sm:w-12 sm:h-16">
+                    <GameCover src={g.capa} title={g.title} consoleName={g.console} size="thumb" />
+                  </span>
+                </button>
               ))}
             </div>
           )}
 
           <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-5 items-stretch">
             {/* CARD PRINCIPAL DO JOGO (FEATURED) */}
-            <div className="lg:col-span-8 rounded-xl border border-[#a855f7]/30 bg-[#0d1117]/70 p-3 sm:p-5 flex flex-col justify-between h-full shadow-inner">
+            <div className="lg:col-span-8 rounded-2xl border border-[#a855f7]/30 bg-gradient-to-b from-[#0d1117]/90 to-[#0d1117]/60 p-3 sm:p-5 flex flex-col justify-between h-full shadow-inner backdrop-blur-sm">
               <div className="flex flex-col md:flex-row gap-4 sm:gap-6 items-center">
                 {/* Capa */}
-                <div className="w-full md:w-56 shrink-0 max-w-[240px] mx-auto">
+                <div className="w-full md:w-60 shrink-0 max-w-[260px] mx-auto">
                   <div className="rounded-xl bg-gradient-to-br from-[#f97316]/40 via-[#a855f7]/40 to-[#22d3ee]/40 p-[2px] shadow-[0_0_28px_rgba(168,85,247,0.35)] transition-transform duration-300 hover:scale-[1.02]">
                     <GameCover
                       src={currentFeaturedGame.capa}

@@ -277,25 +277,25 @@ export const BacklogView: React.FC = () => {
             </div>
           </div>
 
-          {/* Botões de Ação do Dono (visíveis no topo desktop e mobile) */}
+          {/* Botões de Ação do Dono (grid 2x2 no mobile, linha no desktop) */}
           {isOwner && (
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
               <button
                 type="button"
                 onClick={() => setIsImportModalOpen(true)}
-                className="min-h-[44px] flex items-center gap-1.5 rounded-xl border border-purple-500/40 bg-purple-500/10 px-3.5 sm:px-4 py-2 text-xs font-semibold text-purple-300 hover:bg-purple-500/20 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none"
+                className="flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl border border-purple-500/40 bg-purple-500/10 px-3 py-2 text-xs font-semibold whitespace-nowrap text-purple-300 hover:bg-purple-500/20 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none sm:w-auto sm:px-4"
               >
-                <FileUp className="h-4 w-4" aria-hidden="true" />
+                <FileUp className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
                 <span>Importar .md</span>
               </button>
 
               <button
                 type="button"
                 onClick={exportAllMarkdown}
-                className="min-h-[44px] flex items-center gap-1.5 rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 sm:px-4 py-2 text-xs font-semibold text-slate-300 hover:bg-white/10 hover:text-white transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none"
+                className="flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl border border-[#30363d] bg-[#0d1117] px-3 py-2 text-xs font-semibold whitespace-nowrap text-slate-300 hover:bg-white/10 hover:text-white transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none sm:w-auto sm:px-4"
                 title="Exportar todos os jogos como arquivos .md para seu Obsidian"
               >
-                <FileDown className="h-4 w-4" aria-hidden="true" />
+                <FileDown className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
                 <span>Exportar Vault</span>
               </button>
 
@@ -303,10 +303,10 @@ export const BacklogView: React.FC = () => {
                 <button
                   type="button"
                   onClick={exportBackupJSON}
-                  className="min-h-[44px] flex items-center gap-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-3.5 sm:px-4 py-2 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none"
+                  className="flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-xs font-semibold whitespace-nowrap text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none sm:w-auto sm:px-4"
                   title="Baixar Backup Completo (.json)"
                 >
-                  <FileJson className="h-4 w-4" aria-hidden="true" />
+                  <FileJson className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
                   <span>Backup (.json)</span>
                 </button>
               )}
@@ -314,9 +314,9 @@ export const BacklogView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsNewGameModalOpen(true)}
-                className="min-h-[44px] flex items-center gap-1.5 rounded-xl bg-[#22d3ee] px-4 sm:px-5 py-2 text-xs font-black uppercase text-[#0d1117] shadow-lg shadow-[#22d3ee]/25 hover:bg-[#06b6d4] transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                className="flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl bg-[#22d3ee] px-3 py-2 text-xs font-black uppercase whitespace-nowrap text-[#0d1117] shadow-lg shadow-[#22d3ee]/25 hover:bg-[#06b6d4] transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none sm:w-auto sm:px-5"
               >
-                <Plus className="h-4 w-4 stroke-[3]" aria-hidden="true" />
+                <Plus className="h-4 w-4 stroke-[3] flex-shrink-0" aria-hidden="true" />
                 <span>NOVO JOGO</span>
               </button>
             </div>
