@@ -1,3 +1,4 @@
 # Patch and archive files
 *.patch
-*.tar.gz
+*.tar.gznode_modules/
+dist/
