@@ -93,6 +93,51 @@
     linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
 }
 
+/* Dashboard hero ambient glows */
+.hero-glow {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.hero-glow::before {
+  content: '';
+  position: absolute;
+  inset: -40%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(600px 300px at 8% -10%, rgba(34, 211, 238, 0.16), transparent 60%),
+    radial-gradient(500px 280px at 95% 110%, rgba(168, 85, 247, 0.14), transparent 60%),
+    radial-gradient(380px 220px at 60% 40%, rgba(16, 185, 129, 0.06), transparent 65%);
+}
+
+/* Animated conic ring for the annual goal */
+@property --ring-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.goal-ring {
+  background: conic-gradient(
+    from var(--ring-angle),
+    #22d3ee calc(var(--goal-percent) * 1%),
+    #21262d 0
+  );
+  animation: ring-spin 12s linear infinite;
+}
+@keyframes ring-spin {
+  to { --ring-angle: 360deg; }
+}
+
+/* Soft entrance animation for dashboard sections */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 /* Accessibility: Prefers reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
