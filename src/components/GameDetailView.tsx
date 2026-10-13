@@ -798,7 +798,7 @@ export const GameDetailView: React.FC = () => {
   return (
     <div className="space-y-5 pb-20 font-sans">
       {/* ── SELETOR DE JOGOS EM ANDAMENTO (aba #/jogando: abaixo do hero, já que o hero ocupa a largura toda) ── */}
-      {playingGames.length > 0 && !isPlayingTab && (
+      {playingGames.length > 0 && (
         <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md lg:hidden sm:p-4">
           <div className="flex items-center justify-between text-xs mb-2.5">
             <span className="font-bold uppercase tracking-wider text-[#9aa4b2] flex items-center gap-1.5">
@@ -899,110 +899,46 @@ export const GameDetailView: React.FC = () => {
         controls={ownerControls}
       />
 
-      {/* ── ABA "JOGANDO AGORA": destaque compacto + navegação entre jogos (abaixo do hero, que ocupa a largura toda) ── */}
+      {/* ── NAVEGAÇÃO ‹ › ENTRE JOGOS (aba #/jogando): visível SOMENTE no desktop, onde a faixa de chips é ocultada; em <1024px o carrossel de chips acima já cobre a navegação ── */}
       {isPlayingTab && playingGames.length > 0 && (
-        <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md sm:p-4">
-          <div className="mb-2.5 flex items-center justify-between text-xs">
-            <span className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-[#9aa4b2]">
-              <span className="h-2 w-2 rounded-full bg-[#22d3ee] animate-pulse" aria-hidden="true" />
-              <span>Jogando Agora ({playingGames.length})</span>
-            </span>
-            <span className="font-mono text-xs font-bold text-[#22d3ee]">
-              {playingGames.findIndex((g) => g.id === game.id) + 1} de {playingGames.length}
-            </span>
-          </div>
-
-          {/* Navegação ‹ › entre os jogos em andamento (alvos de 44px) */}
-          <div className="flex items-stretch gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                const idx = playingGames.findIndex((g) => g.id === game.id);
-                const prev = playingGames[(idx - 1 + playingGames.length) % playingGames.length];
-                navigate(`#/jogo/${encodeURIComponent(prev.id)}`);
-              }}
-              className="min-h-[44px] w-11 shrink-0 rounded-xl border border-[#30363d] bg-[#0d1117] text-[#9aa4b2] hover:border-[#22d3ee] hover:text-white flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
-              title="Jogo anterior"
-              aria-label="Jogo anterior"
-            >
-              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-            </button>
-
-            <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto scrollbar-none py-1">
-              {playingGames.map((pg) => {
-                const isSelected = game.id === pg.id;
-                return (
-                  <button
-                    key={pg.id}
-                    type="button"
-                    onClick={() => navigate(`#/jogo/${encodeURIComponent(pg.id)}`)}
-                    className={`min-h-[44px] flex items-center gap-2.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all cursor-pointer shrink-0 border ${
-                      isSelected
-                        ? 'bg-[#22d3ee]/20 border-[#22d3ee] text-white shadow-md'
-                        : 'bg-[#0d1117] border-[#30363d] text-[#9aa4b2] hover:text-white hover:border-[#9aa4b2]'
-                    }`}
-                    aria-pressed={isSelected}
-                    aria-label={`Abrir ficha de ${cleanTitle(pg.title)}`}
-                    title={`Abrir ficha completa de ${cleanTitle(pg.title)}`}
-                  >
-                    <div className="h-7 w-5 rounded overflow-hidden shrink-0 bg-black">
-                      <GameCover src={pg.capa} title={pg.title} consoleName={pg.console} size="thumb" />
-                    </div>
-                    <div className="text-left">
-                      <div className="truncate max-w-[150px] leading-tight">{cleanTitle(pg.title)}</div>
-                      <div className="mt-0.5 font-mono text-xs leading-none opacity-70">⏱ {formatTempoDisplay(getGameEffectiveTime(pg).tempo || pg.tempo || '0:00')}</div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                const idx = playingGames.findIndex((g) => g.id === game.id);
-                const next = playingGames[(idx + 1) % playingGames.length];
-                navigate(`#/jogo/${encodeURIComponent(next.id)}`);
-              }}
-              className="min-h-[44px] w-11 shrink-0 rounded-xl border border-[#30363d] bg-[#0d1117] text-[#9aa4b2] hover:border-[#22d3ee] hover:text-white flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
-              title="Próximo jogo"
-              aria-label="Próximo jogo"
-            >
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </div>
+        <div className="hidden lg:flex items-center justify-center gap-3 rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md">
+          <button
+            type="button"
+            onClick={() => {
+              const idx = playingGames.findIndex((g) => g.id === game.id);
+              const prev = playingGames[(idx - 1 + playingGames.length) % playingGames.length];
+              navigate(`#/jogo/${encodeURIComponent(prev.id)}`);
+            }}
+            className="min-h-[44px] w-11 shrink-0 rounded-xl border border-[#30363d] bg-[#0d1117] text-[#9aa4b2] hover:border-[#22d3ee] hover:text-white flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
+            title="Jogo anterior"
+            aria-label="Jogo anterior"
+          >
+            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <span className="font-mono text-xs font-bold text-[#22d3ee]">
+            {playingGames.findIndex((g) => g.id === game.id) + 1} de {playingGames.length}
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              const idx = playingGames.findIndex((g) => g.id === game.id);
+              const next = playingGames[(idx + 1) % playingGames.length];
+              navigate(`#/jogo/${encodeURIComponent(next.id)}`);
+            }}
+            className="min-h-[44px] w-11 shrink-0 rounded-xl border border-[#30363d] bg-[#0d1117] text-[#9aa4b2] hover:border-[#22d3ee] hover:text-white flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
+            title="Próximo jogo"
+            aria-label="Próximo jogo"
+          >
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
+          </button>
         </div>
       )}
 
-      {/* ── CORPO: ABAS (esquerda) + LATERAL (direita). Aba "Jogando": destaque compacto à esquerda, "Outros em andamento" ao lado ── */}
-      <div className={isPlayingTab ? 'grid gap-4 md:grid-cols-[minmax(0,1fr)_340px] items-start' : 'grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]'}>
+      {/* ── CORPO: ABAS (esquerda) + LATERAL GameSidebar (direita). Em <1024px a lateral vai para baixo das abas. ── */}
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="min-w-0 space-y-5">
-          {/* ── ABA "JOGANDO": capa do jogo em destaque com comprimento reduzido (~160–200px), aspect 3/4 ── */}
-          {isPlayingTab && (
-            <div className="hidden md:flex items-center gap-4 rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md">
-              <div className="w-[160px] lg:w-[180px] shrink-0" style={{ aspectRatio: '3 / 4' }}>
-                <GameCover
-                  src={game.capa}
-                  title={game.title}
-                  consoleName={game.console}
-                  size="hero"
-                  grayscale={game.status === 'zerado'}
-                  className="h-full w-full rounded-xl border border-[#30363d]/70 shadow-lg shadow-black/40"
-                />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-xs font-bold uppercase tracking-wider text-[#9aa4b2]">Em destaque</div>
-                <div className="mt-1 truncate font-heading text-lg font-extrabold text-white">{cleanTitle(game.title)}</div>
-                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs font-mono text-[#9aa4b2]">
-                  <span className="rounded border border-[#30363d] bg-[#0d1117] px-2 py-0.5">{game.console}</span>
-                  <span>⏱ {formatTempoDisplay(effectiveTime.tempo || game.tempo || '0:00')}</span>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* ── ABAS DE NAVEGAÇÃO INTERNA (SUBTABS) ── */}
-          <div className={`flex items-center gap-2 border-b border-[#30363d] pb-2 overflow-x-auto scrollbar-none ${isPlayingTab ? 'md:hidden' : ''}`}>
+          <div className="flex items-center gap-2 border-b border-[#30363d] pb-2 overflow-x-auto scrollbar-none">
             <button
               type="button"
               onClick={() => setActiveSubTab('sessoes')}
@@ -1495,67 +1431,8 @@ export const GameDetailView: React.FC = () => {
             </div>
           )}
         </div>
-        <aside className={isPlayingTab ? 'self-start' : 'self-start lg:sticky lg:top-20'}>
+        <aside className="self-start lg:sticky lg:top-20">
           <GameSidebar game={game} playingGames={playingGames} navigate={navigate} />
-          {isPlayingTab && (
-            <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[#30363d]/60 pt-3">
-              <button
-                type="button"
-                onClick={() => setActiveSubTab('sessoes')}
-                aria-pressed={activeSubTab === 'sessoes'}
-                className={`min-h-[44px] flex-1 flex items-center justify-center gap-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
-                  activeSubTab === 'sessoes'
-                    ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
-                    : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
-                }`}
-              >
-                <Clock className="h-4 w-4" aria-hidden="true" />
-                <span>Sessões ({game.sessoes?.length || 0})</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveSubTab('rubrica')}
-                aria-pressed={activeSubTab === 'rubrica'}
-                className={`min-h-[44px] flex-1 flex items-center justify-center gap-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
-                  activeSubTab === 'rubrica'
-                    ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
-                    : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
-                }`}
-              >
-                <Sliders className="h-4 w-4" aria-hidden="true" />
-                <span>Rubrica</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveSubTab('got')}
-                aria-pressed={activeSubTab === 'got'}
-                className={`min-h-[44px] flex-1 flex items-center justify-center gap-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
-                  activeSubTab === 'got'
-                    ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
-                    : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
-                }`}
-              >
-                <Trophy className="h-4 w-4" aria-hidden="true" />
-                <span>GOT ({activeGotBadges.length})</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveSubTab('anotacoes')}
-                aria-pressed={activeSubTab === 'anotacoes'}
-                className={`min-h-[44px] flex-1 flex items-center justify-center gap-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
-                  activeSubTab === 'anotacoes'
-                    ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
-                    : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
-                }`}
-              >
-                <MessageSquare className="h-4 w-4" aria-hidden="true" />
-                <span>Anotações</span>
-              </button>
-            </div>
-          )}
         </aside>
       </div>
 
