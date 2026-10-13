@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameCover } from '../GameCover';
+
 import { GameItem } from '../../types/game';
 import { cleanTitle, formatTempoDisplay, parseToMinutes } from '../../utils/markdownParser';
 
@@ -69,9 +69,7 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
                   className="flex min-h-[44px] w-full cursor-pointer items-center gap-2.5 rounded-xl border border-[#30363d] bg-[#0d1117] p-2 text-left transition-colors hover:border-[#22d3ee]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
                   aria-label={`Abrir ${cleanTitle(pg.title)}`}
                 >
-                  <div className="h-11 w-[44px] shrink-0 overflow-hidden rounded-lg bg-black">
-                    <GameCover src={pg.capa} title={pg.title} consoleName={pg.console} size="sm" className="h-full w-full" />
-                  </div>
+                  <span className="h-8 w-1 shrink-0 rounded-full bg-gradient-to-b from-[#22d3ee] to-[#a855f7]" aria-hidden="true" />
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-xs font-bold text-white">{cleanTitle(pg.title)}</div>
                     <div className="mt-0.5 flex items-center gap-2 text-xs text-[#9aa4b2]">

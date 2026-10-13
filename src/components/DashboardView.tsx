@@ -30,7 +30,6 @@ import { useIsOwner } from '../hooks/useIsOwner';
 import { PROFILE_NAME } from '../config/profile';
 import { ProfileAvatar } from './ProfileAvatar';
 import { Modal } from './Modal';
-import { GameCover } from './GameCover';
 import { PlayDaysCalendar } from './PlayDaysCalendar';
 import { UpcomingGamesSection } from './UpcomingGamesSection';
 import { RecentBeatenSection } from './RecentBeatenSection';
@@ -588,20 +587,7 @@ export const DashboardView: React.FC = () => {
           <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-5 items-stretch">
             {/* CARD PRINCIPAL DO JOGO (FEATURED) */}
             <div className="lg:col-span-8 rounded-2xl border border-[#a855f7]/30 bg-gradient-to-b from-[#0d1117]/90 to-[#0d1117]/60 p-3 sm:p-5 flex flex-col justify-between h-full shadow-inner backdrop-blur-sm">
-              <div className="flex flex-col md:flex-row gap-4 sm:gap-6 items-center">
-                {/* Capa */}
-                <div className="w-full md:w-60 shrink-0 max-w-[260px] mx-auto">
-                  <div className="rounded-xl bg-gradient-to-br from-[#f97316]/40 via-[#a855f7]/40 to-[#22d3ee]/40 p-[2px] shadow-[0_0_28px_rgba(168,85,247,0.35)] transition-transform duration-300 hover:scale-[1.02]">
-                    <GameCover
-                      src={currentFeaturedGame.capa}
-                      title={currentFeaturedGame.title}
-                      consoleName={currentFeaturedGame.console}
-                      size="hero"
-                      className="rounded-[10px]"
-                    />
-                  </div>
-                </div>
-
+              <div className="flex flex-col gap-4 sm:gap-6 items-stretch">
                 {/* Detalhes */}
                 <div className="flex-1 w-full flex flex-col justify-between space-y-3">
                   <div>
