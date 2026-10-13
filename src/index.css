@@ -96,50 +96,99 @@
   display: none;
 }
 
-/* ── TAREFA E (DESKTOP ≥1024px): ficha do jogo em destaque — capa 250–270px, painel lateral
-   320–360px com altura = card principal, quadros de estatísticas sem corte de texto e linha
-   de controles com folga nos botões. Classes-âncora gd-* adicionadas ao JSX; nenhuma classe
-   existente foi removida/renomeada. Abaixo de 1024px nada aqui se aplica (mobile inalterado). */
+/* ── TAREFAS H e I (DESKTOP ≥1024px): ficha do jogo em destaque — capa 2:3 natural
+   (clamp(230px, 18vw, 270px), sem esticar), painel lateral 320–340px com altura = card
+   principal e rolagem interna, quadros de estatísticas em UMA linha de 4 iguais sem
+   corte de texto e linha de controles alinhada (campos/botões com a mesma altura).
+   Classes-âncora gd-* já presentes no JSX (não renomeadas). Regras antigas de
+   stretch da capa foram corrigidas NA ORIGEM (removidas), não empilhadas por cima.
+   Abaixo de 1024px nada aqui se aplica (mobile inalterado). */
 @media (min-width: 1024px) {
-  /* Capa: clamp(240px, 19vw, 270px) — antes podia chegar a ~350px em telas ultrawide.
-     !important vence as utilities md:grid-cols-[...] / w-full do JSX (não alterado). */
+  /* Painel "Outros em andamento": 320–340px (antes até 360px, comprimindo o card). */
   .gd-focus-grid.lg\:grid {
-    grid-template-columns: minmax(0, 1fr) clamp(320px, 28vw, 360px) !important;
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 26vw, 340px) !important;
   }
-  .gd-hero-grid {
-    grid-template-columns: clamp(240px, 19vw, 270px) minmax(0, 1fr) !important;
-  }
-  /* A capa NÃO aumenta a altura do card: o wrapper da coluna é container de altura
-     (height:0 + stretch → altura = linha definida pelo conteúdo das informações) e a
-     caixa da capa preenche esse espaço com overflow-hidden — recorte mínimo, sem faixas
-     vazias, mantendo border-radius/borda e object-cover + center top. */
-  .gd-hero-grid > div:first-child {
-    height: 0;
-    min-height: 100%;
-    align-self: stretch;
-    overflow: hidden;
+  /* Coluna 1 define a altura da linha; o aside acompanha via h-full + absolute inset-0
+     (reaproveitado da rodada aprovada — a lista tem rolagem interna, min-h-0/flex-1). */
+  .gd-focus-grid > :first-child {
+    align-self: start;
   }
 
-  /* Quadros de estatísticas: colunas respeitam o conteúdo (mín. 170px); se não couberem
-     4 em linha, quebram sozinhos para 2x2 — nunca cortam texto. */
+  /* H — Capa: largura clamp(230px, 18vw, 270px), proporção 2:3 NATURAL.
+     Sem height:100%, sem min-height, sem align-self:stretch, sem scale/zoom: a altura
+     do card passa a ser definida pelo conteúdo (coluna mais alta das duas). */
+  .gd-hero-grid {
+    grid-template-columns: clamp(230px, 18vw, 270px) minmax(0, 1fr) !important;
+    align-items: start;
+  }
+  .gd-hero-grid > div:first-child {
+    width: clamp(230px, 18vw, 270px); /* vence md:w-full do JSX base (só no desktop) */
+    aspect-ratio: 2 / 3;
+    height: auto;
+    min-height: 0;
+    align-self: start;
+    overflow: hidden; /* mantém border-radius/borda e o recorte topo do object-cover */
+  }
+
+  /* H — Quadros de estatística: volta para UMA linha com 4 quadros iguais (o 2x2 fica
+     apenas abaixo de 1024px, como no JSX base). Padding 12px 14px e mesma altura. */
   .gd-stats-grid.lg\:grid-cols-4 {
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 12px !important;
   }
   .gd-stats-grid > * {
     min-width: 0;
-    padding: 14px !important; /* padroniza px-3 py-2.5 dos quadros (desktop) */
+    padding: 12px 14px !important; /* padroniza px-3 py-2.5 dos quadros (desktop) */
   }
+  /* Rótulos em UMA linha só (inclusive "TEMPO REGISTRADO"): nowrap + 11px + letter-spacing reduzido */
+  .gd-stats-grid [class*="min-h-[76px]"] > div:first-child {
+    white-space: nowrap;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+  }
+  /* Valores e texto secundário sem reticências: nowrap vence o truncate do JSX base.
+     Se apertar, reduza aqui (gap/padding acima e valor mín. 16px) antes de mexer capa/painel. */
   .gd-stats-grid [class*="min-h-[76px]"] > div[class*="font-mono"],
   .gd-stats-grid [class*="min-h-[76px]"] > div:last-child {
-    white-space: nowrap;      /* "04/04/2026" e "último: 12/10/2026" completos, sem reticências */
+    white-space: nowrap;
+    text-overflow: clip;
+    overflow: visible;
+  }
+  .gd-stats-grid [class*="min-h-[76px]"] > div[class*="font-mono"] {
+    font-size: 16px;              /* valor (piso da escala pedida); era ~18px utilitário */
   }
   .gd-stats-grid [class*="min-h-[76px]"] > div:last-child {
-    font-size: 13px;          /* texto secundário ("último: …", "há N dias") na escala pedida */
+    font-size: 13px;              /* "último: 12/10/2026", "há 192 dias" completos */
   }
 
-  /* Linha de controles: STATUS / NOTA / TEMPO TOTAL / AÇÕES com os botões com folga */
+  /* I — Linha de controles: grade 1.4fr / 1fr / 1fr / auto, itens alinhados pelo topo */
+  .gd-owner-row {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) auto !important;
+    align-items: start;
+    gap: 12px;
+  }
+  /* Rótulo em linha única (evita "TEMPO TOTAL" quebrar e empurrar o campo), altura fixa ~16px */
+  .gd-owner-controls label {
+    white-space: nowrap;
+    font-size: 11px;
+    line-height: 16px;
+    height: 16px;
+    margin-bottom: 6px !important; /* vence mb-1 (4px) do JSX base */
+  }
+  /* TODOS os campos e botões na mesma altura (48px), fonte 15px, mesmo radius, box-sizing */
+  .gd-owner-controls select,
+  .gd-owner-controls input[type="number"],
+  .gd-owner-controls input[type="text"],
+  .gd-owner-controls button,
+  .gd-owner-controls [class*="min-h-[44px]"] {
+    height: 48px;
+    min-height: 0;
+    box-sizing: border-box;
+    font-size: 15px !important; /* vence text-base/md:text-xs do JSX base */
+    border-radius: 8px;
+  }
   .gd-owner-controls > *:last-child {
-    width: max-content;       /* coluna "auto" dimensionada pelo próprio grupo de botões */
+    width: max-content; /* coluna "auto" dimensionada pelo próprio grupo de botões */
   }
   .gd-actions-row {
     flex-wrap: nowrap;
@@ -290,6 +339,7 @@
   .gd-page .gd-session-form input[type="text"],
   .gd-page .gd-session-form button[type="submit"] {
     min-height: 44px;
+    height: auto !important;   /* desfaz a altura fixa de 48px da linha de controles do desktop (TAREFA I) */
     font-size: 15px !important;
     border-radius: 8px;
   }
@@ -405,20 +455,74 @@
     grid-column: 1 / -1;
   }
 
-  /* G5: altura determinada pelo conteúdo (sem espaço vazio embaixo) e linha fina de
-     destaque colada na base do card, sem sobra entre conteúdo e linha. */
+  /* G5+J: altura determinada pelo conteúdo (sem espaço vazio embaixo) e linha fina de
+     destaque colada na base, DENTRO do card (overflow:hidden + left/right:0 — antes
+     left/right:12px + bottom:6px deixava sobra e a linha "vazava" visualmente). */
   .dashboard-stats-grid > * {
     min-height: 0 !important;
     height: auto !important;
-    align-self: start;
+    align-self: stretch;      /* J: "Em andamento" e "Acervo total" com a MESMA altura */
     position: relative;
-    padding-bottom: 16px !important;
+    padding: 14px !important; /* J: padding uniforme no grupo */
+    padding-bottom: 8px !important; /* espaço só suficiente para a linha de acento */
+    overflow: hidden;
+    border-radius: 12px;
   }
   .dashboard-stats-grid > * > div:last-child {
     margin-top: 0 !important;
     position: absolute;
-    left: 12px;
-    right: 12px;
-    bottom: 6px;
+    left: 0;
+    right: 0;
+    bottom: 0;                /* linha colada na base, sem sobra entre conteúdo e linha */
+    border-radius: 0;
+  }
+
+  /* J: cabeçalho dos StatCards em grade empilhada (ícone+rótulo na 1ª linha, número
+     grande abaixo, subtexto por último) — nada de número ao lado do texto.
+     Grids internos não têm nome próprio no JSX; as células são endereçadas por classe
+     utilitária existente (shrink-0 / min-w-0 / shrink-0) — CSS apenas, sem tocar no HTML. */
+  .dashboard-stats-grid > * > div:first-child {
+    grid-template-columns: minmax(0, 1fr) !important;
+    row-gap: 6px;
+  }
+  .dashboard-stats-grid > * > div:first-child > span.shrink-0 { grid-area: 1 / 1; justify-self: start; }
+  .dashboard-stats-grid > * > div:first-child > div.min-w-0   { grid-area: 1 / 2; }
+  .dashboard-stats-grid > * > div:first-child > div.shrink-0  { grid-area: 2 / 1 / 3 / 3; justify-self: start; }
+  /* Ícone pequeno (32px) na escala mobile */
+  .dashboard-stats-grid > * > div:first-child > span.shrink-0 > * {
+    height: 20px;
+    width: 20px;
+  }
+  .dashboard-stats-grid > * > div:first-child > span.shrink-0 {
+    height: 32px;
+    width: 32px;
+  }
+  /* Número grande ~26px (vence text-lg/xl/[22px] do JSX) */
+  .dashboard-stats-grid > * > div:first-child > div.shrink-0 > div[class*="font-mono"] {
+    font-size: 26px;
+  }
+  /* Subtexto 12px pode quebrar linha (line-clamp-2 já limita a 2 linhas) */
+  .dashboard-stats-grid > * > div:first-child > div.min-w-0 p:last-child {
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+  }
+
+  /* J: "Tempo investido" (último do grupo) volta à linha compacta original — ícone,
+     título e subtítulo à esquerda; o valor à direita — mesma padronização acima. */
+  .dashboard-stats-grid > *:last-child > div:first-child {
+    grid-template-columns: 32px minmax(0, 1fr) auto !important;
+    align-items: center;
+  }
+  .dashboard-stats-grid > *:last-child > div:first-child > span.shrink-0 { grid-area: auto; justify-self: auto; }
+  .dashboard-stats-grid > *:last-child > div:first-child > div.min-w-0   { grid-area: auto; }
+  .dashboard-stats-grid > *:last-child > div:first-child > div.shrink-0  { grid-area: auto; justify-self: auto; }
+
+  /* J: gap vertical de 12px entre TODOS os blocos do Painel no mobile
+     (perfil/favoritos → meta anual → grade de indicadores → Recém zerados → próxima seção).
+     Só margin-top dos irmãos — margens laterais da página (px-4 = 16px) permanecem. */
+  .dashboard-page > section + section,
+  .dashboard-page [class*="space-y-"] > * + *,
+  .dashboard-main-grid {
+    margin-top: 12px !important;
   }
 }

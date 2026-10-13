@@ -385,7 +385,7 @@ export const DashboardView: React.FC = () => {
   const goalRemaining = Math.max(0, currentGoal - totalZerados2026);
 
   return (
-    <div className="space-y-4 sm:space-y-6 pb-16 font-sans">
+    <div className="dashboard-page space-y-4 sm:space-y-6 pb-16 font-sans">
       {/* ── 1. HERO PANEL: IDENTIDADE, AÇÕES & TELEMETRIA ── */}
       <section
         className="hero-glow cyber-grid dashboard-hero animate-fade-up rounded-3xl border border-[#30363d] bg-gradient-to-br from-[#161b22] via-[#131a22] to-[#0d1117] p-4 sm:p-6 md:p-8 shadow-2xl"

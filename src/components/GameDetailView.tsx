@@ -700,7 +700,7 @@ export const GameDetailView: React.FC = () => {
   );
 
   const ownerControls = (
-        <div className="gd-owner-controls grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-stretch gap-2.5 p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
+        <div className="gd-owner-controls gd-owner-row grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-stretch gap-2.5 p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
           {/* Status */}
           <div className="flex flex-col">
             <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Status</label>
