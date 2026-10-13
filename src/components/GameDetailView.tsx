@@ -875,7 +875,8 @@ export const GameDetailView: React.FC = () => {
       {/* ── HERO DA FICHA (GameHero) ── */}
       {/* Na aba #/jogando o hero fica na coluna 1 do grid com "Outros em andamento" ao lado; nas demais rotas ocupa a largura toda. */}
       <div className={isPlayingTab ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-5 lg:items-stretch' : ''}>
-      <div className={isPlayingTab ? 'min-w-0' : ''}>
+      {/* Coluna 1: o card principal define a altura da linha (itens-start) */}
+      <div className={isPlayingTab ? 'min-w-0 lg:self-start' : ''}>
       <GameHero
         game={game}
         pStyle={pStyle}
@@ -911,7 +912,10 @@ export const GameDetailView: React.FC = () => {
 
       {/* Coluna 2 (aba #/jogando): bloco "OUTROS EM ANDAMENTO" reutilizando o GameSidebar (sem duplicar JSX/lógica) */}
       {isPlayingTab && playingGames.filter((g) => g.id !== game.id).length > 0 && (
-        <aside className="flex min-h-0 flex-col lg:self-stretch">
+        // Desktop: relative h-full — altura = linha do grid (definida pelo card principal);
+        // o GameSidebar usa absolute inset-0 internamente, então NUNCA estica a linha.
+        // Mobile (<lg): coluna única com altura máx. própria e rolagem interna no GameSidebar.
+        <aside className="relative min-h-0 w-full lg:h-full">
           <GameSidebar game={game} playingGames={playingGames} navigate={navigate} />
         </aside>
       )}

@@ -10,12 +10,16 @@ export interface GameSidebarProps {
   navigate: (hash: string) => void;
 }
 
-const Card: React.FC<{ title: React.ReactNode; right?: React.ReactNode; children: React.ReactNode }> = ({
+// fill: o card preenche exatamente o contêiner (position:absolute inset:0) — assim o painel
+// tem a mesma altura do card principal e NUNCA aumenta a altura da linha do grid.
+// Sem fill (mobile): fluxo normal com altura máxima própria e rolagem interna.
+const Card: React.FC<{ title: React.ReactNode; right?: React.ReactNode; children: React.ReactNode; fill?: boolean }> = ({
   title,
   right,
   children,
+  fill = false,
 }) => (
-  <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-[#30363d] bg-[#161b22] p-4 shadow-md">
+  <div className={`flex min-h-0 flex-col rounded-2xl border border-[#30363d] bg-[#161b22] p-4 shadow-md ${fill ? 'absolute inset-0' : ''}`}>
     <div className="mb-3 flex shrink-0 items-center justify-between gap-2 border-b border-[#30363d]/60 pb-2.5">
       <span className="text-xs font-bold uppercase tracking-wider text-[#9aa4b2]">{title}</span>
       {right}
@@ -30,10 +34,14 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
   const effectiveTempoOf = (g: GameItem): string => getGameEffectiveTime(g).tempo || g.tempo || '0:00';
 
   return (
-    <div className="flex min-h-0 flex-col">
+    // Desktop (lg): wrapper h-full — a altura vem do pai (grid items-stretch) e o card em
+    // absolute inset-0 nunca aumenta a linha. Mobile (<lg): altura fixa (≈420px = min-h + max-h
+    // da lista) com cabeçalho fixo e rolagem interna, sem esticar a página.
+    <div className="relative min-h-[420px] w-full lg:h-full lg:min-h-0">
       {/* ── OUTROS EM ANDAMENTO ── */}
       {others.length > 0 && (
         <Card
+          fill
           title={
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-2 animate-pulse rounded-full bg-[#22d3ee] motion-reduce:animate-none" aria-hidden="true" />
@@ -46,7 +54,7 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
             </span>
           }
         >
-          <div className="max-h-72 space-y-2 overflow-y-auto pr-1 lg:max-h-none lg:flex-1 lg:min-h-0">
+          <div className="max-h-[340px] space-y-2 overflow-y-auto pr-1 lg:max-h-none lg:min-h-0 lg:flex-1" style={{ scrollbarWidth: 'thin', scrollbarColor: '#30363d #161b22' }}>
             {others.map((pg) => {
               const played = parseToMinutes(effectiveTempoOf(pg));
               const h = parseToMinutes(pg.hltb);
@@ -56,7 +64,7 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
                   key={pg.id}
                   type="button"
                   onClick={() => navigate(`#/jogo/${encodeURIComponent(pg.id)}`)}
-                  className="flex min-h-[44px] w-full cursor-pointer items-center gap-2.5 rounded-xl border border-[#30363d] bg-[#0d1117] p-2 text-left transition-colors hover:border-[#22d3ee]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
+                  className="flex min-h-[44px] w-full shrink-0 cursor-pointer items-center gap-2.5 rounded-xl border border-[#30363d] bg-[#0d1117] p-2 text-left transition-colors hover:border-[#22d3ee]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
                   aria-label={`Abrir ${cleanTitle(pg.title)}`}
                 >
                   <div className="h-11 w-[44px] shrink-0 overflow-hidden rounded-lg bg-black">
