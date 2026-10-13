@@ -35,8 +35,8 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
 
   return (
     // Desktop (lg): wrapper h-full — a altura vem do pai (grid items-stretch) e o card em
-    // absolute inset-0 nunca aumenta a linha. Mobile (<lg): altura fixa (≈420px = min-h + max-h
-    // da lista) com cabeçalho fixo e rolagem interna, sem esticar a página.
+    // absolute inset-0 nunca aumenta a linha. Mobile (<lg): coluna única com altura máx. própria
+    // (12px, padrão da escala mobile) e rolagem interna no GameSidebar.
     <div className="relative min-h-[420px] w-full lg:h-full lg:min-h-0">
       {/* ── OUTROS EM ANDAMENTO ── */}
       {others.length > 0 && (
@@ -54,7 +54,7 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
             </span>
           }
         >
-          <div className="max-h-[340px] space-y-2 overflow-y-auto pr-1 lg:max-h-none lg:min-h-0 lg:flex-1" style={{ scrollbarWidth: 'thin', scrollbarColor: '#30363d #161b22' }}>
+          <div className="max-h-[calc(420px-76px)] space-y-3 overflow-y-auto pr-1 lg:max-h-none lg:min-h-0 lg:flex-1 lg:space-y-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#30363d #161b22' }}>
             {others.map((pg) => {
               const played = parseToMinutes(effectiveTempoOf(pg));
               const h = parseToMinutes(pg.hltb);
