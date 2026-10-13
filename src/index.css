@@ -161,3 +161,102 @@
     animation: none !important;
   }
 }
+
+/* ── GameDetailView (página do jogo em andamento) — escala única no mobile (≤768px).
+   Tarefas B/C/D: somente CSS; desktop (>768px) permanece exatamente como está. */
+@media (max-width: 768px) {
+  /* B: oculta a faixa "JOGANDO AGORA (N)" com os chips e remove o espaço que ela ocupava,
+     para "Voltar ao Acervo" subir ao topo do conteúdo. Troca de jogo segue possível pelo
+     painel "Outros em andamento" abaixo do card. */
+  .gd-page > .gd-playing-strip {
+    display: none;
+  }
+
+  /* C: gap vertical uniforme de 12px entre todos os blocos da página
+     (Tailwind space-y usa margin-top nos filhos — sobrescrito aqui só no mobile).
+     O bloco oculto da faixa "JOGANDO AGORA" é ignorado para o primeiro bloco visível
+     ("Voltar ao Acervo") não herdar margem residual. */
+  .gd-page > :not(.gd-playing-strip) + *,
+  .gd-page .space-y-5 > * + * {
+    margin-top: 12px;
+  }
+
+  /* C: padding interno dos cards/blocos = 14px, igual em todos */
+  .gd-page .gd-panel,
+  .gd-page .gd-owner-controls,
+  .gd-page .gd-session-form {
+    padding: 14px;
+  }
+
+  /* C: rótulos padronizados (TEMPO REGISTRADO, NOTA, STATUS, NOTA (0–10), TEMPO TOTAL,
+     AÇÕES, DATA, HORA INÍCIO, HORA TÉRMINO etc.) — 11px, maiúsculas, mesmo letter-spacing */
+  .gd-page label[class*="uppercase"] {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  /* C: valores principais dos quadros de estatísticas (12h52, 6, 04/04/2026…) = 18px.
+     !important para vencer text-lg/fontes utilitárias do JSX (não alterado). */
+  .gd-page [class*="min-h-[76px]"] > div[class*="font-mono"] {
+    font-size: 18px !important;
+  }
+
+  /* C: rótulos dos próprios quadros ("TEMPO REGISTRADO", "SESSÕES" etc.) = 11px */
+  .gd-page [class*="min-h-[76px]"] > div:first-child {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  /* A (mobile): título do destaque na escala mobile — capa ≤200px + título abaixo sem rolar */
+  .gd-page h1[style] {
+    font-size: clamp(1.5rem, 7vw, 1.875rem) !important;
+  }
+
+  /* C+D4: campos e botões com altura única de 44px, fonte ~15px e mesmo border-radius.
+     "Jogando"/"12:52" hoje usavam text-base (16px) no mobile → reduzidos ao padrão.
+     !important para vencer as utilidades Tailwind aplicadas no JSX (não alterado). */
+  .gd-page .gd-owner-controls select,
+  .gd-page .gd-owner-controls input[type="number"],
+  .gd-page .gd-owner-controls input[type="text"],
+  .gd-page .gd-owner-controls button,
+  .gd-page .gd-session-form input[type="text"],
+  .gd-page .gd-session-form button[type="submit"] {
+    min-height: 44px;
+    font-size: 15px !important;
+    border-radius: 8px;
+  }
+
+  /* D3: formulário de sessão — DATA na linha inteira; HORA INÍCIO / HORA TÉRMINO lado a
+     lado em duas colunas iguais; "Salvar Sessão" em largura total */
+  .gd-session-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .gd-session-grid > div:first-child,
+  .gd-session-grid > button[type="submit"] {
+    grid-column: 1 / -1;
+  }
+
+  /* D1: "PROGRESSO DA CAMPANHA (HLTB)" e "N% CONCLUÍDO" cada um em UMA linha */
+  .gd-hltb .uppercase {
+    white-space: nowrap;
+  }
+
+  /* D2: título "Histórico…" cabe melhor; ícone alinhado; contador logo abaixo, à esquerda */
+  .gd-hist-title {
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+  .gd-hist-title h2 {
+    font-size: 1rem;
+  }
+  .gd-hist-title + span {
+    text-align: left;
+  }
+
+  /* D5: abas com altura, fonte e padding uniformes (rolagem horizontal mantida) */
+  .gd-tabs [role="tab"] {
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}

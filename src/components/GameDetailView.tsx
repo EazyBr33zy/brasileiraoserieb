@@ -646,13 +646,13 @@ export const GameDetailView: React.FC = () => {
           const remainingMin = Math.max(0, hltbMinutes - playedMinutes);
 
           return (
-            <div className="rounded-xl border border-[#30363d] bg-[#0d1117] p-3 space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-[#9aa4b2]">
-                  <span className="h-2 w-2 rounded-full bg-[#22d3ee] shadow-[0_0_6px_#22d3ee]" aria-hidden="true" />
-                  <span>PROGRESSO DA CAMPANHA (HLTB)</span>
+            <div className="gd-hltb rounded-xl border border-[#30363d] bg-[#0d1117] p-3 space-y-2">
+              <div className="flex items-center justify-between gap-2 text-xs">
+                <div className="flex min-w-0 items-center gap-1.5 font-bold uppercase tracking-wide text-[#9aa4b2]">
+                  <span className="h-2 w-2 shrink-0 rounded-full bg-[#22d3ee] shadow-[0_0_6px_#22d3ee]" aria-hidden="true" />
+                  <span className="truncate">PROGRESSO DA CAMPANHA (HLTB)</span>
                 </div>
-                <div className="font-mono font-bold text-xs">
+                <div className="shrink-0 whitespace-nowrap text-right font-mono font-bold text-xs">
                   {hltbMinutes > 0 ? (
                     <span className={pct >= 100 ? 'text-emerald-400' : 'text-[#22d3ee]'}>
                       {pct}% CONCLUÍDO
@@ -677,11 +677,11 @@ export const GameDetailView: React.FC = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between text-xs font-mono text-[#9aa4b2]">
-                <span>
+              <div className="gd-hltb-lines flex flex-col items-start gap-1.5 text-xs font-mono text-[#9aa4b2] sm:flex-row sm:items-center sm:justify-between">
+                <span className="whitespace-nowrap">
                   Tempo registrado: <strong className="text-white">{formatTempoDisplay(effectiveTime.tempo || localTempo || game.tempo)}</strong>
                 </span>
-                <span>
+                <span className="whitespace-nowrap">
                   Estimativa HLTB:{' '}
                   <strong className="text-[#22d3ee]">
                     {game.hltb ? formatTempoDisplay(game.hltb) : '—'}
@@ -700,7 +700,7 @@ export const GameDetailView: React.FC = () => {
   );
 
   const ownerControls = (
-        <div className="grid grid-cols-2 sm:grid-cols-4 items-stretch gap-2.5 p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
+        <div className="gd-owner-controls grid grid-cols-2 sm:grid-cols-4 items-stretch gap-2.5 p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
           {/* Status */}
           <div className="flex flex-col">
             <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Status</label>
@@ -795,10 +795,10 @@ export const GameDetailView: React.FC = () => {
   );
 
   return (
-    <div className="space-y-5 pb-20 font-sans">
+    <div className="gd-page space-y-5 pb-20 font-sans">
       {/* ── SELETOR DE JOGOS EM ANDAMENTO (aba #/jogando: abaixo do hero, já que o hero ocupa a largura toda) ── */}
       {playingGames.length > 0 && (
-        <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md lg:hidden sm:p-4">
+        <div className="gd-playing-strip rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md lg:hidden sm:p-4">
           <div className="flex items-center justify-between text-xs mb-2.5">
             <span className="font-bold uppercase tracking-wider text-[#9aa4b2] flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-[#22d3ee] animate-pulse motion-reduce:animate-none" aria-hidden="true" />
@@ -926,7 +926,7 @@ export const GameDetailView: React.FC = () => {
       <div className={isPlayingTab ? 'space-y-5' : 'grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]'}>
         <div className="min-w-0 space-y-5">
           {/* ── ABAS DE NAVEGAÇÃO INTERNA (SUBTABS) — segmentadas, sticky abaixo do header, roláveis no mobile ── */}
-          <div role="tablist" aria-label="Seções da ficha do jogo" className="sticky top-16 z-10 -mx-1 flex items-center gap-2 overflow-x-auto scrollbar-none rounded-xl border border-[#30363d] bg-[#161b22]/95 p-1.5 backdrop-blur motion-reduce:backdrop-blur-none">
+          <div role="tablist" aria-label="Seções da ficha do jogo" className="gd-tabs sticky top-16 z-10 -mx-1 flex items-center gap-2 overflow-x-auto scrollbar-none rounded-xl border border-[#30363d] bg-[#161b22]/95 p-1.5 backdrop-blur motion-reduce:backdrop-blur-none">
             <button
               type="button"
               role="tab"
@@ -998,15 +998,15 @@ export const GameDetailView: React.FC = () => {
 
           {/* ── CONTEÚDO DA SUBTAB: SESSÕES DE GAMEPLAY ── */}
           {activeSubTab === 'sessoes' && (
-            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-sessoes" className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
+            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-sessoes" className="gd-panel rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
               <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-3">
-                <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-[#22d3ee]" aria-hidden="true" />
+                <div className="gd-hist-title flex items-center gap-2">
+                  <Clock className="h-5 w-5 shrink-0 text-[#22d3ee]" aria-hidden="true" />
                   <h2 className="font-heading text-lg font-bold uppercase text-white">
                     Histórico de Sessões de Gameplay
                   </h2>
                 </div>
-                <span className="text-xs font-mono text-[#22d3ee] font-bold">
+                <span className="shrink-0 pl-2 text-right text-xs font-mono text-[#22d3ee] font-bold">
                   {game.sessoes?.length || 0} dias registrados
                 </span>
               </div>
@@ -1016,13 +1016,13 @@ export const GameDetailView: React.FC = () => {
 
               {/* Formulário Manual de Nova Sessão (Dono) */}
               {isOwner && (
-                <form onSubmit={handleAddManualSession} className="p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117] space-y-3">
+                <form onSubmit={handleAddManualSession} className="gd-session-form p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117] space-y-3">
                   <div className="text-xs font-bold uppercase text-[#22d3ee] flex items-center gap-1.5">
                     <Plus className="h-4 w-4" aria-hidden="true" />
                     <span>Adicionar Sessão de Gameplay Manualmente</span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5 items-end">
+                  <div className="gd-session-grid grid grid-cols-1 sm:grid-cols-4 gap-2.5 items-end">
                     <div>
                       <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Data (DD/MM/AAAA)</label>
                       <input
@@ -1175,7 +1175,7 @@ export const GameDetailView: React.FC = () => {
 
           {/* ── CONTEÚDO DA SUBTAB: RUBRICA & AVALIAÇÃO ── */}
           {activeSubTab === 'rubrica' && (
-            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-rubrica" className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-6">
+            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-rubrica" className="gd-panel rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#30363d]/60 pb-3">
                 <div>
                   <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
@@ -1341,7 +1341,7 @@ export const GameDetailView: React.FC = () => {
 
           {/* ── CONTEÚDO DA SUBTAB: GOT AWARDS ── */}
           {activeSubTab === 'got' && (
-            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-got" className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
+            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-got" className="gd-panel rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
               <div className="border-b border-[#30363d]/60 pb-3">
                 <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
                   <Trophy className="h-5 w-5 text-amber-400" aria-hidden="true" />
@@ -1409,7 +1409,7 @@ export const GameDetailView: React.FC = () => {
 
           {/* ── CONTEÚDO DA SUBTAB: ANOTAÇÕES & REVIEW ── */}
           {activeSubTab === 'anotacoes' && (
-            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-anotacoes" className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
+            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-anotacoes" className="gd-panel rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
               <div className="border-b border-[#30363d]/60 pb-3">
                 <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
                   <MessageSquare className="h-5 w-5 text-[#22d3ee]" aria-hidden="true" />
