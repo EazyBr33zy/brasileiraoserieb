@@ -96,6 +96,63 @@
   display: none;
 }
 
+/* ── TAREFA E (DESKTOP ≥1024px): ficha do jogo em destaque — capa 250–270px, painel lateral
+   320–360px com altura = card principal, quadros de estatísticas sem corte de texto e linha
+   de controles com folga nos botões. Classes-âncora gd-* adicionadas ao JSX; nenhuma classe
+   existente foi removida/renomeada. Abaixo de 1024px nada aqui se aplica (mobile inalterado). */
+@media (min-width: 1024px) {
+  /* Capa: clamp(240px, 19vw, 270px) — antes podia chegar a ~350px em telas ultrawide.
+     !important vence as utilities md:grid-cols-[...] / w-full do JSX (não alterado). */
+  .gd-focus-grid.lg\:grid {
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 28vw, 360px) !important;
+  }
+  .gd-hero-grid {
+    grid-template-columns: clamp(240px, 19vw, 270px) minmax(0, 1fr) !important;
+  }
+  /* A capa NÃO aumenta a altura do card: o wrapper da coluna é container de altura
+     (height:0 + stretch → altura = linha definida pelo conteúdo das informações) e a
+     caixa da capa preenche esse espaço com overflow-hidden — recorte mínimo, sem faixas
+     vazias, mantendo border-radius/borda e object-cover + center top. */
+  .gd-hero-grid > div:first-child {
+    height: 0;
+    min-height: 100%;
+    align-self: stretch;
+    overflow: hidden;
+  }
+
+  /* Quadros de estatísticas: colunas respeitam o conteúdo (mín. 170px); se não couberem
+     4 em linha, quebram sozinhos para 2x2 — nunca cortam texto. */
+  .gd-stats-grid.lg\:grid-cols-4 {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+  }
+  .gd-stats-grid > * {
+    min-width: 0;
+    padding: 14px !important; /* padroniza px-3 py-2.5 dos quadros (desktop) */
+  }
+  .gd-stats-grid [class*="min-h-[76px]"] > div[class*="font-mono"],
+  .gd-stats-grid [class*="min-h-[76px]"] > div:last-child {
+    white-space: nowrap;      /* "04/04/2026" e "último: 12/10/2026" completos, sem reticências */
+  }
+  .gd-stats-grid [class*="min-h-[76px]"] > div:last-child {
+    font-size: 13px;          /* texto secundário ("último: …", "há N dias") na escala pedida */
+  }
+
+  /* Linha de controles: STATUS / NOTA / TEMPO TOTAL / AÇÕES com os botões com folga */
+  .gd-owner-controls > *:last-child {
+    width: max-content;       /* coluna "auto" dimensionada pelo próprio grupo de botões */
+  }
+  .gd-actions-row {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .gd-actions-row button {
+    flex: none;
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding-inline: 16px;
+  }
+}
+
 /* Background subtle grid */
 .cyber-grid {
   background-size: 40px 40px;
@@ -181,6 +238,17 @@
     margin-top: 12px;
   }
 
+  /* B: zera também o mb do cabeçalho interno da faixa oculta (espaço residual, se a
+     regra acima vier a ser substituída por gap em utilidades futuras). */
+  .gd-playing-strip .gd-strip-head {
+    margin-bottom: 0;
+  }
+
+  /* G6 (aba #/jogando): corpo (abas + conteúdo) com o mesmo gap de 12px dos demais blocos */
+  .gd-body.space-y-5 > * + * {
+    margin-top: 12px;
+  }
+
   /* C: padding interno dos cards/blocos = 14px, igual em todos */
   .gd-page .gd-panel,
   .gd-page .gd-owner-controls,
@@ -258,5 +326,99 @@
     min-height: 44px;
     padding: 8px 12px;
     font-size: 12px;
+  }
+
+  /* ── TAREFA F (MOBILE): "RECÉM ZERADOS" mostra somente os 4 mais recentes.
+     A ordenação já é do mais recente p/ o mais antigo (getRecentBeatenGames); as duas
+     colunas são <li> irmãos consecutivos — nth-of-type(n+2) oculta a 2ª coluna (itens 5–8).
+     Nenhum dado removido do DOM/código; desktop (>768px) permanece com os 8 itens. */
+  .recent-beaten-section ul[role="list"] > li:nth-of-type(n+2) {
+    display: none;
+  }
+
+  /* ── TAREFA G (MOBILE): Painel — remover o "card dentro de card", ordem perfil→botões,
+     meta em largura total e indicadores em grade 2 colunas compactas. Somente CSS. */
+
+  /* G1/G3: container externo sem borda/fundo/padding — blocos internos usam a largura
+     disponível (margem lateral da página = px-4 do main = 16px). */
+  .dashboard-hero {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  .dashboard-hero.hero-glow::before {
+    display: none; /* remove o brilho ambiente do container externo no mobile */
+  }
+  /* G1: cartão do perfil também sem moldura — usa a largura total (padding interno mantido) */
+  .dashboard-profile-card {
+    border: none !important;
+    background: transparent !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* G3: tags ("CICLO 2026" / "N JOGOS REGISTRADOS") um pouco menores e centralizadas */
+  .dashboard-topbar > div:first-child {
+    justify-content: center;
+    font-size: 10px;
+  }
+
+  /* G3: ordem = tags → perfil+favoritos → botões ("Novo jogo"/"Explorar acervo" lado a
+     lado, larguras iguais, 44px) → indicadores. Nada foi movido no HTML: só order flex. */
+  .dashboard-main-grid {
+    margin-top: 12px; /* gap vertical padrão da escala mobile */
+  }
+  .dashboard-actions {
+    order: 1;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .dashboard-actions > button,
+  .dashboard-actions > a {
+    flex: none;
+    width: 100%;
+    min-height: 44px;
+    padding-left: 0;
+    padding-right: 0;
+    justify-self: stretch;
+  }
+  .dashboard-profile-card {
+    order: 2;
+  }
+  .dashboard-stats-grid {
+    order: 3;
+  }
+
+  /* G4: "Meta anual" em largura total; "Em andamento", "Acervo total" e "Tempo investido"
+     em grade de 2 colunas, cards compactos e do mesmo tamanho (o último ocupa a linha toda). */
+  .dashboard-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .dashboard-stats-grid > *:first-child {
+    grid-column: 1 / -1;
+  }
+  .dashboard-stats-grid > *:last-child {
+    grid-column: 1 / -1;
+  }
+
+  /* G5: altura determinada pelo conteúdo (sem espaço vazio embaixo) e linha fina de
+     destaque colada na base do card, sem sobra entre conteúdo e linha. */
+  .dashboard-stats-grid > * {
+    min-height: 0 !important;
+    height: auto !important;
+    align-self: start;
+    position: relative;
+    padding-bottom: 16px !important;
+  }
+  .dashboard-stats-grid > * > div:last-child {
+    margin-top: 0 !important;
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 6px;
   }
 }

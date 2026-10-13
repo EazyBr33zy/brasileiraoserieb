@@ -100,7 +100,7 @@ export const RecentBeatenSection: React.FC<RecentBeatenSectionProps> = ({ games 
   return (
     <section
       aria-labelledby="recent-beaten-heading"
-      className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4"
+      className="recent-beaten-section rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4"
     >
       {/* ── CABEÇALHO ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#30363d]/60 pb-3">

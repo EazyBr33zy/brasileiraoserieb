@@ -388,11 +388,11 @@ export const DashboardView: React.FC = () => {
     <div className="space-y-4 sm:space-y-6 pb-16 font-sans">
       {/* ── 1. HERO PANEL: IDENTIDADE, AÇÕES & TELEMETRIA ── */}
       <section
-        className="hero-glow cyber-grid animate-fade-up rounded-3xl border border-[#30363d] bg-gradient-to-br from-[#161b22] via-[#131a22] to-[#0d1117] p-4 sm:p-6 md:p-8 shadow-2xl"
+        className="hero-glow cyber-grid dashboard-hero animate-fade-up rounded-3xl border border-[#30363d] bg-gradient-to-br from-[#161b22] via-[#131a22] to-[#0d1117] p-4 sm:p-6 md:p-8 shadow-2xl"
         aria-label="Visão geral do painel"
       >
         {/* Top Badges + Ações Rápidas */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="dashboard-topbar flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
             <div className="flex items-center gap-1.5 rounded-full bg-[#f97316]/10 border border-[#f97316]/40 px-2.5 py-1 sm:px-3 font-bold uppercase tracking-wider text-[#fb923c]">
               <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#f97316]" aria-hidden="true" />
@@ -414,7 +414,7 @@ export const DashboardView: React.FC = () => {
           </div>
 
           {/* Ações Rápidas Hero */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="dashboard-actions flex flex-wrap items-center gap-2 sm:gap-3">
             {isOwner && (
               <button
                 type="button"
@@ -437,9 +437,9 @@ export const DashboardView: React.FC = () => {
         </div>
 
         {/* Linha Principal: identidade (esquerda) + cartões de dados (direita) */}
-        <div className="mt-5 grid gap-3 sm:mt-6 lg:grid-cols-[minmax(0,1fr)_clamp(280px,24vw,320px)] xl:grid-cols-[minmax(0,1fr)_clamp(300px,25vw,320px)] lg:items-stretch">
+        <div className="dashboard-main-grid mt-5 grid gap-3 sm:mt-6 lg:grid-cols-[minmax(0,1fr)_clamp(280px,24vw,320px)] xl:grid-cols-[minmax(0,1fr)_clamp(300px,25vw,320px)] lg:items-stretch">
           {/* COLUNA ESQUERDA — cartão de identidade + favoritos */}
-          <div className="flex h-full flex-col rounded-2xl border border-[#30363d] bg-[#0d1117]/60 p-4 sm:p-5 lg:p-6">
+          <div className="dashboard-profile-card flex h-full flex-col rounded-2xl border border-[#30363d] bg-[#0d1117]/60 p-4 sm:p-5 lg:p-6">
             <div className="mt-3 flex items-center gap-4 sm:gap-6 lg:mt-0">
               <ProfileAvatar
                 googlePhotoUrl={currentUser?.photoURL ?? null}
@@ -465,7 +465,7 @@ export const DashboardView: React.FC = () => {
           </div>
 
           {/* ── TELEMETRIA: COLUNA DIREITA COM OS 4 CARTÕES (META · ANDAMENTO · ACERVO · TEMPO) ── */}
-          <div className="grid content-start gap-2.5 sm:grid-cols-2 lg:content-stretch lg:grid-cols-1 lg:grid-rows-[auto_1fr_1fr_1fr]">
+          <div className="dashboard-stats-grid grid content-start gap-2.5 sm:grid-cols-2 lg:content-stretch lg:grid-cols-1 lg:grid-rows-[auto_1fr_1fr_1fr]">
           {/* META ANUAL — mais alto por causa da barra de progresso */}
           <StatCard
             label="Meta Anual"
