@@ -4,6 +4,8 @@ import { fmtMinutes } from '../../utils/markdownParser';
 
 interface SessionsSummaryProps {
   sessions: GameplayDaySession[];
+  /** Remove a faixa de resumo e os agrupamentos por mês — mantém apenas o título "Histórico de Sessões de Gameplay" (aba #/jogando) */
+  hideSummary?: boolean;
 }
 
 const MONTH_NAMES = [
@@ -35,8 +37,11 @@ const StatCard: React.FC<{ label: string; value: string; accent?: string }> = ({
  * Faixa de resumo das sessões — calculada a partir das sessões JÁ EXISTENTES
  * (sem campos novos no banco e sem alterar nenhuma lógica de salvamento).
  */
-export const SessionsSummary: React.FC<SessionsSummaryProps> = ({ sessions }) => {
+export const SessionsSummary: React.FC<SessionsSummaryProps> = ({ sessions, hideSummary = false }) => {
   const [showAllMonths, setShowAllMonths] = useState(false);
+
+  // Solicitação do dono: remover o resumo/agrupamentos por mês (aba #/jogando) — só JSX de exibição
+  if (hideSummary) return null;
 
   const summary = useMemo(() => {
     const total = sessions.length;
