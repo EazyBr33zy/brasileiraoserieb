@@ -24,26 +24,13 @@ const Card: React.FC<{ title: React.ReactNode; right?: React.ReactNode; children
   </div>
 );
 
-const Row: React.FC<{ label: string; value?: string | number }> = ({ label, value }) => {
-  if (value === undefined || value === null || value === '' || Number(value) === 0 && typeof value === 'number' && !value) return null;
-  return (
-    <div className="flex items-start justify-between gap-3 text-xs">
-      <span className="shrink-0 font-bold uppercase tracking-wide text-[#9aa4b2]">{label}</span>
-      <span className="min-w-0 truncate text-right font-medium text-white" title={String(value)}>
-        {String(value)}
-      </span>
-    </div>
-  );
-};
-
 export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, navigate }) => {
   const others = playingGames.filter((g) => g.id !== game.id);
-  const hltbMin = parseToMinutes(game.hltb);
   // Tempo efetivo dos jogos em andamento (mesma helper da ficha; exibe apenas o texto já formatado)
   const effectiveTempoOf = (g: GameItem): string => getGameEffectiveTime(g).tempo || g.tempo || '0:00';
 
   return (
-    <div className="space-y-4">
+    <div>
       {/* ── OUTROS EM ANDAMENTO ── */}
       {others.length > 0 && (
         <Card
@@ -89,24 +76,6 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
           </div>
         </Card>
       )}
-
-      {/* ── FICHA TÉCNICA ── */}
-      <Card title="Ficha técnica">
-        <div className="space-y-2">
-          <Row label="Console" value={game.console} />
-          <Row label="Gênero" value={game.genero} />
-          <Row label="Lançamento" value={game.ano_lancamento} />
-          <Row label="Desenvolvedora" value={game.developer} />
-          <Row label="Publicadora" value={game.publisher} />
-          <Row label="Início" value={game.data_inicio} />
-          {game.status === 'zerado' && <Row label="Zerado em" value={game.data_zerado || game.ano_zerado} />}
-          <Row label="HLTB estimado" value={game.hltb ? formatTempoDisplay(game.hltb) : undefined} />
-          <Row label="HLTB real" value={game.hltb_real ? formatTempoDisplay(game.hltb_real) : undefined} />
-          {hltbMin <= 0 && !game.hltb && (
-            <div className="pt-1 text-xs text-[#9aa4b2]">Sem dados de HLTB cadastrados.</div>
-          )}
-        </div>
-      </Card>
     </div>
   );
 };
