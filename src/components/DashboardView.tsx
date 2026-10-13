@@ -433,14 +433,6 @@ export const DashboardView: React.FC = () => {
               <Layers className="h-4 w-4 text-[#22d3ee]" aria-hidden="true" />
               <span>Explorar Acervo</span>
             </a>
-
-            <a
-              href="#/wrapup"
-              className="min-h-[44px] flex items-center justify-center gap-2 px-2 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#f59e0b] hover:text-[#fbbf24] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#f59e0b] focus:outline-none rounded-xl"
-            >
-              <Trophy className="h-4 w-4" aria-hidden="true" />
-              <span>Retrospectiva</span>
-            </a>
           </div>
         </div>
 
@@ -860,7 +852,6 @@ export const DashboardView: React.FC = () => {
             href="#/wrapup"
             className="text-xs font-bold text-[#f59e0b] hover:text-[#fbbf24] flex items-center gap-1 cursor-pointer transition-colors"
           >
-            <span>Ver Retrospectiva Completa</span>
             <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </a>
         </div>
