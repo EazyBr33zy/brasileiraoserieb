@@ -1,2 +1,7 @@
 node_modules/
 dist/
+
+# artefatos locais
+*.zip
+*.patch
+test.png
