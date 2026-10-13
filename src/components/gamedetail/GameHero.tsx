@@ -36,6 +36,8 @@ export interface GameHeroProps {
   developerLine?: string;
   /** Capa compacta (aba #/jogando): largura da coluna da capa reduzida no desktop */
   compactCover?: boolean;
+  /** Capa estica a altura da coluna (aba #/jogando): remove o vazio embaixo da capa e alinha topo/base com a lateral */
+  stretchCover?: boolean;
 }
 
 const StatBox: React.FC<{
@@ -44,8 +46,9 @@ const StatBox: React.FC<{
   sub?: string;
   valueClass?: string;
 }> = ({ label, value, sub, valueClass = 'text-white' }) => (
-  <div className="min-w-0 rounded-lg border border-[#30363d] bg-black/25 px-3 py-2.5">
-    <div className="text-xs font-bold uppercase tracking-wider text-[#9aa4b2]">{label}</div>
+  <div className="flex min-h-[76px] min-w-0 flex-col justify-center rounded-lg border border-[#30363d] bg-black/25 px-3 py-2.5">
+    {/* min-h no rótulo: "TEMPO REGISTRADO" pode quebrar em 2 linhas sem alterar altura/padding das 4 caixas */}
+    <div className="min-h-[16px] text-xs font-bold uppercase leading-4 tracking-wide text-[#9aa4b2]">{label}</div>
     <div className={`mt-1 truncate font-mono font-bold leading-tight ${valueClass}`}>{value}</div>
     {sub && <div className="mt-0.5 truncate text-xs text-[#9aa4b2]" title={sub}>{sub}</div>}
   </div>
@@ -73,6 +76,7 @@ export const GameHero: React.FC<GameHeroProps> = ({
   controls,
   developerLine,
   compactCover = false,
+  stretchCover = false,
 }) => {
   const coverBg = optimizeCoverUrl(game.capa, 'hero');
   const isFav = nota === 11;
@@ -98,20 +102,21 @@ export const GameHero: React.FC<GameHeroProps> = ({
         </>
       )}
 
-      <div className={`relative z-10 grid gap-6 ${compactCover ? 'md:grid-cols-[200px_minmax(0,1fr)]' : 'md:grid-cols-[260px_minmax(0,1fr)]'}`}>
+      <div className={`relative z-10 grid gap-6 ${compactCover ? 'md:grid-cols-[200px_minmax(0,1fr)]' : 'md:grid-cols-[260px_minmax(0,1fr)]'} ${stretchCover ? 'md:items-stretch' : ''}`}>
         {/* Capa grande (compactCover reduz p/ 200px no desktop — aba #/jogando) */}
-        <div className={`mx-auto w-40 shrink-0 sm:w-52 md:mx-0 ${compactCover ? 'md:w-[200px]' : 'md:w-[260px]'}`} style={{ aspectRatio: '3 / 4' }}>
+        <div className={`${stretchCover ? 'hidden md:block h-full min-h-0' : 'mx-auto w-40 shrink-0 sm:w-52 md:mx-0'} ${!stretchCover && (compactCover ? 'md:w-[200px]' : 'md:w-[260px]')}`} style={stretchCover ? undefined : { aspectRatio: '3 / 4' }}>
+          {/* Na aba #/jogando a capa estica a altura da coluna sem cortar a arte: object-contain + fundo preto nas barras */}
           <GameCover
             src={game.capa}
             title={game.title}
             consoleName={game.console}
             size="hero"
-            className="h-full w-full rounded-xl border border-[#30363d]/70 shadow-2xl shadow-black/50"
+            className={`aspect-auto rounded-xl border border-[#30363d]/70 bg-black shadow-2xl shadow-black/50 ${stretchCover ? 'h-full w-full [&_img]:object-contain' : 'h-full w-full'}`}
           />
         </div>
 
-        {/* Coluna de dados */}
-        <div className="min-w-0 space-y-4">
+        {/* Coluna de dados (gap uniforme entre todos os blocos: badges → título → stats → HLTB → controles) */}
+        <div className="min-w-0 space-y-3">
           {/* Badges: console, gênero, status ("Zerado em" SOMENTE se zerado) */}
           <div className="flex flex-wrap items-center gap-2">
             <span
@@ -143,9 +148,9 @@ export const GameHero: React.FC<GameHeroProps> = ({
             {cleanTitle(game.title)}
           </h1>
 
-          {/* Desenvolvedora · ano de lançamento (só se existirem) */}
+          {/* Desenvolvedora · ano de lançamento (só se existirem) — mt -1 compensa o space-y-3 para manter gap uniforme entre blocos */}
           {developerLine && (
-            <p className="text-sm text-[#9aa4b2]">{developerLine}</p>
+            <p className="-mt-1 text-sm text-[#9aa4b2]">{developerLine}</p>
           )}
 
           {/* Badges de premiações GOT */}

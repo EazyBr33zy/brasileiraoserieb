@@ -15,8 +15,8 @@ const Card: React.FC<{ title: React.ReactNode; right?: React.ReactNode; children
   right,
   children,
 }) => (
-  <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 shadow-md">
-    <div className="mb-3 flex items-center justify-between gap-2 border-b border-[#30363d]/60 pb-2.5">
+  <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-[#30363d] bg-[#161b22] p-4 shadow-md">
+    <div className="mb-3 flex shrink-0 items-center justify-between gap-2 border-b border-[#30363d]/60 pb-2.5">
       <span className="text-xs font-bold uppercase tracking-wider text-[#9aa4b2]">{title}</span>
       {right}
     </div>
@@ -30,7 +30,7 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
   const effectiveTempoOf = (g: GameItem): string => getGameEffectiveTime(g).tempo || g.tempo || '0:00';
 
   return (
-    <div>
+    <div className="flex min-h-0 flex-col">
       {/* ── OUTROS EM ANDAMENTO ── */}
       {others.length > 0 && (
         <Card
@@ -46,7 +46,7 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
             </span>
           }
         >
-          <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
+          <div className="max-h-72 space-y-2 overflow-y-auto pr-1 lg:max-h-none lg:flex-1 lg:min-h-0">
             {others.map((pg) => {
               const played = parseToMinutes(effectiveTempoOf(pg));
               const h = parseToMinutes(pg.hltb);

@@ -4,23 +4,23 @@ export type StatAccent = 'cyan' | 'purple' | 'blue' | 'amber';
 
 const ACCENTS: Record<StatAccent, { border: string; iconBg: string; bar: string }> = {
   cyan: {
-    border: 'border-[#22d3ee]/25 hover:border-[#22d3ee]/60',
-    iconBg: 'bg-[#22d3ee]/15 text-[#22d3ee]',
+    border: 'border-[#22d3ee]/15 hover:border-[#22d3ee]/40',
+    iconBg: 'bg-[#22d3ee]/10 text-[#22d3ee]',
     bar: 'bg-[#22d3ee]',
   },
   purple: {
-    border: 'border-[#a855f7]/25 hover:border-[#a855f7]/60',
-    iconBg: 'bg-[#a855f7]/15 text-[#a855f7]',
+    border: 'border-[#a855f7]/15 hover:border-[#a855f7]/40',
+    iconBg: 'bg-[#a855f7]/10 text-[#a855f7]',
     bar: 'bg-[#a855f7]',
   },
   blue: {
-    border: 'border-[#38bdf8]/25 hover:border-[#38bdf8]/60',
-    iconBg: 'bg-[#38bdf8]/15 text-[#38bdf8]',
+    border: 'border-[#38bdf8]/15 hover:border-[#38bdf8]/40',
+    iconBg: 'bg-[#38bdf8]/10 text-[#38bdf8]',
     bar: 'bg-[#38bdf8]',
   },
   amber: {
-    border: 'border-[#fbbf24]/25 hover:border-[#fbbf24]/60',
-    iconBg: 'bg-[#fbbf24]/15 text-[#fbbf24]',
+    border: 'border-[#fbbf24]/15 hover:border-[#fbbf24]/40',
+    iconBg: 'bg-[#fbbf24]/10 text-[#fbbf24]',
     bar: 'bg-[#fbbf24]',
   },
 };
@@ -50,35 +50,35 @@ export function StatCard({
 
   return (
     <div
-      className={`flex h-full min-h-[96px] flex-col justify-between rounded-xl border bg-[#0d1117]/80 p-4 transition-colors xl:p-5 ${a.border}`}
+      className={`flex h-full min-h-[96px] flex-col justify-between rounded-xl border bg-[#0d1117]/80 p-3 transition-colors xl:p-4 ${a.border}`}
     >
       {/* Cabeçalho: ícone · texto · valor */}
-      <div className="grid w-full grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3">
+      <div className="grid w-full grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2.5">
         <span
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${a.iconBg}`}
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${a.iconBg}`}
           aria-hidden="true"
         >
           {icon}
         </span>
 
         <div className="min-w-0">
-          <p className="whitespace-nowrap text-xs font-bold uppercase tracking-wider text-[#c9d1d9]">{label}</p>
-          <p className="line-clamp-2 text-[13px] leading-snug text-[#9aa4b2]" title={description}>
+          <p className="whitespace-nowrap text-xs font-bold uppercase tracking-wide text-[#c9d1d9]">{label}</p>
+          <p className="line-clamp-2 text-xs leading-snug text-[#9aa4b2]" title={description}>
             {description}
           </p>
         </div>
 
         <div className="flex shrink-0 items-center justify-end gap-1">
           {action}
-          <div className="whitespace-nowrap text-right font-mono text-xl font-bold tabular-nums leading-none text-[#f0f6fc] sm:text-2xl lg:text-[28px]">
+          <div className="whitespace-nowrap text-right font-mono text-lg font-bold tabular-nums leading-none text-[#f0f6fc] sm:text-xl lg:text-[22px]">
             {value}
           </div>
         </div>
       </div>
 
-      {/* Barra de progresso (apenas META ANUAL): logo abaixo do cabeçalho, margem de 12px */}
+      {/* Barra de progresso (apenas META ANUAL): logo abaixo do cabeçalho — gap uniforme com a linha de acento */}
       {typeof progress === 'number' && (
-        <div className="mt-3 flex items-center gap-2">
+        <div className="mt-2.5 flex items-center gap-2">
           <div className="h-2 flex-1 overflow-hidden rounded-full bg-[#21262d]">
             <div
               className="h-full rounded-full bg-gradient-to-r from-[#22d3ee] to-[#a855f7] transition-all duration-700"
@@ -94,7 +94,7 @@ export function StatCard({
       )}
 
       {/* Linha fina colorida de acento na base do cartão */}
-      <div className={`mt-3 h-[2px] w-full rounded-full opacity-60 ${a.bar}`} aria-hidden="true" />
+      <div className={`mt-2.5 h-[2px] w-full rounded-full opacity-40 ${a.bar}`} aria-hidden="true" />
     </div>
   );
 }
