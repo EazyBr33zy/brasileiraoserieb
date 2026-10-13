@@ -21,12 +21,15 @@ import {
   CheckCircle2,
   RefreshCw,
   Sliders,
+  ChevronLeft,
+  ChevronRight,
   MessageSquare
 } from 'lucide-react';
 import { getPlatformStyle, getScoreColor, getScoreLabel } from '../utils/platformStyles';
 import { calculateRubricScore, fmtH, fmtMinutes, parseTime, parseToMinutes, formatMinutes, formatTempoDisplay, cleanTitle, formatDateBR, sortActiveGames } from '../utils/markdownParser';
 import { GameReviewRubric, GameplayDaySession, GameStatus, GameItem } from '../types/game';
 import { useIsOwner } from '../hooks/useIsOwner';
+import { GameCover } from './GameCover';
 import { GameHero } from './gamedetail/GameHero';
 import { GameSidebar } from './gamedetail/GameSidebar';
 import { Modal } from './Modal';
@@ -59,6 +62,8 @@ export const GameDetailView: React.FC = () => {
   const isOwner = useIsOwner();
 
   const routeGameId = route.params.id;
+  // Aba standalone "Jogando Agora" (#/jogando): layout compacto em duas colunas
+  const isPlayingTab = route.path === 'jogando' && !routeGameId;
 
   // Games currently with status "jogando"
   const playingGames = useMemo(() => {
@@ -792,7 +797,7 @@ export const GameDetailView: React.FC = () => {
 
   return (
     <div className="space-y-5 pb-20 font-sans">
-      {/* ── SELETOR DE JOGOS EM ANDAMENTO ── */}
+      {/* ── SELETOR DE JOGOS EM ANDAMENTO (aba #/jogando: abaixo do hero, já que o hero ocupa a largura toda) ── */}
       {playingGames.length > 0 && (
         <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md lg:hidden sm:p-4">
           <div className="flex items-center justify-between text-xs mb-2.5">
@@ -808,6 +813,7 @@ export const GameDetailView: React.FC = () => {
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
             {playingGames.map((pg) => {
               const isSelected = game.id === pg.id;
+              const plat = getPlatformStyle(pg.console);
               return (
                 <button
                   key={pg.id}
@@ -821,6 +827,9 @@ export const GameDetailView: React.FC = () => {
                   aria-pressed={isSelected}
                   aria-label={`Selecionar ${cleanTitle(pg.title)}`}
                 >
+                  <div className="h-7 w-5 rounded overflow-hidden shrink-0 bg-black">
+                    <GameCover src={pg.capa} title={pg.title} consoleName={pg.console} size="thumb" />
+                  </div>
                   <div className="text-left">
                     <div className="truncate max-w-[150px] leading-tight">{cleanTitle(pg.title)}</div>
                     <div className="font-mono text-xs opacity-70 mt-0.5 leading-none">⏱ {formatTempoDisplay(getGameEffectiveTime(pg).tempo || pg.tempo || '0:00')}</div>
@@ -890,7 +899,42 @@ export const GameDetailView: React.FC = () => {
         controls={ownerControls}
       />
 
-      {/* ── CORPO: ABAS (esquerda) + LATERAL (direita) ── */}
+      {/* ── NAVEGAÇÃO ‹ › ENTRE JOGOS (aba #/jogando): visível SOMENTE no desktop, onde a faixa de chips é ocultada; em <1024px o carrossel de chips acima já cobre a navegação ── */}
+      {isPlayingTab && playingGames.length > 0 && (
+        <div className="hidden lg:flex items-center justify-center gap-3 rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md">
+          <button
+            type="button"
+            onClick={() => {
+              const idx = playingGames.findIndex((g) => g.id === game.id);
+              const prev = playingGames[(idx - 1 + playingGames.length) % playingGames.length];
+              navigate(`#/jogo/${encodeURIComponent(prev.id)}`);
+            }}
+            className="min-h-[44px] w-11 shrink-0 rounded-xl border border-[#30363d] bg-[#0d1117] text-[#9aa4b2] hover:border-[#22d3ee] hover:text-white flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
+            title="Jogo anterior"
+            aria-label="Jogo anterior"
+          >
+            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <span className="font-mono text-xs font-bold text-[#22d3ee]">
+            {playingGames.findIndex((g) => g.id === game.id) + 1} de {playingGames.length}
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              const idx = playingGames.findIndex((g) => g.id === game.id);
+              const next = playingGames[(idx + 1) % playingGames.length];
+              navigate(`#/jogo/${encodeURIComponent(next.id)}`);
+            }}
+            className="min-h-[44px] w-11 shrink-0 rounded-xl border border-[#30363d] bg-[#0d1117] text-[#9aa4b2] hover:border-[#22d3ee] hover:text-white flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
+            title="Próximo jogo"
+            aria-label="Próximo jogo"
+          >
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
+      )}
+
+      {/* ── CORPO: ABAS (esquerda) + LATERAL GameSidebar (direita). Em <1024px a lateral vai para baixo das abas. ── */}
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="min-w-0 space-y-5">
           {/* ── ABAS DE NAVEGAÇÃO INTERNA (SUBTABS) ── */}

@@ -584,7 +584,6 @@ export const DashboardView: React.FC = () => {
             </div>
           </div>
 
-
           <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-5 items-stretch">
             {/* CARD PRINCIPAL DO JOGO (FEATURED) */}
             <div className="lg:col-span-8 rounded-2xl border border-[#a855f7]/30 bg-gradient-to-b from-[#0d1117]/90 to-[#0d1117]/60 p-3 sm:p-5 flex flex-col justify-between h-full shadow-inner backdrop-blur-sm">
@@ -756,7 +755,14 @@ export const DashboardView: React.FC = () => {
                       href={`#/jogo/${encodeURIComponent(g.id)}`}
                       className={`flex items-center gap-2.5 p-2 rounded-xl border border-[#30363d] bg-[#161b22] ${accent.ring} transition-all group cursor-pointer`}
                     >
-                      <span className={`h-8 w-1 shrink-0 rounded-full ${accent.bar}`} aria-hidden="true" />
+                      <div className="h-12 w-9 rounded-lg overflow-hidden shrink-0 border border-[#30363d] group-hover:border-transparent group-hover:shadow-[0_0_10px_rgba(34,211,238,0.35)]">
+                        <GameCover
+                          src={g.capa}
+                          title={g.title}
+                          consoleName={g.console}
+                          size="thumb"
+                        />
+                      </div>
                       <div className="min-w-0 flex-1">
                         <div className="text-xs font-mono font-bold text-[#9aa4b2] group-hover:text-white/80 transition-colors">
                           {pStyle.name}

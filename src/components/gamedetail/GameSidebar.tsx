@@ -2,6 +2,7 @@ import React from 'react';
 import { GameCover } from '../GameCover';
 import { GameItem } from '../../types/game';
 import { cleanTitle, formatTempoDisplay, parseToMinutes } from '../../utils/markdownParser';
+import { getGameEffectiveTime } from '../../utils/gameCalculations';
 
 export interface GameSidebarProps {
   game: GameItem;
@@ -38,6 +39,8 @@ const Row: React.FC<{ label: string; value?: string | number }> = ({ label, valu
 export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, navigate }) => {
   const others = playingGames.filter((g) => g.id !== game.id);
   const hltbMin = parseToMinutes(game.hltb);
+  // Tempo efetivo dos jogos em andamento (mesma helper da ficha; exibe apenas o texto já formatado)
+  const effectiveTempoOf = (g: GameItem): string => getGameEffectiveTime(g).tempo || g.tempo || '0:00';
 
   return (
     <div className="space-y-4">
@@ -58,7 +61,7 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
         >
           <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
             {others.map((pg) => {
-              const played = parseToMinutes(pg.tempo);
+              const played = parseToMinutes(effectiveTempoOf(pg));
               const h = parseToMinutes(pg.hltb);
               const pct = h > 0 ? Math.min(100, Math.round((played / h) * 100)) : null;
               return (
@@ -76,7 +79,7 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
                     <div className="truncate text-xs font-bold text-white">{cleanTitle(pg.title)}</div>
                     <div className="mt-0.5 flex items-center gap-2 text-xs text-[#9aa4b2]">
                       <span className="truncate">{pg.console}</span>
-                      <span className="shrink-0 font-mono">⏱ {formatTempoDisplay(pg.tempo || '0:00')}</span>
+                      <span className="shrink-0 font-mono">⏱ {formatTempoDisplay(effectiveTempoOf(pg))}</span>
                       {pct !== null && <span className="shrink-0 font-mono text-cyan-300">{pct}%</span>}
                     </div>
                   </div>
