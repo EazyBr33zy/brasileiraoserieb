@@ -35,9 +35,6 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
   if (Number.isFinite(hours) && hours > 0) stats.push({ label: 'Tempo jogado', value: fmtH(hours) });
   if (game.data_zerado) stats.push({ label: 'Zerado em', value: formatDateBR(game.data_zerado) });
   if (sessionCount > 0) stats.push({ label: 'Sessões', value: String(sessionCount) });
-  if (game.nota !== undefined && Number.isFinite(game.nota)) {
-    stats.push({ label: 'Nota', value: game.nota.toFixed(1) });
-  }
 
   const rubricBars = game.rubric
     ? RUBRIC_GROUPS.map((g) => ({ label: g.label, avg: groupAvg(game.rubric!, g.keys) })).filter(
@@ -69,23 +66,24 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
         aria-hidden="true"
       />
 
-      {/* Marca d'água GOTY inteira, atrás do conteúdo, canto inferior direito */}
+      {/* Marca d'água GOTY inteira, atrás do título, canto superior direito */}
       <span
-        className="pointer-events-none absolute bottom-1 right-3 select-none font-heading text-5xl font-black uppercase tracking-widest text-[#ffd700]/[0.07] sm:text-6xl"
+        className="pointer-events-none absolute right-4 top-10 select-none font-heading text-5xl font-black uppercase tracking-widest text-[#ffd700]/[0.05] sm:text-6xl"
         aria-hidden="true"
       >
         GOTY
       </span>
 
-      <div className="relative z-10 flex h-full flex-col gap-4 md:flex-row">
-        {/* Capa grande (esquerda) */}
-        <div className="w-[110px] shrink-0 self-start md:w-[clamp(190px,22%,220px)] md:self-stretch">
-          <div className="h-full overflow-hidden rounded-xl border-2 border-[#ffd700]/70 shadow-[0_0_18px_rgba(255,215,0,0.25)]">
+      {/* Linha 1: capa + conteúdo */}
+      <div className="relative z-10 flex flex-1 flex-col gap-4 md:flex-row">
+        {/* Capa grande (esquerda, ~200px de largura) */}
+        <div className="w-[110px] shrink-0 self-start md:w-[200px]">
+          <div className="aspect-[3/4] overflow-hidden rounded-xl border-2 border-[#ffd700]/70 shadow-[0_0_18px_rgba(255,215,0,0.25)]">
             <GameCover src={game.capa} title={game.title} consoleName={game.console} size="lg" priority />
           </div>
         </div>
 
-        {/* Coluna direita */}
+        {/* Bloco de texto ao lado da capa */}
         <div className="flex min-w-0 flex-1 flex-col justify-between gap-4">
           <div>
             <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#ffd700]">
@@ -117,35 +115,15 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
             </div>
           </div>
 
-          {/* Destaques (mini-estatísticas) */}
+          {/* Destaques (mini-estatísticas) — grade 2x2, valores sem truncar */}
           {stats.length > 0 && (
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2">
               {stats.map((s) => (
                 <div key={s.label} className="rounded-lg border border-white/10 bg-black/40 px-2.5 py-2">
                   <div className="text-xs font-medium text-slate-400">{s.label}</div>
-                  <div className="mt-0.5 truncate font-mono text-lg font-bold tabular-nums text-white" title={s.value}>
+                  <div className="mt-0.5 whitespace-nowrap font-mono text-[18px] font-bold tabular-nums text-white">
                     {s.value}
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Barras da rubrica (se houver) */}
-          {rubricBars.length > 0 && (
-            <div className="hidden flex-col gap-2 sm:flex">
-              {rubricBars.map((bar) => (
-                <div key={bar.label} className="flex items-center gap-2">
-                  <span className="w-28 shrink-0 truncate text-xs text-slate-400">{bar.label}</span>
-                  <div className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-white/10">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-[#ffd700] to-[#ff7a00]"
-                      style={{ width: `${Math.min(((bar.avg as number) / 10) * 100, 100)}%` }}
-                    />
-                  </div>
-                  <span className="w-8 shrink-0 text-right font-mono text-xs tabular-nums text-[#ffd700]">
-                    {(bar.avg as number).toFixed(1)}
-                  </span>
                 </div>
               ))}
             </div>
@@ -164,6 +142,26 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
           </div>
         </div>
       </div>
+
+      {/* Linha 2: barras da rubrica ocupando a largura TOTAL do cartão */}
+      {rubricBars.length > 0 && (
+        <div className="relative z-10 mt-4 flex flex-col gap-2">
+          {rubricBars.map((bar) => (
+            <div key={bar.label} className="flex items-center gap-2">
+              <span className="w-28 shrink-0 truncate text-xs text-slate-400">{bar.label}</span>
+              <div className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-white/10">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[#ffd700] to-[#ff7a00]"
+                  style={{ width: `${Math.min(((bar.avg as number) / 10) * 100, 100)}%` }}
+                />
+              </div>
+              <span className="w-8 shrink-0 text-right font-mono text-xs tabular-nums text-[#ffd700]">
+                {(bar.avg as number).toFixed(1)}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
