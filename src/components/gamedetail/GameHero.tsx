@@ -32,6 +32,8 @@ export interface GameHeroProps {
   hltbBlock: React.ReactNode;
   /** Painel do dono (STATUS / NOTA / TEMPO TOTAL / AÇÕES), JSX atual sem alterações */
   controls: React.ReactNode;
+  /** Linha opcional "desenvolvedora/publicadora · ano de lançamento" exibida sob o título */
+  developerLine?: string;
 }
 
 const StatBox: React.FC<{
@@ -67,6 +69,7 @@ export const GameHero: React.FC<GameHeroProps> = ({
   daysSinceStart,
   hltbBlock,
   controls,
+  developerLine,
 }) => {
   const coverBg = optimizeCoverUrl(game.capa, 'hero');
   const isFav = nota === 11;
@@ -100,7 +103,6 @@ export const GameHero: React.FC<GameHeroProps> = ({
             title={game.title}
             consoleName={game.console}
             size="hero"
-            grayscale={game.status === 'zerado'}
             className="h-full w-full rounded-xl border border-[#30363d]/70 shadow-2xl shadow-black/50"
           />
         </div>
@@ -137,6 +139,11 @@ export const GameHero: React.FC<GameHeroProps> = ({
           >
             {cleanTitle(game.title)}
           </h1>
+
+          {/* Desenvolvedora · ano de lançamento (só se existirem) */}
+          {developerLine && (
+            <p className="text-sm text-[#9aa4b2]">{developerLine}</p>
+          )}
 
           {/* Badges de premiações GOT */}
           {gotBadges.length > 0 && (

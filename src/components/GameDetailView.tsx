@@ -21,8 +21,6 @@ import {
   CheckCircle2,
   RefreshCw,
   Sliders,
-  ChevronLeft,
-  ChevronRight,
   MessageSquare
 } from 'lucide-react';
 import { getPlatformStyle, getScoreColor, getScoreLabel } from '../utils/platformStyles';
@@ -32,6 +30,7 @@ import { useIsOwner } from '../hooks/useIsOwner';
 import { GameCover } from './GameCover';
 import { GameHero } from './gamedetail/GameHero';
 import { GameSidebar } from './gamedetail/GameSidebar';
+import { SessionsSummary } from './gamedetail/SessionsSummary';
 import { Modal } from './Modal';
 import { showToast } from '../utils/toast';
 import { db } from '../firebase/config';
@@ -62,8 +61,6 @@ export const GameDetailView: React.FC = () => {
   const isOwner = useIsOwner();
 
   const routeGameId = route.params.id;
-  // Aba standalone "Jogando Agora" (#/jogando): layout compacto em duas colunas
-  const isPlayingTab = route.path === 'jogando' && !routeGameId;
 
   // Games currently with status "jogando"
   const playingGames = useMemo(() => {
@@ -667,7 +664,7 @@ export const GameDetailView: React.FC = () => {
               {/* Barra Visual */}
               <div className="relative h-2.5 w-full rounded-full bg-[#161b22] border border-[#30363d]/60 overflow-hidden p-0.5">
                 <div
-                  className={`h-full rounded-full transition-all duration-500 ${
+                  className={`h-full rounded-full transition-all duration-500 motion-reduce:transition-none ${
                     pct >= 100
                       ? 'bg-gradient-to-r from-[#22d3ee] to-emerald-400'
                       : 'bg-gradient-to-r from-[#0284c7] via-[#22d3ee] to-[#a855f7]'
@@ -802,7 +799,7 @@ export const GameDetailView: React.FC = () => {
         <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md lg:hidden sm:p-4">
           <div className="flex items-center justify-between text-xs mb-2.5">
             <span className="font-bold uppercase tracking-wider text-[#9aa4b2] flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-[#22d3ee] animate-pulse" aria-hidden="true" />
+              <span className="h-2 w-2 rounded-full bg-[#22d3ee] animate-pulse motion-reduce:animate-none" aria-hidden="true" />
               <span>Jogando Agora ({playingGames.length})</span>
             </span>
             <span className="text-xs font-mono text-[#22d3ee] font-bold">
@@ -897,50 +894,24 @@ export const GameDetailView: React.FC = () => {
         })()}
         hltbBlock={hltbBlock}
         controls={ownerControls}
+        developerLine={(() => {
+          const parts = [game.developer, game.publisher].filter(Boolean);
+          const dev = Array.from(new Set(parts)).join(' · ');
+          return dev || game.ano_lancamento ? `${dev}${dev && game.ano_lancamento ? ' · ' : ''}${game.ano_lancamento || ''}` : undefined;
+        })()}
       />
-
-      {/* ── NAVEGAÇÃO ‹ › ENTRE JOGOS (aba #/jogando): visível SOMENTE no desktop, onde a faixa de chips é ocultada; em <1024px o carrossel de chips acima já cobre a navegação ── */}
-      {isPlayingTab && playingGames.length > 0 && (
-        <div className="hidden lg:flex items-center justify-center gap-3 rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md">
-          <button
-            type="button"
-            onClick={() => {
-              const idx = playingGames.findIndex((g) => g.id === game.id);
-              const prev = playingGames[(idx - 1 + playingGames.length) % playingGames.length];
-              navigate(`#/jogo/${encodeURIComponent(prev.id)}`);
-            }}
-            className="min-h-[44px] w-11 shrink-0 rounded-xl border border-[#30363d] bg-[#0d1117] text-[#9aa4b2] hover:border-[#22d3ee] hover:text-white flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
-            title="Jogo anterior"
-            aria-label="Jogo anterior"
-          >
-            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-          </button>
-          <span className="font-mono text-xs font-bold text-[#22d3ee]">
-            {playingGames.findIndex((g) => g.id === game.id) + 1} de {playingGames.length}
-          </span>
-          <button
-            type="button"
-            onClick={() => {
-              const idx = playingGames.findIndex((g) => g.id === game.id);
-              const next = playingGames[(idx + 1) % playingGames.length];
-              navigate(`#/jogo/${encodeURIComponent(next.id)}`);
-            }}
-            className="min-h-[44px] w-11 shrink-0 rounded-xl border border-[#30363d] bg-[#0d1117] text-[#9aa4b2] hover:border-[#22d3ee] hover:text-white flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
-            title="Próximo jogo"
-            aria-label="Próximo jogo"
-          >
-            <ChevronRight className="h-4 w-4" aria-hidden="true" />
-          </button>
-        </div>
-      )}
 
       {/* ── CORPO: ABAS (esquerda) + LATERAL GameSidebar (direita). Em <1024px a lateral vai para baixo das abas. ── */}
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="min-w-0 space-y-5">
-          {/* ── ABAS DE NAVEGAÇÃO INTERNA (SUBTABS) ── */}
-          <div className="flex items-center gap-2 border-b border-[#30363d] pb-2 overflow-x-auto scrollbar-none">
+          {/* ── ABAS DE NAVEGAÇÃO INTERNA (SUBTABS) — segmentadas, sticky abaixo do header, roláveis no mobile ── */}
+          <div role="tablist" aria-label="Seções da ficha do jogo" className="sticky top-16 z-10 -mx-1 flex items-center gap-2 overflow-x-auto scrollbar-none rounded-xl border border-[#30363d] bg-[#161b22]/95 p-1.5 backdrop-blur motion-reduce:backdrop-blur-none">
             <button
               type="button"
+              role="tab"
+              id="tab-sessoes"
+              aria-selected={activeSubTab === 'sessoes'}
+              aria-controls="game-detail-tabpanel"
               onClick={() => setActiveSubTab('sessoes')}
               className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
                 activeSubTab === 'sessoes'
@@ -954,6 +925,10 @@ export const GameDetailView: React.FC = () => {
 
             <button
               type="button"
+              role="tab"
+              id="tab-rubrica"
+              aria-selected={activeSubTab === 'rubrica'}
+              aria-controls="game-detail-tabpanel"
               onClick={() => setActiveSubTab('rubrica')}
               className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
                 activeSubTab === 'rubrica'
@@ -967,6 +942,10 @@ export const GameDetailView: React.FC = () => {
 
             <button
               type="button"
+              role="tab"
+              id="tab-got"
+              aria-selected={activeSubTab === 'got'}
+              aria-controls="game-detail-tabpanel"
               onClick={() => setActiveSubTab('got')}
               className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
                 activeSubTab === 'got'
@@ -980,6 +959,10 @@ export const GameDetailView: React.FC = () => {
 
             <button
               type="button"
+              role="tab"
+              id="tab-anotacoes"
+              aria-selected={activeSubTab === 'anotacoes'}
+              aria-controls="game-detail-tabpanel"
               onClick={() => setActiveSubTab('anotacoes')}
               className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
                 activeSubTab === 'anotacoes'
@@ -994,7 +977,7 @@ export const GameDetailView: React.FC = () => {
 
           {/* ── CONTEÚDO DA SUBTAB: SESSÕES DE GAMEPLAY ── */}
           {activeSubTab === 'sessoes' && (
-            <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
+            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-sessoes" className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
               <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-3">
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-[#22d3ee]" aria-hidden="true" />
@@ -1006,6 +989,9 @@ export const GameDetailView: React.FC = () => {
                   {game.sessoes?.length || 0} dias registrados
                 </span>
               </div>
+
+              {/* Faixa de resumo calculada das sessões existentes (sem alterar a lógica) */}
+              <SessionsSummary sessions={game.sessoes || []} />
 
               {/* Formulário Manual de Nova Sessão (Dono) */}
               {isOwner && (
@@ -1168,7 +1154,7 @@ export const GameDetailView: React.FC = () => {
 
           {/* ── CONTEÚDO DA SUBTAB: RUBRICA & AVALIAÇÃO ── */}
           {activeSubTab === 'rubrica' && (
-            <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-6">
+            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-rubrica" className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#30363d]/60 pb-3">
                 <div>
                   <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
@@ -1334,7 +1320,7 @@ export const GameDetailView: React.FC = () => {
 
           {/* ── CONTEÚDO DA SUBTAB: GOT AWARDS ── */}
           {activeSubTab === 'got' && (
-            <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
+            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-got" className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
               <div className="border-b border-[#30363d]/60 pb-3">
                 <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
                   <Trophy className="h-5 w-5 text-amber-400" aria-hidden="true" />
@@ -1402,7 +1388,7 @@ export const GameDetailView: React.FC = () => {
 
           {/* ── CONTEÚDO DA SUBTAB: ANOTAÇÕES & REVIEW ── */}
           {activeSubTab === 'anotacoes' && (
-            <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
+            <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-anotacoes" className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
               <div className="border-b border-[#30363d]/60 pb-3">
                 <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
                   <MessageSquare className="h-5 w-5 text-[#22d3ee]" aria-hidden="true" />
