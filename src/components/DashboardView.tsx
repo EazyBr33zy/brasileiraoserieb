@@ -756,14 +756,7 @@ export const DashboardView: React.FC = () => {
                       href={`#/jogo/${encodeURIComponent(g.id)}`}
                       className={`flex items-center gap-2.5 p-2 rounded-xl border border-[#30363d] bg-[#161b22] ${accent.ring} transition-all group cursor-pointer`}
                     >
-                      <div className="h-12 w-9 rounded-lg overflow-hidden shrink-0 border border-[#30363d] group-hover:border-transparent group-hover:shadow-[0_0_10px_rgba(34,211,238,0.35)]">
-                        <GameCover
-                          src={g.capa}
-                          title={g.title}
-                          consoleName={g.console}
-                          size="thumb"
-                        />
-                      </div>
+                      <span className={`h-8 w-1 shrink-0 rounded-full ${accent.bar}`} aria-hidden="true" />
                       <div className="min-w-0 flex-1">
                         <div className="text-xs font-mono font-bold text-[#9aa4b2] group-hover:text-white/80 transition-colors">
                           {pStyle.name}
