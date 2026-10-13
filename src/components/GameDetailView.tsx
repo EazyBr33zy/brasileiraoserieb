@@ -28,6 +28,8 @@ import { calculateRubricScore, fmtH, fmtMinutes, parseTime, parseToMinutes, form
 import { GameReviewRubric, GameplayDaySession, GameStatus, GameItem } from '../types/game';
 import { useIsOwner } from '../hooks/useIsOwner';
 import { GameCover } from './GameCover';
+import { GameHero } from './gamedetail/GameHero';
+import { GameSidebar } from './gamedetail/GameSidebar';
 import { Modal } from './Modal';
 import { showToast } from '../utils/toast';
 import { db } from '../firebase/config';
@@ -629,11 +631,171 @@ export const GameDetailView: React.FC = () => {
   const scoreColor = getScoreColor(game.nota);
   const calculatedRubric = calculateRubricScore(localRubric);
 
+  // ── Blocos movidos para o GameHero via slots (JSX original, sem alterações de lógica) ──
+  const hltbBlock = (
+    <>
+        {(() => {
+          const playedMinutes = parseToMinutes(effectiveTime.tempo || localTempo || game.tempo);
+          const hltbMinutes = parseToMinutes(game.hltb);
+          if (hltbMinutes <= 0 && game.status !== 'jogando') return null;
+
+          const pct = hltbMinutes > 0 ? Math.round((playedMinutes / hltbMinutes) * 100) : 0;
+          const remainingMin = Math.max(0, hltbMinutes - playedMinutes);
+
+          return (
+            <div className="rounded-xl border border-[#30363d] bg-[#0d1117] p-3 space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-[#9aa4b2]">
+                  <span className="h-2 w-2 rounded-full bg-[#22d3ee] shadow-[0_0_6px_#22d3ee]" aria-hidden="true" />
+                  <span>PROGRESSO DA CAMPANHA (HLTB)</span>
+                </div>
+                <div className="font-mono font-bold text-xs">
+                  {hltbMinutes > 0 ? (
+                    <span className={pct >= 100 ? 'text-emerald-400' : 'text-[#22d3ee]'}>
+                      {pct}% CONCLUÍDO
+                    </span>
+                  ) : (
+                    <span className="text-[#9aa4b2] text-xs font-normal">HLTB não definido</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Barra Visual */}
+              <div className="relative h-2.5 w-full rounded-full bg-[#161b22] border border-[#30363d]/60 overflow-hidden p-0.5">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    pct >= 100
+                      ? 'bg-gradient-to-r from-[#22d3ee] to-emerald-400'
+                      : 'bg-gradient-to-r from-[#0284c7] via-[#22d3ee] to-[#a855f7]'
+                  }`}
+                  style={{
+                    width: `${hltbMinutes > 0 ? Math.min(100, Math.max(playedMinutes > 0 ? 3 : 0, pct)) : 0}%`,
+                  }}
+                />
+              </div>
+
+              <div className="flex items-center justify-between text-xs font-mono text-[#9aa4b2]">
+                <span>
+                  Tempo registrado: <strong className="text-white">{formatTempoDisplay(effectiveTime.tempo || localTempo || game.tempo)}</strong>
+                </span>
+                <span>
+                  Estimativa HLTB:{' '}
+                  <strong className="text-[#22d3ee]">
+                    {game.hltb ? formatTempoDisplay(game.hltb) : '—'}
+                  </strong>
+                  {hltbMinutes > 0 && remainingMin > 0 && (
+                    <span className="text-[#9aa4b2] ml-1">
+                      (~{formatMinutes(remainingMin)} restante)
+                    </span>
+                  )}
+                </span>
+              </div>
+            </div>
+          );
+        })()}
+    </>
+  );
+
+  const ownerControls = (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
+          {/* Status */}
+          <div>
+            <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Status</label>
+            {isOwner ? (
+              <select
+                value={localStatus}
+                onChange={(e) => setLocalStatus(e.target.value as GameStatus)}
+                className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-base md:text-xs font-bold text-white focus:border-[#22d3ee] focus:outline-none cursor-pointer"
+              >
+                <option value="jogando">Jogando</option>
+                <option value="fila">Na Fila</option>
+                <option value="pausado">Pausado</option>
+                <option value="abandonado">Abandonado</option>
+                <option value="wishlist">Wishlist</option>
+                <option value="zerado">Zerado</option>
+              </select>
+            ) : (
+              <span className="text-sm font-bold text-white uppercase">{game.status}</span>
+            )}
+          </div>
+
+          {/* Nota */}
+          <div>
+            <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Nota (0–10)</label>
+            {isOwner ? (
+              <input
+                type="number"
+                step="0.1"
+                min="0"
+                max="10"
+                value={localNota}
+                onChange={(e) => setLocalNota(e.target.value)}
+                placeholder="—"
+                className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-base md:text-xs font-mono font-bold text-[#ffd700] focus:border-[#22d3ee] focus:outline-none text-center"
+              />
+            ) : (
+              <span className="text-sm font-mono font-bold text-[#ffd700]">
+                {effectiveScore.nota !== undefined ? `★ ${effectiveScore.nota.toFixed(1)}` : '—'}
+              </span>
+            )}
+          </div>
+
+          {/* Tempo */}
+          <div>
+            <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Tempo Total</label>
+            {isOwner ? (
+              <input
+                type="text"
+                value={localTempo}
+                onChange={(e) => setLocalTempo(e.target.value)}
+                placeholder="0:00"
+                className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-base md:text-xs font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none text-center"
+              />
+            ) : (
+              <span className="text-sm font-mono font-bold text-white">
+                {effectiveTime.tempo ? formatTempoDisplay(effectiveTime.tempo) : '0h00'}
+              </span>
+            )}
+          </div>
+
+          {/* Ações */}
+          <div>
+            <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Ações</label>
+            {isOwner ? (
+              <div className="flex gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => openEditModal(game)}
+                  className="flex-1 min-h-[44px] flex items-center justify-center gap-1 rounded-lg border border-[#30363d] bg-[#161b22] hover:bg-white/5 text-xs font-bold text-white transition-colors cursor-pointer"
+                  title="Editar ficha completa"
+                >
+                  <Edit3 className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span>Editar</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => exportGameMarkdown(game)}
+                  className="flex-1 min-h-[44px] flex items-center justify-center gap-1 rounded-lg border border-[#30363d] bg-[#161b22] hover:bg-white/5 text-xs font-bold text-[#22d3ee] transition-colors cursor-pointer"
+                  title="Baixar arquivo Markdown do Obsidian"
+                >
+                  <FileDown className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span>.md</span>
+                </button>
+              </div>
+            ) : (
+              <div className="min-h-[44px] flex items-center justify-center rounded-lg border border-[#30363d]/40 bg-black/20 text-xs font-mono text-[#9aa4b2]">
+                Modo Leitura
+              </div>
+            )}
+          </div>
+        </div>
+  );
+
   return (
     <div className="space-y-5 pb-20 font-sans">
       {/* ── SELETOR DE JOGOS EM ANDAMENTO ── */}
       {playingGames.length > 0 && (
-        <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-3 sm:p-4 shadow-md">
+        <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md lg:hidden sm:p-4">
           <div className="flex items-center justify-between text-xs mb-2.5">
             <span className="font-bold uppercase tracking-wider text-[#9aa4b2] flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-[#22d3ee] animate-pulse" aria-hidden="true" />
@@ -707,715 +869,533 @@ export const GameDetailView: React.FC = () => {
         )}
       </div>
 
-      {/* ── CARD PRINCIPAL DO JOGO ── */}
-      <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-5">
-        <div className="flex flex-col md:flex-row gap-5 sm:gap-6 items-start">
-          {/* Capa */}
-          <div className="w-full sm:w-56 shrink-0 max-w-[240px] mx-auto md:mx-0">
-            <GameCover
-              src={game.capa}
-              title={game.title}
-              consoleName={game.console}
-              size="hero"
-              grayscale={game.status === 'zerado'}
-              className="rounded-xl shadow-2xl"
-            />
+      {/* ── HERO DA FICHA (GameHero) ── */}
+      <GameHero
+        game={game}
+        pStyle={pStyle}
+        gotBadges={activeGotBadges}
+        tempoRegistrado={effectiveTime.tempo || localTempo || game.tempo}
+        nota={effectiveScore.nota}
+        sessionCount={game.sessoes?.length || 0}
+        lastSessionDate={sortSessionsDescending(game.sessoes || [])[0]?.data}
+        startDate={game.data_inicio || sortSessionsDescending(game.sessoes || []).slice(-1)[0]?.data}
+        daysSinceStart={(() => {
+          const d = game.data_inicio || sortSessionsDescending(game.sessoes || []).slice(-1)[0]?.data;
+          if (!d) return undefined;
+          let dia: number, mes: number, ano: number;
+          const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(d);
+          const br = /^(\d{2})\/(\d{2})\/(\d{4})/.exec(d);
+          if (iso) { ano = +iso[1]; mes = +iso[2]; dia = +iso[3]; }
+          else if (br) { dia = +br[1]; mes = +br[2]; ano = +br[3]; }
+          else return undefined;
+          const ms = Date.now() - new Date(ano, mes - 1, dia).getTime();
+          return Math.max(0, Math.floor(ms / 86400000));
+        })()}
+        hltbBlock={hltbBlock}
+        controls={ownerControls}
+      />
+
+      {/* ── CORPO: ABAS (esquerda) + LATERAL (direita) ── */}
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="min-w-0 space-y-5">
+          {/* ── ABAS DE NAVEGAÇÃO INTERNA (SUBTABS) ── */}
+          <div className="flex items-center gap-2 border-b border-[#30363d] pb-2 overflow-x-auto scrollbar-none">
+            <button
+              type="button"
+              onClick={() => setActiveSubTab('sessoes')}
+              className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
+                activeSubTab === 'sessoes'
+                  ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
+                  : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
+              }`}
+            >
+              <Clock className="h-4 w-4" aria-hidden="true" />
+              <span>Sessões ({game.sessoes?.length || 0})</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveSubTab('rubrica')}
+              className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
+                activeSubTab === 'rubrica'
+                  ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
+                  : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
+              }`}
+            >
+              <Sliders className="h-4 w-4" aria-hidden="true" />
+              <span>Rubrica & Avaliação</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveSubTab('got')}
+              className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
+                activeSubTab === 'got'
+                  ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
+                  : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
+              }`}
+            >
+              <Trophy className="h-4 w-4" aria-hidden="true" />
+              <span>GOT Awards ({activeGotBadges.length})</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveSubTab('anotacoes')}
+              className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
+                activeSubTab === 'anotacoes'
+                  ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
+                  : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
+              }`}
+            >
+              <MessageSquare className="h-4 w-4" aria-hidden="true" />
+              <span>Anotações & Review</span>
+            </button>
           </div>
 
-          {/* Dados e Ficha Técnica */}
-          <div className="flex-1 w-full space-y-4">
-            <div>
-              <div className="flex items-center gap-2 flex-wrap mb-2">
-                <span
-                  className="flex items-center gap-1 rounded px-2.5 py-0.5 text-xs font-mono font-bold uppercase shadow-sm"
-                  style={{ backgroundColor: `${pStyle.col}20`, color: pStyle.col, border: `1px solid ${pStyle.col}40` }}
-                >
-                  <span aria-hidden="true">{pStyle.ico}</span>
-                  <span>{game.console}</span>
+          {/* ── CONTEÚDO DA SUBTAB: SESSÕES DE GAMEPLAY ── */}
+          {activeSubTab === 'sessoes' && (
+            <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
+              <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-3">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-[#22d3ee]" aria-hidden="true" />
+                  <h2 className="font-heading text-lg font-bold uppercase text-white">
+                    Histórico de Sessões de Gameplay
+                  </h2>
+                </div>
+                <span className="text-xs font-mono text-[#22d3ee] font-bold">
+                  {game.sessoes?.length || 0} dias registrados
                 </span>
-
-                <span className="rounded bg-purple-500/15 border border-purple-500/30 px-2.5 py-0.5 text-xs font-medium text-purple-300">
-                  {game.genero}
-                </span>
-
-                {game.ano_zerado && (
-                  <span className="rounded bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-xs font-mono font-bold text-emerald-400">
-                    Zerado em {game.ano_zerado}
-                  </span>
-                )}
               </div>
 
-              <h1 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight">
-                {cleanTitle(game.title)}
-              </h1>
+              {/* Formulário Manual de Nova Sessão (Dono) */}
+              {isOwner && (
+                <form onSubmit={handleAddManualSession} className="p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117] space-y-3">
+                  <div className="text-xs font-bold uppercase text-[#22d3ee] flex items-center gap-1.5">
+                    <Plus className="h-4 w-4" aria-hidden="true" />
+                    <span>Adicionar Sessão de Gameplay Manualmente</span>
+                  </div>
 
-              {/* Badges de Premiações Ativas */}
-              {activeGotBadges.length > 0 && (
-                <div className="flex items-center gap-2 flex-wrap mt-2.5">
-                  {activeGotBadges.map((badge) => (
-                    <span
-                      key={badge.key}
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg border ${badge.border} ${badge.bg} text-xs font-bold`}
-                      style={{ color: badge.color }}
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5 items-end">
+                    <div>
+                      <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Data (DD/MM/AAAA)</label>
+                      <input
+                        type="text"
+                        value={newDate}
+                        onChange={(e) => setNewDate(e.target.value)}
+                        placeholder="DD/MM/AAAA"
+                        className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-3 text-base md:text-xs text-white font-mono focus:border-[#22d3ee] focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Hora Início</label>
+                      <input
+                        type="text"
+                        value={newStart}
+                        onChange={(e) => setNewStart(e.target.value)}
+                        placeholder="20:00"
+                        className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-3 text-base md:text-xs text-white font-mono focus:border-[#22d3ee] focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Hora Término</label>
+                      <input
+                        type="text"
+                        value={newEnd}
+                        onChange={(e) => setNewEnd(e.target.value)}
+                        placeholder="21:30"
+                        className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-3 text-base md:text-xs text-white font-mono focus:border-[#22d3ee] focus:outline-none"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full min-h-[44px] flex items-center justify-center gap-1.5 rounded-lg bg-[#22d3ee] hover:bg-[#06b6d4] text-[#0d1117] font-black text-xs uppercase transition-all cursor-pointer shadow"
                     >
-                      {badge.label}
-                    </span>
-                  ))}
-                </div>
+                      <Plus className="h-4 w-4 stroke-[3]" aria-hidden="true" />
+                      <span>Salvar Sessão</span>
+                    </button>
+                  </div>
+                </form>
               )}
-            </div>
 
-            {/* Painel de Controle Inline (Dono) ou Leitura (Visitante) */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
-              {/* Status */}
-              <div>
-                <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Status</label>
-                {isOwner ? (
-                  <select
-                    value={localStatus}
-                    onChange={(e) => setLocalStatus(e.target.value as GameStatus)}
-                    className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-base md:text-xs font-bold text-white focus:border-[#22d3ee] focus:outline-none cursor-pointer"
-                  >
-                    <option value="jogando">Jogando</option>
-                    <option value="fila">Na Fila</option>
-                    <option value="pausado">Pausado</option>
-                    <option value="abandonado">Abandonado</option>
-                    <option value="wishlist">Wishlist</option>
-                    <option value="zerado">Zerado</option>
-                  </select>
-                ) : (
-                  <span className="text-sm font-bold text-white uppercase">{game.status}</span>
-                )}
-              </div>
-
-              {/* Nota */}
-              <div>
-                <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Nota (0–10)</label>
-                {isOwner ? (
-                  <input
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    max="10"
-                    value={localNota}
-                    onChange={(e) => setLocalNota(e.target.value)}
-                    placeholder="—"
-                    className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-base md:text-xs font-mono font-bold text-[#ffd700] focus:border-[#22d3ee] focus:outline-none text-center"
-                  />
-                ) : (
-                  <span className="text-sm font-mono font-bold text-[#ffd700]">
-                    {effectiveScore.nota !== undefined ? `★ ${effectiveScore.nota.toFixed(1)}` : '—'}
-                  </span>
-                )}
-              </div>
-
-              {/* Tempo */}
-              <div>
-                <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Tempo Total</label>
-                {isOwner ? (
-                  <input
-                    type="text"
-                    value={localTempo}
-                    onChange={(e) => setLocalTempo(e.target.value)}
-                    placeholder="0:00"
-                    className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-base md:text-xs font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none text-center"
-                  />
-                ) : (
-                  <span className="text-sm font-mono font-bold text-white">
-                    {effectiveTime.tempo ? formatTempoDisplay(effectiveTime.tempo) : '0h00'}
-                  </span>
-                )}
-              </div>
-
-              {/* Ações */}
-              <div>
-                <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Ações</label>
-                {isOwner ? (
-                  <div className="flex gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => openEditModal(game)}
-                      className="flex-1 min-h-[44px] flex items-center justify-center gap-1 rounded-lg border border-[#30363d] bg-[#161b22] hover:bg-white/5 text-xs font-bold text-white transition-colors cursor-pointer"
-                      title="Editar ficha completa"
-                    >
-                      <Edit3 className="h-3.5 w-3.5" aria-hidden="true" />
-                      <span>Editar</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => exportGameMarkdown(game)}
-                      className="flex-1 min-h-[44px] flex items-center justify-center gap-1 rounded-lg border border-[#30363d] bg-[#161b22] hover:bg-white/5 text-xs font-bold text-[#22d3ee] transition-colors cursor-pointer"
-                      title="Baixar arquivo Markdown do Obsidian"
-                    >
-                      <FileDown className="h-3.5 w-3.5" aria-hidden="true" />
-                      <span>.md</span>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="min-h-[44px] flex items-center justify-center rounded-lg border border-[#30363d]/40 bg-black/20 text-xs font-mono text-[#9aa4b2]">
-                    Modo Leitura
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* ── BARRA DE PROGRESSO: TEMPO JOGADO vs HLTB ── */}
-            {(() => {
-              const playedMinutes = parseToMinutes(effectiveTime.tempo || localTempo || game.tempo);
-              const hltbMinutes = parseToMinutes(game.hltb);
-              if (hltbMinutes <= 0 && game.status !== 'jogando') return null;
-
-              const pct = hltbMinutes > 0 ? Math.round((playedMinutes / hltbMinutes) * 100) : 0;
-              const remainingMin = Math.max(0, hltbMinutes - playedMinutes);
-
-              return (
-                <div className="rounded-xl border border-[#30363d] bg-[#0d1117] p-3 space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-[#9aa4b2]">
-                      <span className="h-2 w-2 rounded-full bg-[#22d3ee] shadow-[0_0_6px_#22d3ee]" aria-hidden="true" />
-                      <span>PROGRESSO DA CAMPANHA (HLTB)</span>
-                    </div>
-                    <div className="font-mono font-bold text-xs">
-                      {hltbMinutes > 0 ? (
-                        <span className={pct >= 100 ? 'text-emerald-400' : 'text-[#22d3ee]'}>
-                          {pct}% CONCLUÍDO
-                        </span>
-                      ) : (
-                        <span className="text-[#9aa4b2] text-xs font-normal">HLTB não definido</span>
-                      )}
-                    </div>
+              {/* Lista / Tabela de Sessões */}
+              {game.sessoes && game.sessoes.length > 0 ? (
+                <div className="space-y-2.5">
+                  <div className="hidden sm:block overflow-hidden rounded-xl border border-[#30363d] bg-black/20">
+                    <table className="w-full text-left text-xs text-slate-300">
+                      <thead className="border-b border-[#30363d] bg-white/[0.03] text-xs font-bold uppercase text-[#9aa4b2]">
+                        <tr>
+                          <th className="py-2.5 px-4">Data</th>
+                          <th className="py-2.5 px-4">Horários / Intervalos</th>
+                          <th className="py-2.5 px-4 text-right">Tempo Total</th>
+                          {isOwner && <th className="py-2.5 px-4 text-center w-28">Ações</th>}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5 font-mono">
+                        {game.sessoes.map((s, idx) => (
+                          <tr key={idx} className="hover:bg-white/[0.02]">
+                            <td className="py-2.5 px-4 font-bold text-[#22d3ee]">{s.data}</td>
+                            <td className="py-2.5 px-4 space-y-1">
+                              {s.intervalos.map((i, iIdx) => (
+                                <span key={iIdx} className="inline-block mr-2 text-slate-300">
+                                  {i.inicio} às {i.fim} <strong className="text-emerald-400 font-bold">(+{i.minutos} min)</strong>
+                                </span>
+                              ))}
+                            </td>
+                            <td className="py-2.5 px-4 text-right font-bold text-white">
+                              {fmtMinutes(s.totalMinutos)}
+                            </td>
+                            {isOwner && (
+                              <td className="py-2.5 px-4 text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenEditSession(idx)}
+                                    className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg text-[#22d3ee] hover:bg-[#22d3ee]/10 transition-colors cursor-pointer"
+                                    title="Editar sessão"
+                                    aria-label={`Editar sessão de ${s.data}`}
+                                  >
+                                    <Edit3 className="h-4 w-4" aria-hidden="true" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteSession(idx)}
+                                    className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+                                    title="Excluir sessão"
+                                    aria-label={`Excluir sessão de ${s.data}`}
+                                  >
+                                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                                  </button>
+                                </div>
+                              </td>
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
 
-                  {/* Barra Visual */}
-                  <div className="relative h-2.5 w-full rounded-full bg-[#161b22] border border-[#30363d]/60 overflow-hidden p-0.5">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        pct >= 100
-                          ? 'bg-gradient-to-r from-[#22d3ee] to-emerald-400'
-                          : 'bg-gradient-to-r from-[#0284c7] via-[#22d3ee] to-[#a855f7]'
-                      }`}
-                      style={{
-                        width: `${hltbMinutes > 0 ? Math.min(100, Math.max(playedMinutes > 0 ? 3 : 0, pct)) : 0}%`,
-                      }}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between text-xs font-mono text-[#9aa4b2]">
-                    <span>
-                      Tempo registrado: <strong className="text-white">{formatTempoDisplay(effectiveTime.tempo || localTempo || game.tempo)}</strong>
-                    </span>
-                    <span>
-                      Estimativa HLTB:{' '}
-                      <strong className="text-[#22d3ee]">
-                        {game.hltb ? formatTempoDisplay(game.hltb) : '—'}
-                      </strong>
-                      {hltbMinutes > 0 && remainingMin > 0 && (
-                        <span className="text-[#9aa4b2] ml-1">
-                          (~{formatMinutes(remainingMin)} restante)
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                </div>
-              );
-            })()}
-          </div>
-        </div>
-      </div>
-
-      {/* ── ABAS DE NAVEGAÇÃO INTERNA (SUBTABS) ── */}
-      <div className="flex items-center gap-2 border-b border-[#30363d] pb-2 overflow-x-auto scrollbar-none">
-        <button
-          type="button"
-          onClick={() => setActiveSubTab('sessoes')}
-          className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
-            activeSubTab === 'sessoes'
-              ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
-              : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
-          }`}
-        >
-          <Clock className="h-4 w-4" aria-hidden="true" />
-          <span>Sessões ({game.sessoes?.length || 0})</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveSubTab('rubrica')}
-          className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
-            activeSubTab === 'rubrica'
-              ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
-              : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
-          }`}
-        >
-          <Sliders className="h-4 w-4" aria-hidden="true" />
-          <span>Rubrica & Avaliação</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveSubTab('got')}
-          className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
-            activeSubTab === 'got'
-              ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
-              : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
-          }`}
-        >
-          <Trophy className="h-4 w-4" aria-hidden="true" />
-          <span>GOT Awards ({activeGotBadges.length})</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveSubTab('anotacoes')}
-          className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none ${
-            activeSubTab === 'anotacoes'
-              ? 'bg-[#22d3ee] text-[#0d1117] font-black shadow-md'
-              : 'bg-[#161b22] border border-[#30363d] text-[#9aa4b2] hover:text-white'
-          }`}
-        >
-          <MessageSquare className="h-4 w-4" aria-hidden="true" />
-          <span>Anotações & Review</span>
-        </button>
-      </div>
-
-      {/* ── CONTEÚDO DA SUBTAB: SESSÕES DE GAMEPLAY ── */}
-      {activeSubTab === 'sessoes' && (
-        <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
-          <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-3">
-            <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-[#22d3ee]" aria-hidden="true" />
-              <h2 className="font-heading text-lg font-bold uppercase text-white">
-                Histórico de Sessões de Gameplay
-              </h2>
-            </div>
-            <span className="text-xs font-mono text-[#22d3ee] font-bold">
-              {game.sessoes?.length || 0} dias registrados
-            </span>
-          </div>
-
-          {/* Formulário Manual de Nova Sessão (Dono) */}
-          {isOwner && (
-            <form onSubmit={handleAddManualSession} className="p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117] space-y-3">
-              <div className="text-xs font-bold uppercase text-[#22d3ee] flex items-center gap-1.5">
-                <Plus className="h-4 w-4" aria-hidden="true" />
-                <span>Adicionar Sessão de Gameplay Manualmente</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5 items-end">
-                <div>
-                  <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Data (DD/MM/AAAA)</label>
-                  <input
-                    type="text"
-                    value={newDate}
-                    onChange={(e) => setNewDate(e.target.value)}
-                    placeholder="DD/MM/AAAA"
-                    className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-3 text-base md:text-xs text-white font-mono focus:border-[#22d3ee] focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Hora Início</label>
-                  <input
-                    type="text"
-                    value={newStart}
-                    onChange={(e) => setNewStart(e.target.value)}
-                    placeholder="20:00"
-                    className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-3 text-base md:text-xs text-white font-mono focus:border-[#22d3ee] focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Hora Término</label>
-                  <input
-                    type="text"
-                    value={newEnd}
-                    onChange={(e) => setNewEnd(e.target.value)}
-                    placeholder="21:30"
-                    className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-3 text-base md:text-xs text-white font-mono focus:border-[#22d3ee] focus:outline-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full min-h-[44px] flex items-center justify-center gap-1.5 rounded-lg bg-[#22d3ee] hover:bg-[#06b6d4] text-[#0d1117] font-black text-xs uppercase transition-all cursor-pointer shadow"
-                >
-                  <Plus className="h-4 w-4 stroke-[3]" aria-hidden="true" />
-                  <span>Salvar Sessão</span>
-                </button>
-              </div>
-            </form>
-          )}
-
-          {/* Lista / Tabela de Sessões */}
-          {game.sessoes && game.sessoes.length > 0 ? (
-            <div className="space-y-2.5">
-              <div className="hidden sm:block overflow-hidden rounded-xl border border-[#30363d] bg-black/20">
-                <table className="w-full text-left text-xs text-slate-300">
-                  <thead className="border-b border-[#30363d] bg-white/[0.03] text-xs font-bold uppercase text-[#9aa4b2]">
-                    <tr>
-                      <th className="py-2.5 px-4">Data</th>
-                      <th className="py-2.5 px-4">Horários / Intervalos</th>
-                      <th className="py-2.5 px-4 text-right">Tempo Total</th>
-                      {isOwner && <th className="py-2.5 px-4 text-center w-28">Ações</th>}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5 font-mono">
+                  {/* Mobile Cards */}
+                  <div className="sm:hidden space-y-2">
                     {game.sessoes.map((s, idx) => (
-                      <tr key={idx} className="hover:bg-white/[0.02]">
-                        <td className="py-2.5 px-4 font-bold text-[#22d3ee]">{s.data}</td>
-                        <td className="py-2.5 px-4 space-y-1">
-                          {s.intervalos.map((i, iIdx) => (
-                            <span key={iIdx} className="inline-block mr-2 text-slate-300">
-                              {i.inicio} às {i.fim} <strong className="text-emerald-400 font-bold">(+{i.minutos} min)</strong>
-                            </span>
-                          ))}
-                        </td>
-                        <td className="py-2.5 px-4 text-right font-bold text-white">
-                          {fmtMinutes(s.totalMinutos)}
-                        </td>
-                        {isOwner && (
-                          <td className="py-2.5 px-4 text-center">
-                            <div className="flex items-center justify-center gap-1">
+                      <div key={idx} className="p-3 rounded-xl border border-[#30363d] bg-[#0d1117] flex items-center justify-between gap-2">
+                        <div>
+                          <div className="font-mono text-xs font-bold text-[#22d3ee]">{s.data}</div>
+                          <div className="text-xs text-[#9aa4b2] font-mono mt-0.5">
+                            {s.intervalos.map((i) => `${i.inicio}-${i.fim}`).join(', ')}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs font-bold text-white bg-black/40 px-2 py-1 rounded border border-[#30363d]">
+                            {fmtMinutes(s.totalMinutos)}
+                          </span>
+                          {isOwner && (
+                            <div className="flex items-center gap-1">
                               <button
                                 type="button"
                                 onClick={() => handleOpenEditSession(idx)}
-                                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg text-[#22d3ee] hover:bg-[#22d3ee]/10 transition-colors cursor-pointer"
-                                title="Editar sessão"
+                                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-[#22d3ee] hover:bg-[#22d3ee]/10 rounded-lg cursor-pointer"
                                 aria-label={`Editar sessão de ${s.data}`}
+                                title="Editar sessão"
                               >
-                                <Edit3 className="h-4 w-4" aria-hidden="true" />
+                                <Edit3 className="h-4 w-4" />
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleDeleteSession(idx)}
-                                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
-                                title="Excluir sessão"
+                                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-red-400 hover:bg-red-500/10 rounded-lg cursor-pointer"
                                 aria-label={`Excluir sessão de ${s.data}`}
+                                title="Excluir sessão"
                               >
-                                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                                <Trash2 className="h-4 w-4" />
                               </button>
                             </div>
-                          </td>
-                        )}
-                      </tr>
+                          )}
+                        </div>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-6 text-center text-xs text-[#9aa4b2] border border-dashed border-[#30363d] rounded-xl">
+                  Nenhuma sessão de gameplay registrada para este jogo ainda.
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── CONTEÚDO DA SUBTAB: RUBRICA & AVALIAÇÃO ── */}
+          {activeSubTab === 'rubrica' && (
+            <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#30363d]/60 pb-3">
+                <div>
+                  <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
+                    <Sliders className="h-5 w-5 text-[#22d3ee]" aria-hidden="true" />
+                    <span>Rubrica de Avaliação Detalhada</span>
+                  </h2>
+                  <p className="text-xs text-[#9aa4b2] mt-0.5">
+                    Cálculo ponderado oficial do Obsidian (Jogabilidade 2x, Gráficos 1x, Trilha Sonora 1x, Diversão 2x)
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 bg-[#0d1117] p-2.5 px-4 rounded-xl border border-[#30363d]">
+                  <span className="text-xs text-[#9aa4b2] uppercase font-bold">Nota Calculada:</span>
+                  <span className="font-heading text-2xl font-black text-amber-400 font-mono">
+                    ★ {calculatedRubric.toFixed(1)} / 10
+                  </span>
+                </div>
               </div>
 
-              {/* Mobile Cards */}
-              <div className="sm:hidden space-y-2">
-                {game.sessoes.map((s, idx) => (
-                  <div key={idx} className="p-3 rounded-xl border border-[#30363d] bg-[#0d1117] flex items-center justify-between gap-2">
-                    <div>
-                      <div className="font-mono text-xs font-bold text-[#22d3ee]">{s.data}</div>
-                      <div className="text-xs text-[#9aa4b2] font-mono mt-0.5">
-                        {s.intervalos.map((i) => `${i.inicio}-${i.fim}`).join(', ')}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* 1. JOGABILIDADE (Peso 2x) */}
+                <div className="rounded-xl border border-[#30363d] bg-[#0d1117] p-4 space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#22d3ee] flex items-center gap-1.5">
+                      <Gamepad2 className="h-4 w-4" />
+                      <span>🕹️ Jogabilidade (Peso 2x)</span>
+                    </span>
+                  </div>
+                  <div className="space-y-2.5 text-xs">
+                    {[
+                      { key: 'controles' as const, label: 'Controles' },
+                      { key: 'dificuldade' as const, label: 'Dificuldade & Desafio' },
+                      { key: 'levelDesign' as const, label: 'Level Design & Fases' },
+                      { key: 'mecanicas' as const, label: 'Mecânicas de Jogo' },
+                    ].map(({ key, label }) => (
+                      <div key={key} className="flex items-center justify-between gap-3">
+                        <span className="text-slate-300 font-medium">{label}</span>
+                        {isOwner ? (
+                          <input
+                            type="number"
+                            min="0"
+                            max="10"
+                            step="1"
+                            value={localRubric[key]}
+                            onChange={(e) => handleRubricScoreChange(key, parseFloat(e.target.value) || 0)}
+                            className="w-16 min-h-[36px] rounded-lg border border-[#30363d] bg-[#161b22] px-2 text-center text-xs font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none"
+                          />
+                        ) : (
+                          <span className="font-mono font-bold text-white">{localRubric[key]}/10</span>
+                        )}
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-white bg-black/40 px-2 py-1 rounded border border-[#30363d]">
-                        {fmtMinutes(s.totalMinutos)}
-                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 2. GRÁFICOS (Peso 1x) */}
+                <div className="rounded-xl border border-[#30363d] bg-[#0d1117] p-4 space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-pink-400 flex items-center gap-1.5">
+                      <Sparkles className="h-4 w-4" />
+                      <span>🎨 Gráficos & Arte (Peso 1x)</span>
+                    </span>
+                  </div>
+                  <div className="space-y-2.5 text-xs">
+                    {[
+                      { key: 'estiloVisual' as const, label: 'Estilo Visual' },
+                      { key: 'animacoes' as const, label: 'Animações' },
+                      { key: 'paletaCores' as const, label: 'Paleta de Cores' },
+                      { key: 'detalhes' as const, label: 'Detalhes & Polimento' },
+                    ].map(({ key, label }) => (
+                      <div key={key} className="flex items-center justify-between gap-3">
+                        <span className="text-slate-300 font-medium">{label}</span>
+                        {isOwner ? (
+                          <input
+                            type="number"
+                            min="0"
+                            max="10"
+                            step="1"
+                            value={localRubric[key]}
+                            onChange={(e) => handleRubricScoreChange(key, parseFloat(e.target.value) || 0)}
+                            className="w-16 min-h-[36px] rounded-lg border border-[#30363d] bg-[#161b22] px-2 text-center text-xs font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none"
+                          />
+                        ) : (
+                          <span className="font-mono font-bold text-white">{localRubric[key]}/10</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 3. TRILHA SONORA (Peso 1x) */}
+                <div className="rounded-xl border border-[#30363d] bg-[#0d1117] p-4 space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1.5">
+                      <Flame className="h-4 w-4" />
+                      <span>🎵 Trilha Sonora (Peso 1x)</span>
+                    </span>
+                  </div>
+                  <div className="space-y-2.5 text-xs">
+                    {[
+                      { key: 'musicasMemoraveis' as const, label: 'Músicas Memoráveis' },
+                      { key: 'adequacao' as const, label: 'Adequação ao Clima' },
+                      { key: 'variedade' as const, label: 'Variedade Sonora' },
+                      { key: 'efeitosSonoros' as const, label: 'Efeitos Sonoros' },
+                    ].map(({ key, label }) => (
+                      <div key={key} className="flex items-center justify-between gap-3">
+                        <span className="text-slate-300 font-medium">{label}</span>
+                        {isOwner ? (
+                          <input
+                            type="number"
+                            min="0"
+                            max="10"
+                            step="1"
+                            value={localRubric[key]}
+                            onChange={(e) => handleRubricScoreChange(key, parseFloat(e.target.value) || 0)}
+                            className="w-16 min-h-[36px] rounded-lg border border-[#30363d] bg-[#161b22] px-2 text-center text-xs font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none"
+                          />
+                        ) : (
+                          <span className="font-mono font-bold text-white">{localRubric[key]}/10</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 4. DIVERSÃO (Peso 2x) */}
+                <div className="rounded-xl border border-[#30363d] bg-[#0d1117] p-4 space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                      <Star className="h-4 w-4" />
+                      <span>⭐ Diversão (Peso 2x)</span>
+                    </span>
+                  </div>
+                  <div className="space-y-2.5 text-xs">
+                    {[
+                      { key: 'querContinuarJogando' as const, label: 'Vontade de Continuar' },
+                      { key: 'satisfacao' as const, label: 'Sensação de Satisfação' },
+                      { key: 'rejogabilidade' as const, label: 'Fator Rejogabilidade' },
+                      { key: 'interesse' as const, label: 'Interesse Geral' },
+                    ].map(({ key, label }) => (
+                      <div key={key} className="flex items-center justify-between gap-3">
+                        <span className="text-slate-300 font-medium">{label}</span>
+                        {isOwner ? (
+                          <input
+                            type="number"
+                            min="0"
+                            max="10"
+                            step="1"
+                            value={localRubric[key]}
+                            onChange={(e) => handleRubricScoreChange(key, parseFloat(e.target.value) || 0)}
+                            className="w-16 min-h-[36px] rounded-lg border border-[#30363d] bg-[#161b22] px-2 text-center text-xs font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none"
+                          />
+                        ) : (
+                          <span className="font-mono font-bold text-white">{localRubric[key]}/10</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── CONTEÚDO DA SUBTAB: GOT AWARDS ── */}
+          {activeSubTab === 'got' && (
+            <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
+              <div className="border-b border-[#30363d]/60 pb-3">
+                <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-amber-400" aria-hidden="true" />
+                  <span>Premiações e Destaques (GOT Awards)</span>
+                </h2>
+                <p className="text-xs text-[#9aa4b2] mt-0.5">
+                  {isOwner ? 'Clique nas categorias para premiar este jogo' : 'Categorias de premiação conquistadas por este jogo'}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {gotConfig.map((item) => {
+                  const isAwarded = Boolean(game[item.key]);
+
+                  if (!isOwner && !isAwarded) {
+                    return null;
+                  }
+
+                  return (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => handleToggleGot(item.key)}
+                      disabled={!isOwner}
+                      className={`p-3.5 rounded-xl border text-left transition-all ${
+                        isOwner ? 'cursor-pointer hover:brightness-110' : 'cursor-default'
+                      } ${
+                        isAwarded
+                          ? `${item.bg} ${item.border} shadow-md`
+                          : 'bg-[#0d1117] border-[#30363d] opacity-50 hover:opacity-100'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-heading text-xs font-bold" style={{ color: item.color }}>
+                          {item.label}
+                        </span>
+                        {isAwarded && (
+                          <span className="h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_6px_#ffd700]" aria-hidden="true" />
+                        )}
+                      </div>
+                      <p className="text-xs text-[#9aa4b2] mt-1 leading-relaxed">
+                        {item.desc}
+                      </p>
                       {isOwner && (
-                        <div className="flex items-center gap-1">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEditSession(idx)}
-                            className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-[#22d3ee] hover:bg-[#22d3ee]/10 rounded-lg cursor-pointer"
-                            aria-label={`Editar sessão de ${s.data}`}
-                            title="Editar sessão"
-                          >
-                            <Edit3 className="h-4 w-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteSession(idx)}
-                            className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-red-400 hover:bg-red-500/10 rounded-lg cursor-pointer"
-                            aria-label={`Excluir sessão de ${s.data}`}
-                            title="Excluir sessão"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
+                        <div className="mt-2 text-xs font-mono font-bold">
+                          {isAwarded ? (
+                            <span className="text-emerald-400">✓ Conquistado</span>
+                          ) : (
+                            <span className="text-[#9aa4b2]">+ Conceder Prêmio</span>
+                          )}
                         </div>
                       )}
-                    </div>
-                  </div>
-                ))}
+                    </button>
+                  );
+                })}
               </div>
+
+              {!isOwner && activeGotBadges.length === 0 && (
+                <div className="p-8 text-center text-xs text-[#9aa4b2] border border-dashed border-[#30363d] rounded-xl">
+                  Nenhuma premiação concedida a este jogo até o momento.
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="p-6 text-center text-xs text-[#9aa4b2] border border-dashed border-[#30363d] rounded-xl">
-              Nenhuma sessão de gameplay registrada para este jogo ainda.
+          )}
+
+          {/* ── CONTEÚDO DA SUBTAB: ANOTAÇÕES & REVIEW ── */}
+          {activeSubTab === 'anotacoes' && (
+            <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
+              <div className="border-b border-[#30363d]/60 pb-3">
+                <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-[#22d3ee]" aria-hidden="true" />
+                  <span>Anotações, Análise & Registro Crítico</span>
+                </h2>
+                <p className="text-xs text-[#9aa4b2] mt-0.5">
+                  {isOwner ? 'Edição com salvamento automático ao digitar' : 'Notas e observações registradas'}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                {isOwner ? (
+                  <textarea
+                    value={localAnotacoes}
+                    onChange={(e) => setLocalAnotacoes(e.target.value)}
+                    placeholder="Escreva impressões, builds, análises ou anotações técnicas sobre este jogo..."
+                    rows={10}
+                    className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] p-4 text-base md:text-xs text-slate-200 placeholder-[#9aa4b2] focus:border-[#22d3ee] focus:outline-none leading-relaxed font-sans"
+                  />
+                ) : (
+                  <div className="bg-[#0d1117] p-5 rounded-xl border border-[#30363d] text-xs text-slate-200 leading-relaxed whitespace-pre-wrap">
+                    {game.anotacoes || 'Nenhuma anotação registrada para este jogo.'}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
-      )}
-
-      {/* ── CONTEÚDO DA SUBTAB: RUBRICA & AVALIAÇÃO ── */}
-      {activeSubTab === 'rubrica' && (
-        <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#30363d]/60 pb-3">
-            <div>
-              <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
-                <Sliders className="h-5 w-5 text-[#22d3ee]" aria-hidden="true" />
-                <span>Rubrica de Avaliação Detalhada</span>
-              </h2>
-              <p className="text-xs text-[#9aa4b2] mt-0.5">
-                Cálculo ponderado oficial do Obsidian (Jogabilidade 2x, Gráficos 1x, Trilha Sonora 1x, Diversão 2x)
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 bg-[#0d1117] p-2.5 px-4 rounded-xl border border-[#30363d]">
-              <span className="text-xs text-[#9aa4b2] uppercase font-bold">Nota Calculada:</span>
-              <span className="font-heading text-2xl font-black text-amber-400 font-mono">
-                ★ {calculatedRubric.toFixed(1)} / 10
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* 1. JOGABILIDADE (Peso 2x) */}
-            <div className="rounded-xl border border-[#30363d] bg-[#0d1117] p-4 space-y-3">
-              <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#22d3ee] flex items-center gap-1.5">
-                  <Gamepad2 className="h-4 w-4" />
-                  <span>🕹️ Jogabilidade (Peso 2x)</span>
-                </span>
-              </div>
-              <div className="space-y-2.5 text-xs">
-                {[
-                  { key: 'controles' as const, label: 'Controles' },
-                  { key: 'dificuldade' as const, label: 'Dificuldade & Desafio' },
-                  { key: 'levelDesign' as const, label: 'Level Design & Fases' },
-                  { key: 'mecanicas' as const, label: 'Mecânicas de Jogo' },
-                ].map(({ key, label }) => (
-                  <div key={key} className="flex items-center justify-between gap-3">
-                    <span className="text-slate-300 font-medium">{label}</span>
-                    {isOwner ? (
-                      <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        step="1"
-                        value={localRubric[key]}
-                        onChange={(e) => handleRubricScoreChange(key, parseFloat(e.target.value) || 0)}
-                        className="w-16 min-h-[36px] rounded-lg border border-[#30363d] bg-[#161b22] px-2 text-center text-xs font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none"
-                      />
-                    ) : (
-                      <span className="font-mono font-bold text-white">{localRubric[key]}/10</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 2. GRÁFICOS (Peso 1x) */}
-            <div className="rounded-xl border border-[#30363d] bg-[#0d1117] p-4 space-y-3">
-              <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-pink-400 flex items-center gap-1.5">
-                  <Sparkles className="h-4 w-4" />
-                  <span>🎨 Gráficos & Arte (Peso 1x)</span>
-                </span>
-              </div>
-              <div className="space-y-2.5 text-xs">
-                {[
-                  { key: 'estiloVisual' as const, label: 'Estilo Visual' },
-                  { key: 'animacoes' as const, label: 'Animações' },
-                  { key: 'paletaCores' as const, label: 'Paleta de Cores' },
-                  { key: 'detalhes' as const, label: 'Detalhes & Polimento' },
-                ].map(({ key, label }) => (
-                  <div key={key} className="flex items-center justify-between gap-3">
-                    <span className="text-slate-300 font-medium">{label}</span>
-                    {isOwner ? (
-                      <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        step="1"
-                        value={localRubric[key]}
-                        onChange={(e) => handleRubricScoreChange(key, parseFloat(e.target.value) || 0)}
-                        className="w-16 min-h-[36px] rounded-lg border border-[#30363d] bg-[#161b22] px-2 text-center text-xs font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none"
-                      />
-                    ) : (
-                      <span className="font-mono font-bold text-white">{localRubric[key]}/10</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 3. TRILHA SONORA (Peso 1x) */}
-            <div className="rounded-xl border border-[#30363d] bg-[#0d1117] p-4 space-y-3">
-              <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1.5">
-                  <Flame className="h-4 w-4" />
-                  <span>🎵 Trilha Sonora (Peso 1x)</span>
-                </span>
-              </div>
-              <div className="space-y-2.5 text-xs">
-                {[
-                  { key: 'musicasMemoraveis' as const, label: 'Músicas Memoráveis' },
-                  { key: 'adequacao' as const, label: 'Adequação ao Clima' },
-                  { key: 'variedade' as const, label: 'Variedade Sonora' },
-                  { key: 'efeitosSonoros' as const, label: 'Efeitos Sonoros' },
-                ].map(({ key, label }) => (
-                  <div key={key} className="flex items-center justify-between gap-3">
-                    <span className="text-slate-300 font-medium">{label}</span>
-                    {isOwner ? (
-                      <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        step="1"
-                        value={localRubric[key]}
-                        onChange={(e) => handleRubricScoreChange(key, parseFloat(e.target.value) || 0)}
-                        className="w-16 min-h-[36px] rounded-lg border border-[#30363d] bg-[#161b22] px-2 text-center text-xs font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none"
-                      />
-                    ) : (
-                      <span className="font-mono font-bold text-white">{localRubric[key]}/10</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 4. DIVERSÃO (Peso 2x) */}
-            <div className="rounded-xl border border-[#30363d] bg-[#0d1117] p-4 space-y-3">
-              <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-                  <Star className="h-4 w-4" />
-                  <span>⭐ Diversão (Peso 2x)</span>
-                </span>
-              </div>
-              <div className="space-y-2.5 text-xs">
-                {[
-                  { key: 'querContinuarJogando' as const, label: 'Vontade de Continuar' },
-                  { key: 'satisfacao' as const, label: 'Sensação de Satisfação' },
-                  { key: 'rejogabilidade' as const, label: 'Fator Rejogabilidade' },
-                  { key: 'interesse' as const, label: 'Interesse Geral' },
-                ].map(({ key, label }) => (
-                  <div key={key} className="flex items-center justify-between gap-3">
-                    <span className="text-slate-300 font-medium">{label}</span>
-                    {isOwner ? (
-                      <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        step="1"
-                        value={localRubric[key]}
-                        onChange={(e) => handleRubricScoreChange(key, parseFloat(e.target.value) || 0)}
-                        className="w-16 min-h-[36px] rounded-lg border border-[#30363d] bg-[#161b22] px-2 text-center text-xs font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none"
-                      />
-                    ) : (
-                      <span className="font-mono font-bold text-white">{localRubric[key]}/10</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── CONTEÚDO DA SUBTAB: GOT AWARDS ── */}
-      {activeSubTab === 'got' && (
-        <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
-          <div className="border-b border-[#30363d]/60 pb-3">
-            <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-amber-400" aria-hidden="true" />
-              <span>Premiações e Destaques (GOT Awards)</span>
-            </h2>
-            <p className="text-xs text-[#9aa4b2] mt-0.5">
-              {isOwner ? 'Clique nas categorias para premiar este jogo' : 'Categorias de premiação conquistadas por este jogo'}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {gotConfig.map((item) => {
-              const isAwarded = Boolean(game[item.key]);
-
-              if (!isOwner && !isAwarded) {
-                return null;
-              }
-
-              return (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={() => handleToggleGot(item.key)}
-                  disabled={!isOwner}
-                  className={`p-3.5 rounded-xl border text-left transition-all ${
-                    isOwner ? 'cursor-pointer hover:brightness-110' : 'cursor-default'
-                  } ${
-                    isAwarded
-                      ? `${item.bg} ${item.border} shadow-md`
-                      : 'bg-[#0d1117] border-[#30363d] opacity-50 hover:opacity-100'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-heading text-xs font-bold" style={{ color: item.color }}>
-                      {item.label}
-                    </span>
-                    {isAwarded && (
-                      <span className="h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_6px_#ffd700]" aria-hidden="true" />
-                    )}
-                  </div>
-                  <p className="text-xs text-[#9aa4b2] mt-1 leading-relaxed">
-                    {item.desc}
-                  </p>
-                  {isOwner && (
-                    <div className="mt-2 text-xs font-mono font-bold">
-                      {isAwarded ? (
-                        <span className="text-emerald-400">✓ Conquistado</span>
-                      ) : (
-                        <span className="text-[#9aa4b2]">+ Conceder Prêmio</span>
-                      )}
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {!isOwner && activeGotBadges.length === 0 && (
-            <div className="p-8 text-center text-xs text-[#9aa4b2] border border-dashed border-[#30363d] rounded-xl">
-              Nenhuma premiação concedida a este jogo até o momento.
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── CONTEÚDO DA SUBTAB: ANOTAÇÕES & REVIEW ── */}
-      {activeSubTab === 'anotacoes' && (
-        <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
-          <div className="border-b border-[#30363d]/60 pb-3">
-            <h2 className="font-heading text-lg font-bold uppercase text-white flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-[#22d3ee]" aria-hidden="true" />
-              <span>Anotações, Análise & Registro Crítico</span>
-            </h2>
-            <p className="text-xs text-[#9aa4b2] mt-0.5">
-              {isOwner ? 'Edição com salvamento automático ao digitar' : 'Notas e observações registradas'}
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            {isOwner ? (
-              <textarea
-                value={localAnotacoes}
-                onChange={(e) => setLocalAnotacoes(e.target.value)}
-                placeholder="Escreva impressões, builds, análises ou anotações técnicas sobre este jogo..."
-                rows={10}
-                className="w-full rounded-xl border border-[#30363d] bg-[#0d1117] p-4 text-base md:text-xs text-slate-200 placeholder-[#9aa4b2] focus:border-[#22d3ee] focus:outline-none leading-relaxed font-sans"
-              />
-            ) : (
-              <div className="bg-[#0d1117] p-5 rounded-xl border border-[#30363d] text-xs text-slate-200 leading-relaxed whitespace-pre-wrap">
-                {game.anotacoes || 'Nenhuma anotação registrada para este jogo.'}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+        <aside className="self-start lg:sticky lg:top-20">
+          <GameSidebar game={game} playingGames={playingGames} navigate={navigate} />
+        </aside>
+      </div>
 
       {/* ── MODAL DE EDIÇÃO DE SESSÃO CADASTRADA (DONO) ── */}
       {isOwner && editingSessionIdx !== null && (
