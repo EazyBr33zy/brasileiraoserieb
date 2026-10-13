@@ -102,16 +102,16 @@ export const GameHero: React.FC<GameHeroProps> = ({
         </>
       )}
 
-      <div className={`relative z-10 grid gap-6 ${compactCover ? 'md:grid-cols-[200px_minmax(0,1fr)]' : 'md:grid-cols-[260px_minmax(0,1fr)]'} ${stretchCover ? 'md:items-stretch' : ''}`}>
+      <div className={`relative z-10 grid gap-6 ${compactCover ? 'md:grid-cols-[200px_minmax(0,1fr)]' : 'md:grid-cols-[260px_minmax(0,1fr)]'} ${stretchCover ? 'md:grid-cols-[minmax(200px,320px)_minmax(0,1fr)] md:items-stretch' : ''}`}>
         {/* Capa grande (compactCover reduz p/ 200px no desktop — aba #/jogando) */}
-        <div className={`${stretchCover ? 'hidden md:block h-full min-h-0' : 'mx-auto w-40 shrink-0 sm:w-52 md:mx-0'} ${!stretchCover && (compactCover ? 'md:w-[200px]' : 'md:w-[260px]')}`} style={stretchCover ? undefined : { aspectRatio: '3 / 4' }}>
-          {/* Na aba #/jogando a capa estica a altura da coluna sem cortar a arte: object-contain + fundo preto nas barras */}
+        <div className={`${stretchCover ? 'order-first mx-auto w-[min(60vw,240px)] shrink-0 md:mx-0 md:w-full' : 'mx-auto w-40 shrink-0 sm:w-52 md:mx-0'} ${!stretchCover && (compactCover ? 'md:w-[200px]' : 'md:w-[260px]')} ${stretchCover ? 'aspect-[2/3] md:aspect-auto md:h-full md:min-h-0' : ''}`} style={stretchCover ? undefined : { aspectRatio: '3 / 4' }}>
+          {/* Na aba #/jogando a capa preenche toda a caixa (altura = coluna de informações) com object-cover + recorte topo — sem faixas vazias, sem distorcer */}
           <GameCover
             src={game.capa}
             title={game.title}
             consoleName={game.console}
             size="hero"
-            className={`aspect-auto rounded-xl border border-[#30363d]/70 bg-black shadow-2xl shadow-black/50 ${stretchCover ? 'h-full w-full [&_img]:object-contain' : 'h-full w-full'}`}
+            className={`aspect-auto rounded-xl border border-[#30363d]/70 bg-black shadow-2xl shadow-black/50 ${stretchCover ? 'h-full w-full [&_img]:h-full [&_img]:w-full [&_img]:object-cover [&_img]:[object-position:center_top]' : 'h-full w-full'}`}
           />
         </div>
 
