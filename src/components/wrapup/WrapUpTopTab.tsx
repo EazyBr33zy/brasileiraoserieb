@@ -28,7 +28,7 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* ── Games of the Year: GOTY em destaque + categorias ── */}
-      <section className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
+      <section className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5">
         <div className="mb-3 flex items-center gap-2 font-heading text-base sm:text-lg font-black uppercase text-[#ffd700]">
           <span>👑</span>
           <span className="truncate">Games of the Year — {ANO}</span>
@@ -37,16 +37,16 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
         {/* GOTY — caixa destacada com borda amarelo neon */}
         <div
           onClick={() => gotAwards.goty && onGameClick(gotAwards.goty.id)}
-          className={`group relative mb-3 flex items-center gap-4 overflow-hidden rounded-2xl border-2 p-4 shadow-[0_0_24px_rgba(255,255,0,0.25)] transition-all ${
+          className={`group relative mb-3 flex items-center gap-4 overflow-hidden rounded-2xl border-2 p-4 shadow-[0_0_24px_rgba(250,204,21,0.25)] transition-all ${
             gotAwards.goty
-              ? 'cursor-pointer border-[#eeff00] bg-gradient-to-br from-[#eeff00]/15 via-[#0e131d] to-[#0e131d] hover:shadow-[0_0_36px_rgba(255,255,0,0.4)]'
-              : 'border-dashed border-[#eeff00]/40 bg-[#0e131d] opacity-70'
+              ? 'cursor-pointer border-[#facc15] bg-gradient-to-br from-[#facc15]/15 via-[#0d1117] to-[#161b22] hover:shadow-[0_0_36px_rgba(250,204,21,0.4)]'
+              : 'border-dashed border-[#facc15]/40 bg-[#0d1117] opacity-70'
           }`}
         >
-          <div className="pointer-events-none absolute -right-2 -top-4 select-none font-heading text-6xl font-black text-[#eeff00]/10 sm:text-7xl">
+          <div className="pointer-events-none absolute -right-2 -top-4 select-none font-heading text-6xl font-black text-[#facc15]/10 sm:text-7xl">
             GOTY
           </div>
-          <div className="h-28 w-[84px] flex-shrink-0 overflow-hidden rounded-xl border border-[#eeff00]/50 bg-black shadow-lg sm:h-32 sm:w-[96px]">
+          <div className="h-28 w-[84px] flex-shrink-0 overflow-hidden rounded-xl border border-[#facc15]/50 bg-black shadow-lg sm:h-32 sm:w-[96px]">
             {gotAwards.goty?.capa ? (
               <img
                 src={gotAwards.goty.capa}
@@ -59,11 +59,11 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
             )}
           </div>
           <div className="min-w-0">
-            <div className="text-xs font-black uppercase tracking-widest text-[#eeff00]">
+            <div className="text-xs font-black uppercase tracking-widest text-[#facc15]">
               🏆 Game of the Year — {ANO}
             </div>
             <h3
-              className="mt-1 truncate font-heading text-xl font-black uppercase text-white drop-shadow-[0_0_10px_rgba(238,255,0,0.35)] sm:text-2xl"
+              className="mt-1 truncate font-heading text-xl font-black uppercase text-white drop-shadow-[0_0_10px_rgba(250,204,21,0.35)] sm:text-2xl"
               title={gotAwards.goty?.title}
             >
               {gotAwards.goty?.title || 'Não definido'}
@@ -72,7 +72,7 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
               <div className="mt-1 truncate font-mono text-xs text-slate-400">{gotAwards.goty.console}</div>
             )}
             {gotAwards.goty?.nota !== undefined && (
-              <div className="mt-2 font-mono text-3xl font-bold tabular-nums text-[#eeff00]">
+              <div className="mt-2 font-mono text-3xl font-bold tabular-nums text-[#facc15]">
                 ★ {gotAwards.goty.nota.toFixed(1)}
               </div>
             )}
@@ -82,10 +82,10 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
         {/* Demais premiações — duas colunas */}
         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           {[
-            { title: 'Melhor Gameplay', g: gotAwards.gameplay, ico: '🕹️', cor: '#00f5ff' },
-            { title: 'Melhor Narrativa', g: gotAwards.narrativa, ico: '📖', cor: '#bc13fe' },
+            { title: 'Melhor Gameplay', g: gotAwards.gameplay, ico: '🕹️', cor: '#22d3ee' },
+            { title: 'Melhor Narrativa', g: gotAwards.narrativa, ico: '📖', cor: '#a855f7' },
             { title: 'Direção de Arte', g: gotAwards.arte, ico: '🎨', cor: '#ff6400' },
-            { title: 'Indie do Ano', g: gotAwards.indie, ico: '🌱', cor: '#00ff9f' },
+            { title: 'Indie do Ano', g: gotAwards.indie, ico: '🌱', cor: '#34d399' },
             { title: 'Surpresa do Ano', g: gotAwards.surpresa, ico: '💥', cor: '#ff0055' },
             { title: 'Retro do Ano', g: gotAwards.retro, ico: '📼', cor: '#a78bfa' },
             { title: 'Mais Difícil', g: gotAwards.dificil, ico: '💀', cor: '#f97316' },
@@ -94,7 +94,7 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
             <div
               key={i}
               onClick={() => award.g && onGameClick(award.g!.id)}
-              className={`relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-[#0e131d] p-3 transition-all ${
+              className={`relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 transition-all ${
                 award.g ? 'cursor-pointer hover:border-white/30' : 'opacity-60'
               }`}
             >
@@ -112,7 +112,7 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <span className="block truncate text-[10px] sm:text-xs font-bold uppercase tracking-wider" style={{ color: award.cor }}>
+                <span className="block truncate text-xs font-bold uppercase tracking-wider" style={{ color: award.cor }}>
                   {award.ico} {award.title}
                 </span>
                 <div className="mt-0.5 truncate font-heading text-sm font-bold text-white" title={award.g?.title}>

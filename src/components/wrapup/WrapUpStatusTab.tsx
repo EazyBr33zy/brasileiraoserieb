@@ -44,10 +44,10 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Lifetime Header & Overview Banner */}
-      <div className="rounded-xl border border-[#00f5ff]/30 bg-gradient-to-r from-[#00f5ff]/10 via-purple-500/10 to-[#0b0c16] p-3.5 sm:p-5 shadow-xl">
+      <div className="rounded-xl border border-[#22d3ee]/30 bg-gradient-to-r from-[#22d3ee]/10 via-purple-500/10 to-[#161b22] p-3.5 sm:p-5 shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2 text-xs font-black uppercase text-[#00f5ff]">
+            <div className="flex items-center gap-2 text-xs font-black uppercase text-[#22d3ee]">
               <Activity className="h-4 w-4" />
               <span>Status Histórico Global</span>
             </div>
@@ -62,7 +62,7 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
           <div className="flex items-center gap-2 rounded-xl bg-black/60 border border-white/10 p-3">
             <div className="text-center">
               <div className="text-xs font-bold text-slate-500 uppercase">Anos Ativos</div>
-              <div className="font-heading text-2xl font-black text-[#00f5ff]">{availableYears.length}</div>
+              <div className="font-heading text-2xl font-black text-[#22d3ee]">{availableYears.length}</div>
             </div>
           </div>
         </div>
@@ -70,39 +70,39 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
 
       {/* All-time KPIs */}
       <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0e131d] p-3 sm:p-4">
-          <div className="absolute inset-x-0 top-0 h-0.5 bg-[#00f5ff]"></div>
-          <div className="truncate text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">Total Zerados (Vida)</div>
-          <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#00f5ff]">{lifetime.totalLifetime}</div>
-          <div className="mt-1 truncate text-[10px] sm:text-xs text-slate-400">Todos os anos somados</div>
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4">
+          <div className="absolute inset-x-0 top-0 h-0.5 bg-[#22d3ee]"></div>
+          <div className="truncate text-xs font-bold uppercase tracking-wider text-slate-400">Total Zerados (Vida)</div>
+          <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#22d3ee]">{lifetime.totalLifetime}</div>
+          <div className="mt-1 truncate text-xs text-slate-400">Todos os anos somados</div>
         </div>
 
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0e131d] p-3 sm:p-4">
-          <div className="absolute inset-x-0 top-0 h-0.5 bg-[#00ff9f]"></div>
-          <div className="truncate text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">Tempo Total Jogado</div>
-          <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#00ff9f]">{fmtH(lifetime.horasLifetime)}</div>
-          <div className="mt-1 truncate text-[10px] sm:text-xs text-slate-400">Horas registradas</div>
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4">
+          <div className="absolute inset-x-0 top-0 h-0.5 bg-[#34d399]"></div>
+          <div className="truncate text-xs font-bold uppercase tracking-wider text-slate-400">Tempo Total Jogado</div>
+          <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#34d399]">{fmtH(lifetime.horasLifetime)}</div>
+          <div className="mt-1 truncate text-xs text-slate-400">Horas registradas</div>
         </div>
 
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0e131d] p-3 sm:p-4">
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4">
           <div className="absolute inset-x-0 top-0 h-0.5 bg-[#ffd700]"></div>
-          <div className="truncate text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">Nota Média Histórica</div>
+          <div className="truncate text-xs font-bold uppercase tracking-wider text-slate-400">Nota Média Histórica</div>
           <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#ffd700]">
             {lifetime.mediaLifetime ? lifetime.mediaLifetime.toFixed(2) : '—'}
           </div>
-          <div className="mt-1 truncate text-[10px] sm:text-xs text-slate-400">{lifetime.notasLifetimeArr.length} jogos avaliados</div>
+          <div className="mt-1 truncate text-xs text-slate-400">{lifetime.notasLifetimeArr.length} jogos avaliados</div>
         </div>
 
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0e131d] p-3 sm:p-4">
-          <div className="absolute inset-x-0 top-0 h-0.5 bg-[#bc13fe]"></div>
-          <div className="truncate text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">Masterpieces (10★)</div>
-          <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#bc13fe]">{lifetime.notas10Lifetime}</div>
-          <div className="mt-1 truncate text-[10px] sm:text-xs text-slate-400">Jogos supremos</div>
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4">
+          <div className="absolute inset-x-0 top-0 h-0.5 bg-[#a855f7]"></div>
+          <div className="truncate text-xs font-bold uppercase tracking-wider text-slate-400">Masterpieces (10★)</div>
+          <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#a855f7]">{lifetime.notas10Lifetime}</div>
+          <div className="mt-1 truncate text-xs text-slate-400">Jogos supremos</div>
         </div>
       </div>
 
       {/* Seção 1: Distribuição de Notas (Todos os Anos) */}
-      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
+      <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5">
         <div className="mb-4 flex items-center gap-2 font-heading text-base font-black uppercase text-white">
           <span className="h-1.5 w-1.5 rounded-full bg-[#ffd700]"></span>
           Distribuição de Notas (Todos os Anos Somados)
@@ -123,7 +123,7 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
                       className="w-full rounded-t-md transition-all"
                       style={{ height: `${pct}%`, backgroundColor: cor, boxShadow: `0 0 10px ${cor}33` }}
                     ></div>
-                    <span className="text-[10px] sm:text-xs font-bold text-slate-400">{faixa}</span>
+                    <span className="text-xs font-bold text-slate-400">{faixa}</span>
                   </div>
                 );
               })}
@@ -132,7 +132,7 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
 
           <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-black/40 p-4 text-xs">
             <div className="text-center pb-3 border-b border-white/10">
-              <div className="text-[10px] uppercase font-bold tracking-widest text-slate-500">Média Geral Histórica</div>
+              <div className="text-xs uppercase font-bold tracking-widest text-slate-500">Média Geral Histórica</div>
               <div className="mt-1 font-mono text-4xl font-bold tabular-nums text-[#ffd700] text-glow-gold">
                 {lifetime.mediaLifetime ? lifetime.mediaLifetime.toFixed(2) : '—'}
               </div>
@@ -164,7 +164,7 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
       </div>
 
       {/* Seção 2: Plataformas Zeradas (Todos os Anos Somados - 2 colunas, 4 jogos por linha) */}
-      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5 space-y-3">
+      <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5 space-y-3">
         <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white">
           <span className="h-1.5 w-1.5 rounded-full bg-orange-400"></span>
           Plataformas Zeradas (Todos os Anos Somados)
@@ -187,7 +187,7 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
                     <span className="text-lg sm:text-xl flex-shrink-0">{s.ico}</span>
                     <div className="min-w-0">
                       <div className="truncate font-heading text-xs font-bold text-white sm:text-sm">{s.name}</div>
-                      <div className="truncate font-mono text-[10px] font-bold uppercase text-slate-500">
+                      <div className="truncate font-mono text-xs font-bold uppercase text-slate-500">
                         {pct}% da história
                       </div>
                     </div>
@@ -196,13 +196,13 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
                   <div className="flex flex-shrink-0 items-center gap-2 sm:gap-4">
                     <div className="text-right">
                       <div className="font-mono text-xs font-bold tabular-nums text-white">{fmtH(stats.hours)}</div>
-                      <div className="text-[10px] uppercase text-slate-500">Horas</div>
+                      <div className="text-xs uppercase text-slate-500">Horas</div>
                     </div>
                     <div className="border-l border-white/10 pl-2 text-right sm:pl-3">
                       <div className="font-mono text-base font-bold tabular-nums sm:text-lg" style={{ color: s.col }}>
                         {stats.count}
                       </div>
-                      <div className="text-[10px] uppercase text-slate-500">Zerados</div>
+                      <div className="text-xs uppercase text-slate-500">Zerados</div>
                     </div>
                     <ChevronDown
                       className={`h-4 w-4 text-slate-400 transition-transform ${
@@ -224,7 +224,7 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
                         <div
                           key={g.id}
                           onClick={() => onGameClick(g.id)}
-                          className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-[#0e131d] hover:border-[#00f5ff] hover:shadow-lg hover:shadow-[#00f5ff]/20 transition-all cursor-pointer"
+                          className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-[#0d1117] hover:border-[#22d3ee] hover:shadow-lg hover:shadow-[#22d3ee]/20 transition-all cursor-pointer"
                           title={`${g.title} (★ ${g.nota !== undefined ? g.nota.toFixed(1) : '—'})`}
                         >
                           <div className="relative aspect-[3/4] w-full overflow-hidden bg-black">
@@ -235,19 +235,19 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
                               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
                             />
                             {g.nota !== undefined && !isNaN(g.nota) && (
-                              <div className="absolute right-1 top-1 rounded border border-white/10 bg-black/85 px-1 py-0.2 font-mono text-[10px] font-bold tabular-nums text-[#ffd700]">
+                              <div className="absolute right-1 top-1 rounded border border-white/10 bg-black/85 px-1 py-0.2 font-mono text-xs font-bold tabular-nums text-[#ffd700]">
                                 ★{g.nota.toFixed(1)}
                               </div>
                             )}
-                            <div className="absolute bottom-1 left-1 max-w-[80%] truncate rounded border border-white/10 bg-black/80 px-1 py-0.2 font-mono text-[10px] text-slate-300">
+                            <div className="absolute bottom-1 left-1 max-w-[80%] truncate rounded border border-white/10 bg-black/80 px-1 py-0.2 font-mono text-xs text-slate-300">
                               {g.ano_zerado || 'Zerado'}
                             </div>
                           </div>
                           <div className="p-1.5">
-                            <div className="truncate font-heading text-xs font-bold text-white transition-colors group-hover:text-[#00f5ff]">
+                            <div className="truncate font-heading text-xs font-bold text-white transition-colors group-hover:text-[#22d3ee]">
                               {g.title}
                             </div>
-                            <div className="mt-0.5 flex items-center justify-between gap-1 font-mono text-[10px] text-slate-400">
+                            <div className="mt-0.5 flex items-center justify-between gap-1 font-mono text-xs text-slate-400">
                               <span>{g.tempo ? `${g.tempo}` : '—'}</span>
                               <span className="truncate">{g.genero}</span>
                             </div>
@@ -264,9 +264,9 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
       </div>
 
       {/* Seção 3: Gêneros Zerados (Todos os Anos Somados - 2 colunas, 4 jogos por linha) */}
-      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5 space-y-3">
+      <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5 space-y-3">
         <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#bc13fe]"></span>
+          <span className="h-1.5 w-1.5 rounded-full bg-[#a855f7]"></span>
           Gêneros Zerados (Todos os Anos Somados)
         </div>
 
@@ -277,12 +277,12 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
             const genreGames = zeradosAll.filter((g) => g.genero === nome);
 
             const genreColors = [
-              '#bc13fe',
-              '#00f5ff',
+              '#a855f7',
+              '#22d3ee',
               '#ff0055',
               '#ffd700',
-              '#00ff9f',
-              '#ff7a00',
+              '#34d399',
+              '#f97316',
               '#6366f1',
               '#ec4899',
             ];
@@ -303,7 +303,7 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
                     </div>
                     <div className="min-w-0">
                       <div className="truncate font-heading text-xs font-bold text-white sm:text-sm">{nome}</div>
-                      <div className="truncate font-mono text-[10px] font-bold uppercase text-slate-500">
+                      <div className="truncate font-mono text-xs font-bold uppercase text-slate-500">
                         {pct}% da história
                       </div>
                     </div>
@@ -312,13 +312,13 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
                   <div className="flex flex-shrink-0 items-center gap-2 sm:gap-4">
                     <div className="text-right">
                       <div className="font-mono text-xs font-bold tabular-nums text-white">{fmtH(stats.hours)}</div>
-                      <div className="text-[10px] uppercase text-slate-500">Horas</div>
+                      <div className="text-xs uppercase text-slate-500">Horas</div>
                     </div>
                     <div className="border-l border-white/10 pl-2 text-right sm:pl-3">
                       <div className="font-mono text-base font-bold tabular-nums sm:text-lg" style={{ color: col }}>
                         {stats.count}
                       </div>
-                      <div className="text-[10px] uppercase text-slate-500">Zerados</div>
+                      <div className="text-xs uppercase text-slate-500">Zerados</div>
                     </div>
                     <ChevronDown
                       className={`h-4 w-4 text-slate-400 transition-transform ${
@@ -340,7 +340,7 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
                         <div
                           key={g.id}
                           onClick={() => onGameClick(g.id)}
-                          className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-[#0e131d] hover:border-[#bc13fe] hover:shadow-lg hover:shadow-[#bc13fe]/20 transition-all cursor-pointer"
+                          className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-[#0d1117] hover:border-[#a855f7] hover:shadow-lg hover:shadow-[#a855f7]/20 transition-all cursor-pointer"
                           title={`${g.title} (★ ${g.nota !== undefined ? g.nota.toFixed(1) : '—'})`}
                         >
                           <div className="relative aspect-[3/4] w-full overflow-hidden bg-black">
@@ -351,19 +351,19 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
                               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
                             />
                             {g.nota !== undefined && !isNaN(g.nota) && (
-                              <div className="absolute right-1 top-1 rounded border border-white/10 bg-black/85 px-1 py-0.2 font-mono text-[10px] font-bold tabular-nums text-[#ffd700]">
+                              <div className="absolute right-1 top-1 rounded border border-white/10 bg-black/85 px-1 py-0.2 font-mono text-xs font-bold tabular-nums text-[#ffd700]">
                                 ★{g.nota.toFixed(1)}
                               </div>
                             )}
-                            <div className="absolute bottom-1 left-1 max-w-[80%] truncate rounded border border-white/10 bg-black/80 px-1 py-0.2 font-mono text-[10px] text-slate-300">
+                            <div className="absolute bottom-1 left-1 max-w-[80%] truncate rounded border border-white/10 bg-black/80 px-1 py-0.2 font-mono text-xs text-slate-300">
                               {g.console}
                             </div>
                           </div>
                           <div className="p-1.5">
-                            <div className="truncate font-heading text-xs font-bold text-white transition-colors group-hover:text-[#bc13fe]">
+                            <div className="truncate font-heading text-xs font-bold text-white transition-colors group-hover:text-[#a855f7]">
                               {g.title}
                             </div>
-                            <div className="mt-0.5 flex items-center justify-between font-mono text-[10px] text-slate-400">
+                            <div className="mt-0.5 flex items-center justify-between font-mono text-xs text-slate-400">
                               <span>{g.tempo ? `${g.tempo}` : '—'}</span>
                               <span>{g.ano_zerado || '—'}</span>
                             </div>
@@ -380,9 +380,9 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
       </div>
 
       {/* Seção 4: Evolução e Comparativo de Todos os Anos */}
-      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5 space-y-4">
+      <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5 space-y-4">
         <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#00f5ff]"></span>
+          <span className="h-1.5 w-1.5 rounded-full bg-[#22d3ee]"></span>
           Evolução e Comparativo de Todos os Anos
         </div>
 
@@ -393,23 +393,23 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
                 const pct = Math.max(item.qtd ? 15 : 4, Math.round((item.qtd / maxAnoQtd) * 100));
                 return (
                   <div key={item.ano} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
-                    <span className="font-mono text-xs font-bold tabular-nums text-[#00f5ff]">{item.qtd}</span>
+                    <span className="font-mono text-xs font-bold tabular-nums text-[#22d3ee]">{item.qtd}</span>
                     <div
-                      className="w-full max-w-[40px] rounded-t-md bg-gradient-to-t from-[#00f5ff]/40 to-[#00f5ff] transition-all"
-                      style={{ height: `${pct}%`, boxShadow: '0 0 10px rgba(0,245,255,0.3)' }}
+                      className="w-full max-w-[40px] rounded-t-md bg-gradient-to-t from-[#22d3ee]/40 to-[#22d3ee] transition-all"
+                      style={{ height: `${pct}%`, boxShadow: '0 0 10px rgba(34,211,238,0.3)' }}
                     ></div>
                     <span className="font-mono text-xs font-bold tabular-nums text-white">{item.ano}</span>
                   </div>
                 );
               })}
             </div>
-            <div className="mt-2 text-center text-[10px] uppercase tracking-widest text-slate-500">
+            <div className="mt-2 text-center text-xs uppercase tracking-widest text-slate-500">
               Zeradas por ano
             </div>
           </div>
 
           <div className="rounded-xl border border-white/10 bg-black/40 p-4 text-xs">
-            <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Desempenho por Ano</div>
+            <div className="mb-2 text-xs font-bold uppercase tracking-widest text-slate-500">Desempenho por Ano</div>
             <div className="space-y-1">
               {anosStats.map((item) => (
                 <div
@@ -417,7 +417,7 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
                   className="flex items-center justify-between gap-2 rounded-lg border border-white/5 bg-white/[0.02] px-2.5 py-2"
                 >
                   <span className="font-mono font-bold tabular-nums text-white">{item.ano}</span>
-                  <span className="truncate font-mono text-[10px] text-slate-400 sm:text-xs">
+                  <span className="truncate font-mono text-xs text-slate-400 sm:text-xs">
                     {item.qtd} jogos · {fmtH(item.h)}
                   </span>
                   <span className="flex-shrink-0 font-mono font-bold tabular-nums text-[#ffd700]">★ {item.media.toFixed(1)}</span>

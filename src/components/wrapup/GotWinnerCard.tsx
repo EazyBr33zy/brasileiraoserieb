@@ -151,7 +151,7 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
               <span className="w-28 shrink-0 truncate text-xs text-slate-400">{bar.label}</span>
               <div className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-white/10">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#ffd700] to-[#ff7a00]"
+                  className="h-full rounded-full bg-gradient-to-r from-[#ffd700] to-[#f97316]"
                   style={{ width: `${Math.min(((bar.avg as number) / 10) * 100, 100)}%` }}
                 />
               </div>

@@ -62,7 +62,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Seção 1: Distribuição de Notas — painel com barra lateral de contexto */}
-      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
+      <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5">
         <div className="mb-4 flex items-center gap-2 font-heading text-base font-black uppercase text-white">
           <span className="h-1.5 w-1.5 rounded-full bg-[#ffd700]"></span>
           Distribuição de Notas
@@ -84,12 +84,12 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                       className="w-full rounded-t-md transition-all"
                       style={{ height: `${pct}%`, backgroundColor: cor, boxShadow: `0 0 10px ${cor}33` }}
                     ></div>
-                    <span className="text-[10px] sm:text-xs font-bold text-slate-400">{faixa}</span>
+                    <span className="text-xs font-bold text-slate-400">{faixa}</span>
                   </div>
                 );
               })}
             </div>
-            <div className="mt-2 text-center text-[10px] uppercase tracking-widest text-slate-500">
+            <div className="mt-2 text-center text-xs uppercase tracking-widest text-slate-500">
               Jogos zerados por faixa de nota · {ANO}
             </div>
           </div>
@@ -97,7 +97,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
           {/* Context card */}
           <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-black/40 p-4 text-xs">
             <div className="text-center pb-3 border-b border-white/10">
-              <div className="text-[10px] uppercase font-bold tracking-widest text-slate-500">Média Geral</div>
+              <div className="text-xs uppercase font-bold tracking-widest text-slate-500">Média Geral</div>
               <div className="mt-1 font-mono text-4xl font-bold tabular-nums text-[#ffd700] text-glow-gold">
                 {media ? media.toFixed(2) : '—'}
               </div>
@@ -129,9 +129,9 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
       </div>
 
       {/* Seção 2: Atividade Mensal */}
-      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
+      <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5">
         <div className="mb-4 flex items-center gap-2 font-heading text-base font-black uppercase text-white">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#00f5ff]"></span>
+          <span className="h-1.5 w-1.5 rounded-full bg-[#22d3ee]"></span>
           Atividade Mensal
         </div>
 
@@ -144,8 +144,8 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                 return (
                   <div key={m.nome} className="flex h-full flex-col items-center justify-end gap-1">
                     <span
-                      className="font-mono text-[10px] sm:text-xs font-bold tabular-nums"
-                      style={{ color: isPico ? '#ffd700' : '#00f5ff' }}
+                      className="font-mono text-xs font-bold tabular-nums"
+                      style={{ color: isPico ? '#ffd700' : '#22d3ee' }}
                     >
                       {m.qtd || '·'}
                     </span>
@@ -156,17 +156,17 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                         backgroundColor: isPico
                           ? '#ffd700'
                           : m.qtd > 0
-                          ? '#00f5ff'
+                          ? '#22d3ee'
                           : 'rgba(255,255,255,0.05)',
                         boxShadow: isPico ? '0 0 10px rgba(255,215,0,0.5)' : undefined,
                       }}
                     ></div>
-                    <span className="text-[9px] sm:text-xs font-bold uppercase text-slate-400">{m.nome}</span>
+                    <span className="text-xs font-bold uppercase text-slate-400">{m.nome}</span>
                   </div>
                 );
               })}
             </div>
-            <div className="mt-2 text-center text-[10px] uppercase tracking-widest text-slate-500">
+            <div className="mt-2 text-center text-xs uppercase tracking-widest text-slate-500">
               Zeradas por mês · {ANO}
             </div>
           </div>
@@ -180,7 +180,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
             </div>
             <div className="flex flex-col gap-1 rounded-lg border border-white/5 bg-white/[0.02] p-2.5 lg:flex-row lg:items-center lg:justify-between">
               <span className="text-slate-400">🔢 Meses Ativos</span>
-              <strong className="text-right font-mono tabular-nums text-[#00f5ff]">
+              <strong className="text-right font-mono tabular-nums text-[#22d3ee]">
                 {meses.filter((m) => m.qtd > 0).length} / 12
               </strong>
             </div>
@@ -195,7 +195,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
       </div>
 
       {/* Seção 3: Plataformas com Acordeão (2 colunas, 4 jogos por linha) */}
-      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5 space-y-3">
+      <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5 space-y-3">
         <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white">
           <span className="h-1.5 w-1.5 rounded-full bg-orange-400"></span>
           Plataformas Zeradas em {ANO}
@@ -221,7 +221,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                       <div className="font-heading text-xs sm:text-sm font-bold text-white truncate">
                         {s.name}
                       </div>
-                      <div className="truncate font-mono text-[10px] font-bold uppercase text-slate-500">
+                      <div className="truncate font-mono text-xs font-bold uppercase text-slate-500">
                         {pct}% dos jogos
                       </div>
                     </div>
@@ -232,13 +232,13 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                       <div className="font-mono text-xs font-bold tabular-nums text-white">
                         {fmtH(stats.hours)}
                       </div>
-                      <div className="text-[10px] uppercase text-slate-500">Horas</div>
+                      <div className="text-xs uppercase text-slate-500">Horas</div>
                     </div>
                     <div className="border-l border-white/10 pl-2 text-right sm:pl-3">
                       <div className="font-mono text-base font-bold tabular-nums sm:text-lg" style={{ color: s.col }}>
                         {stats.count}
                       </div>
-                      <div className="text-[10px] uppercase text-slate-500">Zerados</div>
+                      <div className="text-xs uppercase text-slate-500">Zerados</div>
                     </div>
                     <ChevronDown
                       className={`h-4 w-4 text-slate-400 transition-transform ${
@@ -261,7 +261,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                         <div
                           key={g.id}
                           onClick={() => onGameClick(g.id)}
-                          className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-[#0e131d] hover:border-[#00f5ff] hover:shadow-lg hover:shadow-[#00f5ff]/20 transition-all cursor-pointer"
+                          className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-[#0d1117] hover:border-[#22d3ee] hover:shadow-lg hover:shadow-[#22d3ee]/20 transition-all cursor-pointer"
                           title={`${g.title} (★ ${g.nota !== undefined ? g.nota.toFixed(1) : '—'})`}
                         >
                           <div className="relative aspect-[3/4] w-full overflow-hidden bg-black">
@@ -272,16 +272,16 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
                             />
                             {g.nota !== undefined && !isNaN(g.nota) && (
-                              <div className="absolute right-1 top-1 rounded border border-white/10 bg-black/85 px-1 py-0.2 font-mono text-[10px] font-bold tabular-nums text-[#ffd700]">
+                              <div className="absolute right-1 top-1 rounded border border-white/10 bg-black/85 px-1 py-0.2 font-mono text-xs font-bold tabular-nums text-[#ffd700]">
                                 ★{g.nota.toFixed(1)}
                               </div>
                             )}
                           </div>
                           <div className="p-1.5">
-                            <div className="truncate font-heading text-xs font-bold text-white transition-colors group-hover:text-[#00f5ff]">
+                            <div className="truncate font-heading text-xs font-bold text-white transition-colors group-hover:text-[#22d3ee]">
                               {g.title}
                             </div>
-                            <div className="mt-0.5 flex items-center justify-between font-mono text-[10px] text-slate-400">
+                            <div className="mt-0.5 flex items-center justify-between font-mono text-xs text-slate-400">
                               <span>{g.tempo ? `${g.tempo}` : '—'}</span>
                               {g.data_zerado && <span>{formatDateBR(g.data_zerado).slice(0, 5)}</span>}
                             </div>
@@ -298,9 +298,9 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
       </div>
 
       {/* Seção 4: Gêneros Zerados (2 colunas, 4 jogos por linha) */}
-      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5 space-y-3">
+      <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5 space-y-3">
         <div className="flex items-center gap-2 font-heading text-base font-black uppercase text-white">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#bc13fe]"></span>
+          <span className="h-1.5 w-1.5 rounded-full bg-[#a855f7]"></span>
           Gêneros Zerados em {ANO}
         </div>
 
@@ -312,12 +312,12 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
 
             // Palette color per index
             const genreColors = [
-              '#bc13fe',
-              '#00f5ff',
+              '#a855f7',
+              '#22d3ee',
               '#ff0055',
               '#ffd700',
-              '#00ff9f',
-              '#ff7a00',
+              '#34d399',
+              '#f97316',
               '#6366f1',
               '#ec4899',
             ];
@@ -340,7 +340,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                       <div className="font-heading text-xs sm:text-sm font-bold text-white truncate">
                         {nome}
                       </div>
-                      <div className="truncate font-mono text-[10px] font-bold uppercase text-slate-500">
+                      <div className="truncate font-mono text-xs font-bold uppercase text-slate-500">
                         {pct}% dos jogos
                       </div>
                     </div>
@@ -351,13 +351,13 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                       <div className="font-mono text-xs font-bold tabular-nums text-white">
                         {fmtH(stats.hours)}
                       </div>
-                      <div className="text-[10px] uppercase text-slate-500">Horas</div>
+                      <div className="text-xs uppercase text-slate-500">Horas</div>
                     </div>
                     <div className="border-l border-white/10 pl-2 text-right sm:pl-3">
                       <div className="font-mono text-base font-bold tabular-nums sm:text-lg" style={{ color: col }}>
                         {stats.count}
                       </div>
-                      <div className="text-[10px] uppercase text-slate-500">Zerados</div>
+                      <div className="text-xs uppercase text-slate-500">Zerados</div>
                     </div>
                     <ChevronDown
                       className={`h-4 w-4 text-slate-400 transition-transform ${
@@ -380,7 +380,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                         <div
                           key={g.id}
                           onClick={() => onGameClick(g.id)}
-                          className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-[#0e131d] hover:border-[#bc13fe] hover:shadow-lg hover:shadow-[#bc13fe]/20 transition-all cursor-pointer"
+                          className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-[#0d1117] hover:border-[#a855f7] hover:shadow-lg hover:shadow-[#a855f7]/20 transition-all cursor-pointer"
                           title={`${g.title} (★ ${g.nota !== undefined ? g.nota.toFixed(1) : '—'})`}
                         >
                           <div className="relative aspect-[3/4] w-full overflow-hidden bg-black">
@@ -391,19 +391,19 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
                             />
                             {g.nota !== undefined && !isNaN(g.nota) && (
-                              <div className="absolute right-1 top-1 rounded border border-white/10 bg-black/85 px-1 py-0.2 font-mono text-[10px] font-bold tabular-nums text-[#ffd700]">
+                              <div className="absolute right-1 top-1 rounded border border-white/10 bg-black/85 px-1 py-0.2 font-mono text-xs font-bold tabular-nums text-[#ffd700]">
                                 ★{g.nota.toFixed(1)}
                               </div>
                             )}
-                            <div className="absolute bottom-1 left-1 max-w-[80%] truncate rounded border border-white/10 bg-black/80 px-1 py-0.2 font-mono text-[10px] text-slate-300">
+                            <div className="absolute bottom-1 left-1 max-w-[80%] truncate rounded border border-white/10 bg-black/80 px-1 py-0.2 font-mono text-xs text-slate-300">
                               {g.console}
                             </div>
                           </div>
                           <div className="p-1.5">
-                            <div className="truncate font-heading text-xs font-bold text-white transition-colors group-hover:text-[#bc13fe]">
+                            <div className="truncate font-heading text-xs font-bold text-white transition-colors group-hover:text-[#a855f7]">
                               {g.title}
                             </div>
-                            <div className="mt-0.5 flex items-center justify-between font-mono text-[10px] text-slate-400">
+                            <div className="mt-0.5 flex items-center justify-between font-mono text-xs text-slate-400">
                               <span>{g.tempo ? `${g.tempo}` : '—'}</span>
                               {g.data_zerado && <span>{formatDateBR(g.data_zerado).slice(0, 5)}</span>}
                             </div>

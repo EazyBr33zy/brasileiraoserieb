@@ -52,13 +52,13 @@ const KPI_CARDS = (
     label: `Zerados em ${ANO}`,
     value: String(total),
     sub: `≈ ${(total / 12).toFixed(1)} por mês`,
-    cor: '#00f5ff',
+    cor: '#22d3ee',
   },
   {
     label: 'Horas Jogadas',
     value: fmtH(horas),
     sub: `≈ ${fmtH(mediaTempo)} por jogo`,
-    cor: '#00ff9f',
+    cor: '#34d399',
   },
   {
     label: 'Nota Média',
@@ -70,19 +70,19 @@ const KPI_CARDS = (
     label: 'Plataforma do Ano',
     value: plataformaDoAno ? plataformaDoAno[0] : '—',
     sub: plataformaDoAno ? `${plataformaDoAno[1].count} zerados` : 'Sem dados',
-    cor: '#ff7a00',
+    cor: '#f97316',
   },
   {
     label: 'Gênero Mais Jogado',
     value: generoDoAno ? generoDoAno[0] : '—',
     sub: generoDoAno ? `${generoDoAno[1].count} jogos` : 'Sem dados',
-    cor: '#ff0a7b',
+    cor: '#f472b6',
   },
   {
     label: 'Jogo Mais Longo',
     value: maisLongo ? fmtH(maisLongo.tempoMinutos ? maisLongo.tempoMinutos / 60 : 0) : '—',
     sub: maisLongo?.title || 'Sem dados',
-    cor: '#bc13fe',
+    cor: '#a855f7',
   },
 ];
 
@@ -119,34 +119,34 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
       cat: '📉 Menor Nota',
       g: piorNota,
       valor: piorNota?.nota !== undefined ? `★ ${piorNota.nota.toFixed(1)}` : '—',
-      cor: '#ff3d6a',
+      cor: '#ef4444',
       icone: '💤',
     },
     {
       cat: '⏳ Jogo Mais Longo',
       g: maisLongo,
       valor: maisLongo ? fmtH(gameHours(maisLongo)) : '—',
-      cor: '#bc13fe',
+      cor: '#a855f7',
       icone: '🗺️',
     },
     {
       cat: '⚡ Jogo Mais Rápido',
       g: maisCurto,
       valor: maisCurto ? fmtH(gameHours(maisCurto)) : '—',
-      cor: '#00f5ff',
+      cor: '#22d3ee',
       icone: '🚀',
     },
   ];
 
   const premiados = [
-    { cat: '🕹️ Melhor Gameplay', g: gotAwards.gameplay, cor: '#00f5ff' },
-    { cat: '📖 Melhor Narrativa', g: gotAwards.narrativa, cor: '#bc13fe' },
-    { cat: '🎨 Melhor Arte / Gráficos', g: gotAwards.arte, cor: '#ff007f' },
-    { cat: '💎 Melhor Indie', g: gotAwards.indie, cor: '#00ff9f' },
+    { cat: '🕹️ Melhor Gameplay', g: gotAwards.gameplay, cor: '#22d3ee' },
+    { cat: '📖 Melhor Narrativa', g: gotAwards.narrativa, cor: '#a855f7' },
+    { cat: '🎨 Melhor Arte / Gráficos', g: gotAwards.arte, cor: '#f472b6' },
+    { cat: '💎 Melhor Indie', g: gotAwards.indie, cor: '#34d399' },
     { cat: '⚡ Maior Surpresa', g: gotAwards.surpresa, cor: '#ffd700' },
-    { cat: '📼 Melhor Retrô', g: gotAwards.retro, cor: '#ff7a00' },
+    { cat: '📼 Melhor Retrô', g: gotAwards.retro, cor: '#f97316' },
     { cat: '💀 Maior Desafio', g: gotAwards.dificil, cor: '#e60012' },
-    { cat: '💩 Decepção / Menor Nota', g: gotAwards.pior, cor: '#ff3d6a' },
+    { cat: '💩 Decepção / Menor Nota', g: gotAwards.pior, cor: '#ef4444' },
   ].filter((item) => item.g);
 
   return (
@@ -156,10 +156,10 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
         {kpis.map((kpi) => (
           <div
             key={kpi.label}
-            className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0e131d] p-3 transition-colors hover:border-white/25"
+            className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 transition-colors hover:border-white/25"
           >
             <div className="absolute inset-x-0 top-0 h-0.5" style={{ background: kpi.cor }}></div>
-            <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 truncate">
+            <div className="text-xs font-bold uppercase tracking-wider text-slate-400 truncate">
               {kpi.label}
             </div>
             <div
@@ -169,7 +169,7 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
             >
               {kpi.value}
             </div>
-            <div className="mt-1 truncate text-[10px] sm:text-xs text-slate-400" title={kpi.sub}>
+            <div className="mt-1 truncate text-xs text-slate-400" title={kpi.sub}>
               {kpi.sub}
             </div>
           </div>
@@ -177,9 +177,9 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
       </div>
 
       {/* ── DESTAQUE DO ANO: 4 jogos — 2 em cada coluna (horizontal) ── */}
-      <section className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
+      <section className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5">
         <div className="mb-3 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 font-heading text-base sm:text-lg font-black uppercase text-[#00f5ff]">
+          <div className="flex items-center gap-2 font-heading text-base sm:text-lg font-black uppercase text-[#22d3ee]">
             <span>✨</span>
             <span className="truncate">Destaque do Ano — {ANO}</span>
           </div>
@@ -190,7 +190,7 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
             <div
               key={i}
               onClick={() => d.g && onGameClick(d.g.id)}
-              className={`group relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-[#0e131d] p-3 transition-all ${
+              className={`group relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 transition-all ${
                 d.g ? 'cursor-pointer hover:border-white/30' : 'opacity-60'
               }`}
             >
@@ -209,7 +209,7 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
               </div>
               <div className="min-w-0 flex-1">
                 <span
-                  className="block truncate text-[10px] sm:text-xs font-bold uppercase tracking-wider"
+                  className="block truncate text-xs font-bold uppercase tracking-wider"
                   style={{ color: d.cor }}
                 >
                   {d.cat}
@@ -233,7 +233,7 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
       </section>
 
       {/* ── Prêmios do Ano: GOTY + prêmios lado a lado no desktop ── */}
-      <section className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5">
+      <section className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5">
         <div className="mb-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 font-heading text-base sm:text-lg font-black uppercase text-[#ffd700]">
             <span>👑</span>
@@ -261,7 +261,7 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
               <div
                 key={i}
                 onClick={() => item.g && onGameClick(item.g.id)}
-                className="group flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-[#0e131d] p-2.5 transition-all hover:border-white/30"
+                className="group flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-[#0d1117] p-2.5 transition-all hover:border-white/30"
               >
                 <div className="h-14 w-11 flex-shrink-0 overflow-hidden rounded-md border border-white/10 bg-black">
                   {item.g?.capa ? (
@@ -277,7 +277,7 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
                 </div>
                 <div className="min-w-0 flex-1">
                   <div
-                    className="truncate text-[10px] sm:text-xs font-bold uppercase tracking-wider"
+                    className="truncate text-xs font-bold uppercase tracking-wider"
                     style={{ color: item.cor }}
                   >
                     {item.cat}
@@ -299,9 +299,9 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
       </section>
 
       {/* ── Slogan do ano ── */}
-      <section className="rounded-2xl border border-[#00f5ff]/20 bg-gradient-to-r from-[#00f5ff]/5 via-purple-500/5 to-transparent p-4 sm:p-5">
-        <div className="flex items-center gap-2 font-heading text-sm font-black uppercase tracking-wider text-[#00f5ff]">
-          <span className="h-0.5 w-4 bg-[#00f5ff]"></span>
+      <section className="rounded-2xl border border-[#22d3ee]/20 bg-gradient-to-r from-[#22d3ee]/5 via-purple-500/5 to-transparent p-4 sm:p-5">
+        <div className="flex items-center gap-2 font-heading text-sm font-black uppercase tracking-wider text-[#22d3ee]">
+          <span className="h-0.5 w-4 bg-[#22d3ee]"></span>
           ✦ {ANO} em uma frase
         </div>
         <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-300">

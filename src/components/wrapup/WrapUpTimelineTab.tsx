@@ -76,11 +76,11 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Calendário Header com Navegação Mês a Mês */}
-      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5 shadow-xl space-y-4">
+      <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5 shadow-xl space-y-4">
         <div className="flex flex-col gap-3 border-b border-white/10 pb-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:pb-4">
           <div>
             <div className="flex items-center gap-2.5 font-heading text-lg sm:text-2xl font-black uppercase text-white tracking-wide">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#00f5ff] animate-pulse"></span>
+              <span className="h-2.5 w-2.5 rounded-full bg-[#22d3ee] animate-pulse"></span>
               Calendário de Zeradas
             </div>
             <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
@@ -93,20 +93,20 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
             <button
               onClick={() => setActiveMonthIndex((prev) => (prev === 0 ? 11 : prev - 1))}
               aria-label="Mês anterior"
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white transition-all hover:border-[#00f5ff] hover:bg-[#00f5ff]/10 active:scale-95 cursor-pointer"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white transition-all hover:border-[#22d3ee] hover:bg-[#22d3ee]/10 active:scale-95 cursor-pointer"
               title="Mês Anterior"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
 
-            <div className="font-heading text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-[#00f5ff] min-w-[160px] sm:min-w-[240px] text-center uppercase tracking-wider drop-shadow-md">
+            <div className="font-heading text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-[#22d3ee] min-w-[160px] sm:min-w-[240px] text-center uppercase tracking-wider drop-shadow-md">
               {NOMES_MESES_COMPLETOS[activeMonthIndex]} {ANO}
             </div>
 
             <button
               onClick={() => setActiveMonthIndex((prev) => (prev === 11 ? 0 : prev + 1))}
               aria-label="Próximo mês"
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white transition-all hover:border-[#00f5ff] hover:bg-[#00f5ff]/10 active:scale-95 cursor-pointer"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white transition-all hover:border-[#22d3ee] hover:bg-[#22d3ee]/10 active:scale-95 cursor-pointer"
               title="Próximo Mês"
             >
               <ChevronRight className="h-5 w-5" />
@@ -115,7 +115,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
             {activeMonthIndex !== CURRENT_OCTOBER_MONTH && (
               <button
                 onClick={() => setActiveMonthIndex(CURRENT_OCTOBER_MONTH)}
-                className="ml-1 min-h-[44px] rounded-xl border border-[#00f5ff]/40 bg-[#00f5ff]/15 px-3 py-1.5 text-xs font-bold uppercase text-[#00f5ff] shadow-sm transition-all hover:bg-[#00f5ff]/25 active:scale-95 cursor-pointer"
+                className="ml-1 min-h-[44px] rounded-xl border border-[#22d3ee]/40 bg-[#22d3ee]/15 px-3 py-1.5 text-xs font-bold uppercase text-[#22d3ee] shadow-sm transition-all hover:bg-[#22d3ee]/25 active:scale-95 cursor-pointer"
                 title="Voltar ao mês atual (Outubro)"
               >
                 Atual
@@ -133,7 +133,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                 {NOMES_MESES_COMPLETOS[monthIndex]} de {ANO}
               </span>
               <span>•</span>
-              <span className="text-[#00f5ff] font-bold text-xs sm:text-sm">
+              <span className="text-[#22d3ee] font-bold text-xs sm:text-sm">
                 {monthGames.length} jogo{monthGames.length !== 1 ? 's' : ''} zerado{monthGames.length !== 1 ? 's' : ''}
               </span>
             </div>
@@ -183,17 +183,17 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                       }}
                       className={`relative min-h-[56px] sm:min-h-[128px] lg:min-h-[144px] rounded-lg sm:rounded-xl border p-1 sm:p-2 transition-all flex flex-col justify-between overflow-hidden cursor-pointer ${
                         hasGames
-                          ? 'border-[#00f5ff]/70 bg-gradient-to-b from-[#00f5ff]/20 via-[#0e131d] to-[#070a10] shadow-md shadow-[#00f5ff]/15 ring-1 ring-[#00f5ff]/30 hover:border-[#00f5ff]'
+                          ? 'border-[#22d3ee]/70 bg-gradient-to-b from-[#22d3ee]/20 via-[#0d1117] to-[#161b22] shadow-md shadow-[#22d3ee]/15 ring-1 ring-[#22d3ee]/30 hover:border-[#22d3ee]'
                           : isToday
                           ? 'border-orange-500/60 bg-orange-500/10 ring-1 ring-orange-500/30 hover:border-orange-500/80'
-                          : 'border-white/5 bg-[#0e131d]/60 hover:border-white/20'
+                          : 'border-white/5 bg-[#0d1117]/60 hover:border-white/20'
                       }`}
                     >
                       <div className="flex items-center justify-between w-full">
                         <span
                           className={`text-xs font-mono font-bold leading-none ${
                             hasGames
-                              ? 'text-[#00f5ff] font-black'
+                              ? 'text-[#22d3ee] font-black'
                               : isToday
                               ? 'text-orange-400 font-black'
                               : 'text-slate-400'
@@ -202,7 +202,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                           {day}
                         </span>
                         {hasGames && dayGames.length > 1 && (
-                          <span className="rounded bg-[#00f5ff] text-black px-1 text-xs font-black leading-tight">
+                          <span className="rounded bg-[#22d3ee] text-black px-1 text-xs font-black leading-tight">
                             +{dayGames.length - 1}
                           </span>
                         )}
@@ -214,13 +214,13 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                       {hasGames ? (
                         <div className="flex flex-col items-center justify-center flex-1 min-h-0 mt-1 w-full">
                           <div className="sm:hidden flex items-center justify-center py-0.5">
-                            <div className="relative h-7 w-5.5 rounded overflow-hidden bg-black border border-[#00f5ff]/70 shadow">
+                            <div className="relative h-7 w-5.5 rounded overflow-hidden bg-black border border-[#22d3ee]/70 shadow">
                               <img src={firstGame.capa} alt="" className="h-full w-full object-cover" />
                             </div>
                           </div>
 
                           <div className="hidden sm:flex group/cal relative flex-col items-center w-full">
-                            <div className="relative aspect-[3/4] sm:h-16 lg:h-20 overflow-hidden rounded bg-black border border-[#00f5ff]/50 shadow-md flex-shrink-0">
+                            <div className="relative aspect-[3/4] sm:h-16 lg:h-20 overflow-hidden rounded bg-black border border-[#22d3ee]/50 shadow-md flex-shrink-0">
                               <img
                                 src={firstGame.capa}
                                 alt={firstGame.title}
@@ -234,7 +234,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                               )}
                             </div>
 
-                            <div className="hidden sm:block font-heading text-xs lg:text-xs font-bold text-white truncate max-w-full text-center px-0.5 mt-1 leading-tight group-hover/cal:text-[#00f5ff]">
+                            <div className="hidden sm:block font-heading text-xs lg:text-xs font-bold text-white truncate max-w-full text-center px-0.5 mt-1 leading-tight group-hover/cal:text-[#22d3ee]">
                               {firstGame.title}
                             </div>
                             <div className="hidden lg:block text-xs text-slate-400 font-mono truncate max-w-full text-center">
@@ -256,7 +256,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
           <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between text-xs pb-1 border-b border-white/10">
               <div className="flex items-center gap-2 font-heading text-sm sm:text-base font-black uppercase text-white tracking-wider">
-                <span className="flex h-5 w-5 items-center justify-center rounded bg-[#00f5ff]/20 text-[#00f5ff] text-xs font-mono">
+                <span className="flex h-5 w-5 items-center justify-center rounded bg-[#22d3ee]/20 text-[#22d3ee] text-xs font-mono">
                   🗓️
                 </span>
                 <span>
@@ -285,7 +285,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                   const dScore = d.nota !== undefined && !isNaN(d.nota) ? d.nota : 10;
 
                   return (
-                    <div className="relative overflow-hidden rounded-2xl border border-[#ffd700]/30 bg-[#0e131d]/90 p-4 sm:p-5 shadow-xl shadow-[#ffd700]/5 transition-all group">
+                    <div className="relative overflow-hidden rounded-2xl border border-[#ffd700]/30 bg-[#0d1117]/90 p-4 sm:p-5 shadow-xl shadow-[#ffd700]/5 transition-all group">
                       <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#ffd700] via-[#ffd700]/80 to-transparent"></div>
 
                       <div className="flex items-center justify-between text-xs pb-3 border-b border-white/5">
@@ -320,7 +320,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                         <div className="flex-1 min-w-0 space-y-2">
                           <h3
                             onClick={() => onGameClick(d.id)}
-                            className="font-heading text-base sm:text-xl font-black text-white cursor-pointer hover:text-[#00f5ff] transition-colors truncate"
+                            className="font-heading text-base sm:text-xl font-black text-white cursor-pointer hover:text-[#22d3ee] transition-colors truncate"
                           >
                             {d.title}
                           </h3>
@@ -352,14 +352,14 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                             >
                               {pStyle.ico} {d.console}
                             </span>
-                            <span className="rounded-md bg-[#bc13fe]/20 text-[#bc13fe] border border-[#bc13fe]/40 px-2 py-0.5 text-xs font-bold uppercase">
+                            <span className="rounded-md bg-[#a855f7]/20 text-[#a855f7] border border-[#a855f7]/40 px-2 py-0.5 text-xs font-bold uppercase">
                               🎮 {d.genero}
                             </span>
                           </div>
 
                           <div className="grid grid-cols-3 gap-3 pt-3 mt-2 border-t border-white/5 text-center sm:text-left">
                             <div>
-                              <div className="font-mono text-xs sm:text-sm font-black text-[#00ff9f]">
+                              <div className="font-mono text-xs sm:text-sm font-black text-[#34d399]">
                                 {d.tempo || fmtH(dHours)}
                               </div>
                               <div className="text-xs uppercase font-bold text-slate-500 tracking-wider">
@@ -377,7 +377,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                             </div>
 
                             <div>
-                              <div className="font-mono text-xs sm:text-sm font-black text-[#00f5ff]">
+                              <div className="font-mono text-xs sm:text-sm font-black text-[#22d3ee]">
                                 {vsHltbPct}%
                               </div>
                               <div className="text-xs uppercase font-bold text-slate-500 tracking-wider">
@@ -393,8 +393,8 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
 
                 {/* 2. KPIs Row */}
                 <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
-                  <div className="rounded-xl border border-white/10 bg-[#0e131d] p-3.5 sm:p-4 text-center">
-                    <div className="font-mono text-2xl font-bold tabular-nums text-[#00f5ff] sm:text-3xl">
+                  <div className="rounded-xl border border-white/10 bg-[#0d1117] p-3.5 sm:p-4 text-center">
+                    <div className="font-mono text-2xl font-bold tabular-nums text-[#22d3ee] sm:text-3xl">
                       {activeMonthData.totalGames}
                     </div>
                     <div className="text-xs uppercase font-bold text-slate-500 tracking-widest mt-1">
@@ -402,8 +402,8 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-white/10 bg-[#0e131d] p-3.5 sm:p-4 text-center">
-                    <div className="font-mono text-2xl font-bold tabular-nums text-[#00ff9f] sm:text-3xl">
+                  <div className="rounded-xl border border-white/10 bg-[#0d1117] p-3.5 sm:p-4 text-center">
+                    <div className="font-mono text-2xl font-bold tabular-nums text-[#34d399] sm:text-3xl">
                       {fmtH(activeMonthData.totalHours)}
                     </div>
                     <div className="text-xs uppercase font-bold text-slate-500 tracking-widest mt-1">
@@ -411,7 +411,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-white/10 bg-[#0e131d] p-3.5 sm:p-4 text-center">
+                  <div className="rounded-xl border border-white/10 bg-[#0d1117] p-3.5 sm:p-4 text-center">
                     <div className="font-mono text-2xl font-bold tabular-nums text-[#ff0055] sm:text-3xl">
                       {activeMonthData.mediaNotas}
                     </div>
@@ -420,8 +420,8 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-white/10 bg-[#0e131d] p-3.5 sm:p-4 text-center">
-                    <div className="font-mono text-2xl font-bold tabular-nums text-[#bc13fe] sm:text-3xl">
+                  <div className="rounded-xl border border-white/10 bg-[#0d1117] p-3.5 sm:p-4 text-center">
+                    <div className="font-mono text-2xl font-bold tabular-nums text-[#a855f7] sm:text-3xl">
                       {fmtH(activeMonthData.avgHoursPerGame)}
                     </div>
                     <div className="text-xs uppercase font-bold text-slate-500 tracking-widest mt-1">
@@ -431,7 +431,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                 </div>
 
                 {/* 3. Lista de Todos os Jogos do Mês com suas Notas */}
-                <div className="rounded-xl border border-white/10 bg-[#0e131d] p-3 sm:p-4 space-y-2">
+                <div className="rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4 space-y-2">
                   <div className="text-xs uppercase font-black text-slate-400 tracking-wider mb-2">
                     Jogos Concluídos no Mês ({activeMonthData.totalGames})
                   </div>
@@ -442,7 +442,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                         <div
                           key={g.id}
                           onClick={() => onGameClick(g.id)}
-                          className="flex items-center gap-3 p-2.5 rounded-lg border border-white/5 bg-black/40 hover:border-[#00f5ff]/40 hover:bg-white/[0.02] cursor-pointer transition-all group"
+                          className="flex items-center gap-3 p-2.5 rounded-lg border border-white/5 bg-black/40 hover:border-[#22d3ee]/40 hover:bg-white/[0.02] cursor-pointer transition-all group"
                         >
                           <span className="font-mono text-xs font-black text-[#ffd700] min-w-[20px] text-center">
                             {idx + 1}
@@ -458,7 +458,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-heading text-xs sm:text-sm font-bold text-white group-hover:text-[#00f5ff] transition-colors truncate">
+                            <h4 className="font-heading text-xs sm:text-sm font-bold text-white group-hover:text-[#22d3ee] transition-colors truncate">
                               {g.title}
                             </h4>
                             <div className="flex flex-wrap items-center gap-2 mt-1">
@@ -490,8 +490,8 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
 
                 {/* 4. Duas Colunas: GÊNEROS e CONSOLES do Mês */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="rounded-xl border border-white/10 bg-[#0e131d] p-4 sm:p-5 space-y-3">
-                    <div className="font-heading text-sm sm:text-base md:text-lg lg:text-xl font-black uppercase text-[#bc13fe] tracking-wider flex items-center gap-2">
+                  <div className="rounded-xl border border-white/10 bg-[#0d1117] p-4 sm:p-5 space-y-3">
+                    <div className="font-heading text-sm sm:text-base md:text-lg lg:text-xl font-black uppercase text-[#a855f7] tracking-wider flex items-center gap-2">
                       <span>🎮</span>
                       <span>GÊNEROS</span>
                     </div>
@@ -506,10 +506,10 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                           <div key={genNome} className="space-y-1">
                             <div className="flex justify-between items-center text-xs sm:text-sm font-bold">
                               <span className="text-white">{genNome}</span>
-                              <span className="text-[#bc13fe] font-mono">{genCount}</span>
+                              <span className="text-[#a855f7] font-mono">{genCount}</span>
                             </div>
                             <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                              <div className="h-full bg-[#bc13fe]" style={{ width: `${pct}%` }}></div>
+                              <div className="h-full bg-[#a855f7]" style={{ width: `${pct}%` }}></div>
                             </div>
                           </div>
                         );
@@ -517,7 +517,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-white/10 bg-[#0e131d] p-4 sm:p-5 space-y-3">
+                  <div className="rounded-xl border border-white/10 bg-[#0d1117] p-4 sm:p-5 space-y-3">
                     <div className="font-heading text-sm sm:text-base md:text-lg lg:text-xl font-black uppercase text-orange-400 tracking-wider flex items-center gap-2">
                       <span>🕹️</span>
                       <span>CONSOLES</span>
@@ -550,7 +550,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                 </div>
 
                 {/* 5. Gráfico de Barras: JOGOS POR MÊS */}
-                <div className="rounded-xl border border-white/10 bg-[#0e131d] p-4 sm:p-5 space-y-3">
+                <div className="rounded-xl border border-white/10 bg-[#0d1117] p-4 sm:p-5 space-y-3">
                   <div className="flex items-center gap-2 font-heading text-xs sm:text-sm font-black uppercase text-white tracking-wider">
                     <span>📊</span>
                     <span>JOGOS POR MÊS — {ANO}</span>
@@ -588,7 +588,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                               isSelected
                                 ? 'bg-gradient-to-t from-[#ffd700] to-[#ffaa00] shadow-lg shadow-[#ffd700]/30 ring-1 ring-[#ffd700]'
                                 : m.qtd > 0
-                                ? 'bg-[#bc13fe]/70 group-hover/bar:bg-[#bc13fe]'
+                                ? 'bg-[#a855f7]/70 group-hover/bar:bg-[#a855f7]'
                                 : 'bg-white/5'
                             }`}
                             style={{ height: `${heightPct}%` }}
@@ -613,7 +613,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
       </div>
 
       {/* ── SEÇÃO RECORDES DO ANO ({ANO}) ── */}
-      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5 shadow-2xl space-y-4">
+      <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5 shadow-2xl space-y-4">
         <div className="flex items-center gap-3 border-b border-white/10 pb-4">
           <span className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-[#ffd700]/20 text-[#ffd700] text-sm sm:text-base font-mono font-black border border-[#ffd700]/30 shadow">
             ⭐
@@ -652,9 +652,9 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
             {recordesAno.jogoMaisLongo ? (
               <div
                 onClick={() => onGameClick(recordesAno.jogoMaisLongo!.id)}
-                className="flex items-center gap-3 cursor-pointer hover:text-[#00f5ff] transition-colors group"
+                className="flex items-center gap-3 cursor-pointer hover:text-[#22d3ee] transition-colors group"
               >
-                <div className="h-10 w-7.5 sm:h-12 sm:w-9 lg:h-14 lg:w-10 rounded-lg overflow-hidden bg-black flex-shrink-0 border border-white/10 group-hover:border-[#00f5ff]">
+                <div className="h-10 w-7.5 sm:h-12 sm:w-9 lg:h-14 lg:w-10 rounded-lg overflow-hidden bg-black flex-shrink-0 border border-white/10 group-hover:border-[#22d3ee]">
                   <img
                     src={recordesAno.jogoMaisLongo.capa}
                     alt=""
@@ -662,7 +662,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                   />
                 </div>
                 <div className="min-w-0">
-                  <div className="font-heading text-sm sm:text-base lg:text-lg font-bold text-white group-hover:text-[#00f5ff] truncate">
+                  <div className="font-heading text-sm sm:text-base lg:text-lg font-bold text-white group-hover:text-[#22d3ee] truncate">
                     {recordesAno.jogoMaisLongo.title}
                   </div>
                   <div className="text-xs sm:text-xs lg:text-sm font-mono text-emerald-400 font-bold">
@@ -687,7 +687,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
             {recordesAno.melhorAvaliado ? (
               <div
                 onClick={() => onGameClick(recordesAno.melhorAvaliado!.id)}
-                className="flex items-center gap-3 cursor-pointer hover:text-[#00f5ff] transition-colors group"
+                className="flex items-center gap-3 cursor-pointer hover:text-[#22d3ee] transition-colors group"
               >
                 <div className="h-10 w-7.5 sm:h-12 sm:w-9 lg:h-14 lg:w-10 rounded-lg overflow-hidden bg-black flex-shrink-0 border border-white/10 group-hover:border-[#ffd700]">
                   <img
@@ -718,8 +718,8 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
           </div>
 
           {/* 4. Console do Ano */}
-          <div className="rounded-xl border border-white/10 bg-black/40 space-y-2 p-3.5 transition-all hover:border-[#00f5ff]/40">
-            <div className="flex items-center gap-2 text-xs sm:text-xs lg:text-sm font-bold uppercase tracking-wider text-[#00f5ff]">
+          <div className="rounded-xl border border-white/10 bg-black/40 space-y-2 p-3.5 transition-all hover:border-[#22d3ee]/40">
+            <div className="flex items-center gap-2 text-xs sm:text-xs lg:text-sm font-bold uppercase tracking-wider text-[#22d3ee]">
               <span>🕹️</span>
               <span>Console do Ano</span>
             </div>
@@ -728,7 +728,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                 <div className="font-heading text-base sm:text-lg lg:text-2xl font-black text-white">
                   {recordesAno.consoleDoAno.nome}
                 </div>
-                <div className="text-xs sm:text-xs lg:text-sm font-mono text-[#00f5ff] font-bold">
+                <div className="text-xs sm:text-xs lg:text-sm font-mono text-[#22d3ee] font-bold">
                   {recordesAno.consoleDoAno.count} jogos · {fmtH(recordesAno.consoleDoAno.hours)}
                 </div>
               </div>
@@ -741,8 +741,8 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
           </div>
 
           {/* 5. Mês com Mais Jogos Zerados */}
-          <div className="rounded-xl border border-white/10 bg-black/40 space-y-2 p-3.5 transition-all hover:border-[#bc13fe]/40">
-            <div className="flex items-center gap-2 text-xs sm:text-xs lg:text-sm font-bold uppercase tracking-wider text-[#bc13fe]">
+          <div className="rounded-xl border border-white/10 bg-black/40 space-y-2 p-3.5 transition-all hover:border-[#a855f7]/40">
+            <div className="flex items-center gap-2 text-xs sm:text-xs lg:text-sm font-bold uppercase tracking-wider text-[#a855f7]">
               <span>🔥</span>
               <span>Mês com Mais Zeramentos</span>
             </div>
@@ -780,7 +780,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
       </div>
 
       {/* ── PANORAMA MENSAL CONSOLIDADO DE 2026 (ESTILO MESES 2.JPG) ── */}
-      <div className="rounded-2xl border border-white/10 bg-[#0b0c16] p-3.5 sm:p-5 shadow-xl space-y-4">
+      <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5 shadow-xl space-y-4">
         <div className="flex flex-col gap-2 border-b border-white/10 pb-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ffd700]/20 text-[#ffd700] border border-[#ffd700]/30">
@@ -795,7 +795,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
               </p>
             </div>
           </div>
-          <div className="text-xs font-mono text-[#00f5ff] font-bold">12 Meses Calendário</div>
+          <div className="text-xs font-mono text-[#22d3ee] font-bold">12 Meses Calendário</div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -815,7 +815,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                 key={m.nome}
                 className={`flex flex-col justify-between rounded-xl border p-3.5 transition-all ${
                   m.qtd > 0
-                    ? 'border-white/15 bg-black/50 hover:border-[#00f5ff]/40 shadow-md'
+                    ? 'border-white/15 bg-black/50 hover:border-[#22d3ee]/40 shadow-md'
                     : 'border-white/5 bg-black/20 opacity-60'
                 }`}
               >
@@ -827,7 +827,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                     <span
                       className={`rounded px-1.5 py-0.5 text-xs font-mono font-bold uppercase ${
                         m.qtd > 0
-                          ? 'bg-[#00f5ff]/20 text-[#00f5ff] border border-[#00f5ff]/30'
+                          ? 'bg-[#22d3ee]/20 text-[#22d3ee] border border-[#22d3ee]/30'
                           : 'bg-white/5 text-slate-500'
                       }`}
                     >
@@ -849,7 +849,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                   {bestGame && (
                     <div
                       onClick={() => onGameClick(bestGame.id)}
-                      className="mt-2 rounded-lg bg-[#0e131d] border border-white/10 p-2 flex items-center gap-2 cursor-pointer hover:border-[#ffd700] transition-colors group/best"
+                      className="mt-2 rounded-lg bg-[#0d1117] border border-white/10 p-2 flex items-center gap-2 cursor-pointer hover:border-[#ffd700] transition-colors group/best"
                       title={`Destaque do Mês: ${bestGame.title}`}
                     >
                       <div className="h-10 w-7.5 flex-shrink-0 overflow-hidden rounded bg-black border border-white/10">
@@ -864,7 +864,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                         <div className="text-xs font-black uppercase text-[#ffd700] tracking-wider truncate">
                           🏆 Jogo do Mês
                         </div>
-                        <div className="font-heading text-xs font-bold text-white truncate group-hover/best:text-[#00f5ff]">
+                        <div className="font-heading text-xs font-bold text-white truncate group-hover/best:text-[#22d3ee]">
                           {bestGame.title}
                         </div>
                         <div className="text-xs text-[#ffd700] font-mono">
@@ -882,7 +882,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                   </div>
                   <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-[#00f5ff] to-emerald-400"
+                      className="h-full bg-gradient-to-r from-[#22d3ee] to-emerald-400"
                       style={{ width: `${pctPace}%` }}
                     ></div>
                   </div>
