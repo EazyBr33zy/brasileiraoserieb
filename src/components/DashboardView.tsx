@@ -28,6 +28,7 @@ import {
 import { getPlatformStyle } from '../utils/platformStyles';
 import { useIsOwner } from '../hooks/useIsOwner';
 import { PROFILE_NAME } from '../config/profile';
+import { GameCover } from './GameCover';
 import { ProfileAvatar } from './ProfileAvatar';
 import { Modal } from './Modal';
 import { PlayDaysCalendar } from './PlayDaysCalendar';
@@ -742,7 +743,12 @@ export const DashboardView: React.FC = () => {
                       href={`#/jogo/${encodeURIComponent(g.id)}`}
                       className={`flex items-center gap-2.5 p-2 rounded-xl border border-[#30363d] bg-[#161b22] ${accent.ring} transition-all group cursor-pointer`}
                     >
-                      <span className={`h-8 w-1 shrink-0 rounded-full ${accent.bar}`} aria-hidden="true" />
+                      <GameCover
+                        src={g.capa}
+                        title={cleanTitle(g.title)}
+                        size="sm"
+                        className="h-11 w-11 shrink-0 rounded-md border border-[#30363d]"
+                      />
                       <div className="min-w-0 flex-1">
                         <div className="text-xs font-mono font-bold text-[#9aa4b2] group-hover:text-white/80 transition-colors">
                           {pStyle.name}
