@@ -61,6 +61,8 @@ export const GameDetailView: React.FC = () => {
   const isOwner = useIsOwner();
 
   const routeGameId = route.params.id;
+  // Aba standalone "#/jogando" (sem id na rota): destaque + Outros em andamento lado a lado
+  const isPlayingTab = route.path === 'jogando' && !routeGameId;
 
   // Games currently with status "jogando"
   const playingGames = useMemo(() => {
@@ -871,6 +873,9 @@ export const GameDetailView: React.FC = () => {
       </div>
 
       {/* ── HERO DA FICHA (GameHero) ── */}
+      {/* Na aba #/jogando o hero fica na coluna 1 do grid com "Outros em andamento" ao lado; nas demais rotas ocupa a largura toda. */}
+      <div className={isPlayingTab ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-5 lg:items-start' : ''}>
+      <div className={isPlayingTab ? 'min-w-0' : ''}>
       <GameHero
         game={game}
         pStyle={pStyle}
@@ -894,15 +899,26 @@ export const GameDetailView: React.FC = () => {
         })()}
         hltbBlock={hltbBlock}
         controls={ownerControls}
+        compactCover={isPlayingTab}
         developerLine={(() => {
           const parts = [game.developer, game.publisher].filter(Boolean);
           const dev = Array.from(new Set(parts)).join(' · ');
           return dev || game.ano_lancamento ? `${dev}${dev && game.ano_lancamento ? ' · ' : ''}${game.ano_lancamento || ''}` : undefined;
         })()}
       />
+      </div>
+
+      {/* Coluna 2 (aba #/jogando): bloco "OUTROS EM ANDAMENTO" reutilizando o GameSidebar (sem duplicar JSX/lógica) */}
+      {isPlayingTab && playingGames.filter((g) => g.id !== game.id).length > 0 && (
+        <aside className="self-start">
+          <GameSidebar game={game} playingGames={playingGames} navigate={navigate} />
+        </aside>
+      )}
+      </div>
 
       {/* ── CORPO: ABAS (esquerda) + LATERAL GameSidebar (direita). Em <1024px a lateral vai para baixo das abas. ── */}
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
+      {/* Na aba #/jogando a lateral já foi exibida ao lado do destaque acima — não duplicar. */}
+      <div className={isPlayingTab ? 'space-y-5' : 'grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]'}>
         <div className="min-w-0 space-y-5">
           {/* ── ABAS DE NAVEGAÇÃO INTERNA (SUBTABS) — segmentadas, sticky abaixo do header, roláveis no mobile ── */}
           <div role="tablist" aria-label="Seções da ficha do jogo" className="sticky top-16 z-10 -mx-1 flex items-center gap-2 overflow-x-auto scrollbar-none rounded-xl border border-[#30363d] bg-[#161b22]/95 p-1.5 backdrop-blur motion-reduce:backdrop-blur-none">
@@ -990,8 +1006,8 @@ export const GameDetailView: React.FC = () => {
                 </span>
               </div>
 
-              {/* Faixa de resumo calculada das sessões existentes (sem alterar a lógica) */}
-              <SessionsSummary sessions={game.sessoes || []} />
+              {/* Faixa de resumo calculada das sessões existentes (some na aba #/jogando, por pedido do dono) */}
+              <SessionsSummary sessions={game.sessoes || []} hideSummary={isPlayingTab} />
 
               {/* Formulário Manual de Nova Sessão (Dono) */}
               {isOwner && (
@@ -1417,9 +1433,12 @@ export const GameDetailView: React.FC = () => {
             </div>
           )}
         </div>
+        {/* Na aba #/jogando a lateral já aparece ao lado do destaque — não renderizar de novo */}
+        {!isPlayingTab && (
         <aside className="self-start lg:sticky lg:top-20">
           <GameSidebar game={game} playingGames={playingGames} navigate={navigate} />
         </aside>
+        )}
       </div>
 
       {/* ── MODAL DE EDIÇÃO DE SESSÃO CADASTRADA (DONO) ── */}

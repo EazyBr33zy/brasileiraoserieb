@@ -34,6 +34,8 @@ export interface GameHeroProps {
   controls: React.ReactNode;
   /** Linha opcional "desenvolvedora/publicadora · ano de lançamento" exibida sob o título */
   developerLine?: string;
+  /** Capa compacta (aba #/jogando): largura da coluna da capa reduzida no desktop */
+  compactCover?: boolean;
 }
 
 const StatBox: React.FC<{
@@ -70,6 +72,7 @@ export const GameHero: React.FC<GameHeroProps> = ({
   hltbBlock,
   controls,
   developerLine,
+  compactCover = false,
 }) => {
   const coverBg = optimizeCoverUrl(game.capa, 'hero');
   const isFav = nota === 11;
@@ -95,9 +98,9 @@ export const GameHero: React.FC<GameHeroProps> = ({
         </>
       )}
 
-      <div className="relative z-10 grid gap-6 md:grid-cols-[260px_minmax(0,1fr)]">
-        {/* Capa grande */}
-        <div className="mx-auto w-40 shrink-0 sm:w-52 md:mx-0 md:w-[260px]" style={{ aspectRatio: '3 / 4' }}>
+      <div className={`relative z-10 grid gap-6 ${compactCover ? 'md:grid-cols-[200px_minmax(0,1fr)]' : 'md:grid-cols-[260px_minmax(0,1fr)]'}`}>
+        {/* Capa grande (compactCover reduz p/ 200px no desktop — aba #/jogando) */}
+        <div className={`mx-auto w-40 shrink-0 sm:w-52 md:mx-0 ${compactCover ? 'md:w-[200px]' : 'md:w-[260px]'}`} style={{ aspectRatio: '3 / 4' }}>
           <GameCover
             src={game.capa}
             title={game.title}
@@ -134,8 +137,8 @@ export const GameHero: React.FC<GameHeroProps> = ({
 
           {/* Título */}
           <h1
-            className="font-heading font-extrabold leading-none text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
-            style={{ fontSize: 'clamp(2rem, 4vw, 3.25rem)' }}
+            className="font-heading font-extrabold leading-tight text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
+            style={{ fontSize: compactCover ? 'clamp(1.5rem, 2.5vw, 2rem)' : 'clamp(2rem, 4vw, 3.25rem)' }}
           >
             {cleanTitle(game.title)}
           </h1>
