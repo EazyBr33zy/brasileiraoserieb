@@ -90,7 +90,8 @@ service cloud.firestore {
     }
 
     function isValidSettings(data) {
-      return (!('metaZerados' in data) || ((data.metaZerados is int || data.metaZerados is number) && data.metaZerados >= 1 && data.metaZerados <= 500)) &&
+      return (!('avatar' in data) || (data.avatar == null || (data.avatar is string && data.avatar.size() <= 300000))) &&
+             (!('metaZerados' in data) || ((data.metaZerados is int || data.metaZerados is number) && data.metaZerados >= 1 && data.metaZerados <= 500)) &&
              (!('metaPorAno' in data) || (data.metaPorAno is map &&
                (!('2026' in data.metaPorAno) || ((data.metaPorAno['2026'] is int || data.metaPorAno['2026'] is number) && data.metaPorAno['2026'] >= 1 && data.metaPorAno['2026'] <= 500)) &&
                (!('2025' in data.metaPorAno) || ((data.metaPorAno['2025'] is int || data.metaPorAno['2025'] is number) && data.metaPorAno['2025'] >= 1 && data.metaPorAno['2025'] <= 500)) &&

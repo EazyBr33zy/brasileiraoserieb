@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Gamepad2, Camera } from 'lucide-react';
-import { PROFILE_AVATAR, AVATAR_STORAGE_KEY } from '../config/profile';
+import React, { useCallback, useRef, useState } from 'react';
+import { Gamepad2, Camera, Loader2 } from 'lucide-react';
+import { PROFILE_AVATAR } from '../config/profile';
+import { useProfileAvatar } from '../hooks/useProfileAvatar';
 
-type AvatarSource = 'custom' | 'public' | 'google' | 'fallback';
+type AvatarSource = 'remote' | 'public' | 'google' | 'fallback';
 
 interface ProfileAvatarProps {
   /** URL da foto da conta Google (currentUser.photoURL), se existir. */
@@ -12,17 +13,11 @@ interface ProfileAvatarProps {
   className?: string;
 }
 
-const readStoredAvatar = (): string | null => {
-  try {
-    return localStorage.getItem(AVATAR_STORAGE_KEY);
-  } catch {
-    return null;
-  }
-};
-
 /**
  * Avatar do dono no hero do Painel.
- * Ordem de prioridade: foto customizada (upload) > public/perfil.png >
+ * A foto customizada é sincronizada via Firestore (settings/site → campo `avatar`),
+ * então muda no celular e aparece no desktop (e vice-versa) em tempo real.
+ * Ordem de prioridade: foto sincronizada > public/perfil.png >
  * foto da conta Google > ícone de controle.
  */
 export const ProfileAvatar: React.FC<ProfileAvatarProps> = ({
@@ -30,50 +25,28 @@ export const ProfileAvatar: React.FC<ProfileAvatarProps> = ({
   editable = false,
   className = '',
 }) => {
-  const [source, setSource] = useState<AvatarSource>(() => {
-    if (readStoredAvatar()) return 'custom';
-    return 'public';
-  });
-  const [customSrc, setCustomSrc] = useState<string | null>(() => readStoredAvatar());
+  const { remoteAvatar, saveAvatar, isSaving } = useProfileAvatar(editable);
+  const [source, setSource] = useState<AvatarSource>('public');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Recarrega quando a página volta pro hero após um upload em outra aba.
-  useEffect(() => {
-    const stored = readStoredAvatar();
-    if (stored && stored !== customSrc) {
-      setCustomSrc(stored);
-      setSource('custom');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleFile = useCallback((file: File | undefined) => {
-    if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = typeof reader.result === 'string' ? reader.result : null;
-      if (!dataUrl) return;
-      try {
-        localStorage.setItem(AVATAR_STORAGE_KEY, dataUrl);
-      } catch {
-        // Cota do localStorage excedida — usa só nesta sessão.
-      }
-      setCustomSrc(dataUrl);
-      setSource('custom');
-    };
-    reader.readAsDataURL(file);
-  }, []);
+  // Quando a nuvem entrega uma foto, ela passa a ser exibida imediatamente
+  // (onSnapshot já propaga mudanças feitas em outro dispositivo).
+  React.useEffect(() => {
+    if (remoteAvatar) setSource('remote');
+  }, [remoteAvatar]);
 
   const handleError = useCallback(() => {
     setSource((prev) => {
-      if (prev === 'public') return googlePhotoUrl ? 'google' : 'fallback';
+      if (prev === 'remote' || prev === 'public') {
+        return googlePhotoUrl ? 'google' : 'fallback';
+      }
       return 'fallback';
     });
   }, [googlePhotoUrl]);
 
   const src =
-    source === 'custom' && customSrc
-      ? customSrc
+    source === 'remote' && remoteAvatar
+      ? remoteAvatar
       : source === 'public'
         ? PROFILE_AVATAR
         : source === 'google' && googlePhotoUrl
@@ -102,12 +75,17 @@ export const ProfileAvatar: React.FC<ProfileAvatarProps> = ({
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="absolute inset-x-0 bottom-0 flex min-h-[32px] items-center justify-center gap-1 bg-black/60 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#22d3ee] opacity-0 transition-opacity hover:bg-black/75 focus-visible:opacity-100 group-hover/avatar:opacity-100 cursor-pointer"
+          disabled={isSaving}
+          className="absolute inset-x-0 bottom-0 flex min-h-[32px] items-center justify-center gap-1 bg-black/60 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#22d3ee] opacity-0 transition-opacity hover:bg-black/75 focus-visible:opacity-100 group-hover/avatar:opacity-100 cursor-pointer disabled:cursor-wait disabled:opacity-100"
           aria-label="Subir foto de perfil"
-          title="Clique para subir sua foto"
+          title="Clique para subir sua foto (sincroniza em todos os dispositivos)"
         >
-          <Camera className="h-3.5 w-3.5" aria-hidden="true" />
-          <span>Foto</span>
+          {isSaving ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin motion-reduce:animate-none" aria-hidden="true" />
+          ) : (
+            <Camera className="h-3.5 w-3.5" aria-hidden="true" />
+          )}
+          <span>{isSaving ? 'Salvando…' : 'Foto'}</span>
         </button>
       )}
       {editable && (
@@ -117,7 +95,8 @@ export const ProfileAvatar: React.FC<ProfileAvatarProps> = ({
           accept="image/*"
           className="hidden"
           onChange={(e) => {
-            handleFile(e.target.files?.[0]);
+            const file = e.target.files?.[0];
+            if (file) void saveAvatar(file);
             e.target.value = '';
           }}
         />
