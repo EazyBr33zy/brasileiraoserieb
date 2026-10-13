@@ -700,7 +700,7 @@ export const GameDetailView: React.FC = () => {
   );
 
   const ownerControls = (
-        <div className="gd-owner-controls grid grid-cols-2 sm:grid-cols-4 items-stretch gap-2.5 p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
+        <div className="gd-owner-controls grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-stretch gap-2.5 p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
           {/* Status */}
           <div className="flex flex-col">
             <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Status</label>
@@ -765,14 +765,14 @@ export const GameDetailView: React.FC = () => {
           <div className="flex flex-col">
             <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Ações</label>
             {isOwner ? (
-              <div className="flex flex-1 gap-1.5">
+              <div className="gd-actions-row flex flex-1 gap-1.5">
                 <button
                   type="button"
                   onClick={() => openEditModal(game)}
                   className="flex-1 min-h-[44px] flex items-center justify-center gap-1 rounded-lg border border-[#30363d] bg-[#161b22] hover:bg-white/5 text-xs font-bold text-white transition-colors cursor-pointer"
                   title="Editar ficha completa"
                 >
-                  <Edit3 className="h-3.5 w-3.5" aria-hidden="true" />
+                  <Edit3 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                   <span>Editar</span>
                 </button>
                 <button
@@ -781,7 +781,7 @@ export const GameDetailView: React.FC = () => {
                   className="flex-1 min-h-[44px] flex items-center justify-center gap-1 rounded-lg border border-[#30363d] bg-[#161b22] hover:bg-white/5 text-xs font-bold text-[#22d3ee] transition-colors cursor-pointer"
                   title="Baixar arquivo Markdown do Obsidian"
                 >
-                  <FileDown className="h-3.5 w-3.5" aria-hidden="true" />
+                  <FileDown className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                   <span>.md</span>
                 </button>
               </div>
@@ -799,7 +799,7 @@ export const GameDetailView: React.FC = () => {
       {/* ── SELETOR DE JOGOS EM ANDAMENTO (aba #/jogando: abaixo do hero, já que o hero ocupa a largura toda) ── */}
       {playingGames.length > 0 && (
         <div className="gd-playing-strip rounded-2xl border border-[#30363d] bg-[#161b22] p-3 shadow-md lg:hidden sm:p-4">
-          <div className="flex items-center justify-between text-xs mb-2.5">
+          <div className="gd-strip-head flex items-center justify-between text-xs mb-2.5">
             <span className="font-bold uppercase tracking-wider text-[#9aa4b2] flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-[#22d3ee] animate-pulse motion-reduce:animate-none" aria-hidden="true" />
               <span>Jogando Agora ({playingGames.length})</span>
@@ -874,7 +874,7 @@ export const GameDetailView: React.FC = () => {
 
       {/* ── HERO DA FICHA (GameHero) ── */}
       {/* Na aba #/jogando o hero fica na coluna 1 do grid com "Outros em andamento" ao lado; nas demais rotas ocupa a largura toda. */}
-      <div className={isPlayingTab ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-5 lg:items-stretch' : ''}>
+      <div className={isPlayingTab ? 'gd-focus-grid lg:grid lg:gap-5 lg:items-stretch' : ''}>
       {/* Coluna 1: o card principal define a altura da linha (itens-start) */}
       <div className={isPlayingTab ? 'min-w-0 lg:self-start' : ''}>
       <GameHero
@@ -923,10 +923,10 @@ export const GameDetailView: React.FC = () => {
 
       {/* ── CORPO: ABAS (esquerda) + LATERAL GameSidebar (direita). Em <1024px a lateral vai para baixo das abas. ── */}
       {/* Na aba #/jogando a lateral já foi exibida ao lado do destaque acima — não duplicar. */}
-      <div className={isPlayingTab ? 'space-y-5' : 'grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]'}>
+      <div className={isPlayingTab ? 'gd-body space-y-5' : 'grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]'}>
         <div className="min-w-0 space-y-5">
           {/* ── ABAS DE NAVEGAÇÃO INTERNA (SUBTABS) — segmentadas, sticky abaixo do header, roláveis no mobile ── */}
-          <div role="tablist" aria-label="Seções da ficha do jogo" className="gd-tabs sticky top-16 z-10 -mx-1 flex items-center gap-2 overflow-x-auto scrollbar-none rounded-xl border border-[#30363d] bg-[#161b22]/95 p-1.5 backdrop-blur motion-reduce:backdrop-blur-none">
+          <div role="tablist" aria-label="Seções da ficha do jogo" className="gd-tabs sticky top-16 z-10 flex items-center gap-2 overflow-x-auto scrollbar-none rounded-xl border border-[#30363d] bg-[#161b22]/95 p-1.5 backdrop-blur motion-reduce:backdrop-blur-none">
             <button
               type="button"
               role="tab"

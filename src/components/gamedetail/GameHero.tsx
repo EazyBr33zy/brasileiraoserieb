@@ -102,7 +102,7 @@ export const GameHero: React.FC<GameHeroProps> = ({
         </>
       )}
 
-      <div className={`relative z-10 grid gap-6 ${compactCover ? 'md:grid-cols-[200px_minmax(0,1fr)]' : 'md:grid-cols-[260px_minmax(0,1fr)]'} ${stretchCover ? 'md:grid-cols-[clamp(240px,22vw,280px)_minmax(0,1fr)] md:items-stretch' : ''}`}>
+      <div className={`relative z-10 grid gap-6 ${compactCover ? 'md:grid-cols-[200px_minmax(0,1fr)]' : 'md:grid-cols-[260px_minmax(0,1fr)]'} ${stretchCover ? 'gd-hero-grid md:items-stretch' : ''}`}>
         {/* Capa grande (compactCover reduz p/ 200px no desktop — aba #/jogando) */}
         <div className={`${stretchCover ? 'order-first mx-auto w-[clamp(170px,55vw,200px)] shrink-0 md:mx-0 md:w-full' : 'mx-auto w-40 shrink-0 sm:w-52 md:mx-0'} ${!stretchCover && (compactCover ? 'md:w-[200px]' : 'md:w-[260px]')} ${stretchCover ? 'aspect-[2/3] md:aspect-auto md:h-full md:min-h-0' : ''}`} style={stretchCover ? undefined : { aspectRatio: '3 / 4' }}>
           {/* Capa preenche toda a caixa (altura = coluna de informações no desktop) com object-cover + recorte topo — sem faixas vazias, sem distorcer */}
@@ -169,7 +169,7 @@ export const GameHero: React.FC<GameHeroProps> = ({
           )}
 
           {/* Grade de 4 caixas iguais */}
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div className="gd-stats-grid grid grid-cols-2 gap-3 lg:grid-cols-4">
             <StatBox
               label="Tempo registrado"
               value={tempoRegistrado ? formatTempoDisplay(tempoRegistrado) : '0h00'}
