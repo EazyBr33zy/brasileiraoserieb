@@ -55,7 +55,7 @@ service cloud.firestore {
              (!('anotacoes' in data) || data.anotacoes == null || (data.anotacoes is string && data.anotacoes.size() <= 20000)) &&
              (!('data_inicio' in data) || data.data_inicio == null || (data.data_inicio is string && data.data_inicio.size() <= 50)) &&
              (!('data_zerado' in data) || data.data_zerado == null || (data.data_zerado is string && data.data_zerado.size() <= 50)) &&
-             (!('nota' in data) || data.nota == null || (data.nota is number && data.nota >= 0 && data.nota <= 10)) &&
+             (!('nota' in data) || data.nota == null || (data.nota is number && data.nota >= 0 && data.nota <= 11)) &&
              (!('ano_zerado' in data) || data.ano_zerado == null || (data.ano_zerado is number && data.ano_zerado >= 1970 && data.ano_zerado <= 2100)) &&
              (!('ano_lancamento' in data) || data.ano_lancamento == null || (data.ano_lancamento is number && data.ano_lancamento >= 1950 && data.ano_lancamento <= 2100)) &&
              (!('progressPercent' in data) || data.progressPercent == null || (data.progressPercent is number && data.progressPercent >= 0 && data.progressPercent <= 100)) &&
