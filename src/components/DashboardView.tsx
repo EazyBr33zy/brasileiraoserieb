@@ -437,7 +437,7 @@ export const DashboardView: React.FC = () => {
         </div>
 
         {/* Linha Principal: identidade (esquerda) + cartões de dados (direita) */}
-        <div className="mt-5 grid gap-3 sm:mt-6 lg:grid-cols-[minmax(0,1fr)_clamp(320px,26vw,340px)] xl:grid-cols-[minmax(0,1fr)_clamp(340px,28vw,380px)] lg:items-stretch">
+        <div className="mt-5 grid gap-3 sm:mt-6 lg:grid-cols-[minmax(0,1fr)_clamp(280px,24vw,320px)] xl:grid-cols-[minmax(0,1fr)_clamp(300px,25vw,320px)] lg:items-stretch">
           {/* COLUNA ESQUERDA — cartão de identidade + favoritos */}
           <div className="flex h-full flex-col rounded-2xl border border-[#30363d] bg-[#0d1117]/60 p-4 sm:p-5 lg:p-6">
             <div className="mt-3 flex items-center gap-4 sm:gap-6 lg:mt-0">
@@ -465,7 +465,7 @@ export const DashboardView: React.FC = () => {
           </div>
 
           {/* ── TELEMETRIA: COLUNA DIREITA COM OS 4 CARTÕES (META · ANDAMENTO · ACERVO · TEMPO) ── */}
-          <div className="grid content-start gap-3 sm:grid-cols-2 lg:content-stretch lg:grid-cols-1 lg:grid-rows-[auto_1fr_1fr_1fr]">
+          <div className="grid content-start gap-2.5 sm:grid-cols-2 lg:content-stretch lg:grid-cols-1 lg:grid-rows-[auto_1fr_1fr_1fr]">
           {/* META ANUAL — mais alto por causa da barra de progresso */}
           <StatCard
             label="Meta Anual"

@@ -700,15 +700,15 @@ export const GameDetailView: React.FC = () => {
   );
 
   const ownerControls = (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
+        <div className="grid grid-cols-2 sm:grid-cols-4 items-stretch gap-2.5 p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
           {/* Status */}
-          <div>
+          <div className="flex flex-col">
             <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Status</label>
             {isOwner ? (
               <select
                 value={localStatus}
                 onChange={(e) => setLocalStatus(e.target.value as GameStatus)}
-                className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-base md:text-xs font-bold text-white focus:border-[#22d3ee] focus:outline-none cursor-pointer"
+                className="w-full min-h-[44px] flex-1 rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-base md:text-xs font-bold text-white focus:border-[#22d3ee] focus:outline-none cursor-pointer"
               >
                 <option value="jogando">Jogando</option>
                 <option value="fila">Na Fila</option>
@@ -723,7 +723,7 @@ export const GameDetailView: React.FC = () => {
           </div>
 
           {/* Nota */}
-          <div>
+          <div className="flex flex-col">
             <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Nota (0–10)</label>
             {isOwner ? (
               <input
@@ -744,7 +744,7 @@ export const GameDetailView: React.FC = () => {
           </div>
 
           {/* Tempo */}
-          <div>
+          <div className="flex flex-col">
             <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Tempo Total</label>
             {isOwner ? (
               <input
@@ -762,10 +762,10 @@ export const GameDetailView: React.FC = () => {
           </div>
 
           {/* Ações */}
-          <div>
+          <div className="flex flex-col">
             <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Ações</label>
             {isOwner ? (
-              <div className="flex gap-1.5">
+              <div className="flex flex-1 gap-1.5">
                 <button
                   type="button"
                   onClick={() => openEditModal(game)}
@@ -874,7 +874,7 @@ export const GameDetailView: React.FC = () => {
 
       {/* ── HERO DA FICHA (GameHero) ── */}
       {/* Na aba #/jogando o hero fica na coluna 1 do grid com "Outros em andamento" ao lado; nas demais rotas ocupa a largura toda. */}
-      <div className={isPlayingTab ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-5 lg:items-start' : ''}>
+      <div className={isPlayingTab ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-5 lg:items-stretch' : ''}>
       <div className={isPlayingTab ? 'min-w-0' : ''}>
       <GameHero
         game={game}
@@ -900,6 +900,7 @@ export const GameDetailView: React.FC = () => {
         hltbBlock={hltbBlock}
         controls={ownerControls}
         compactCover={isPlayingTab}
+        stretchCover={isPlayingTab}
         developerLine={(() => {
           const parts = [game.developer, game.publisher].filter(Boolean);
           const dev = Array.from(new Set(parts)).join(' · ');
@@ -910,7 +911,7 @@ export const GameDetailView: React.FC = () => {
 
       {/* Coluna 2 (aba #/jogando): bloco "OUTROS EM ANDAMENTO" reutilizando o GameSidebar (sem duplicar JSX/lógica) */}
       {isPlayingTab && playingGames.filter((g) => g.id !== game.id).length > 0 && (
-        <aside className="self-start">
+        <aside className="flex min-h-0 flex-col lg:self-stretch">
           <GameSidebar game={game} playingGames={playingGames} navigate={navigate} />
         </aside>
       )}
