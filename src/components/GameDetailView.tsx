@@ -27,6 +27,7 @@ import { getPlatformStyle, getScoreColor, getScoreLabel } from '../utils/platfor
 import { calculateRubricScore, fmtH, fmtMinutes, parseTime, parseToMinutes, formatMinutes, formatTempoDisplay, cleanTitle, formatDateBR, sortActiveGames } from '../utils/markdownParser';
 import { GameReviewRubric, GameplayDaySession, GameStatus, GameItem } from '../types/game';
 import { useIsOwner } from '../hooks/useIsOwner';
+import { GameCover } from './GameCover';
 import { GameHero } from './gamedetail/GameHero';
 import { GameSidebar } from './gamedetail/GameSidebar';
 import { Modal } from './Modal';
@@ -808,6 +809,7 @@ export const GameDetailView: React.FC = () => {
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
             {playingGames.map((pg) => {
               const isSelected = game.id === pg.id;
+              const plat = getPlatformStyle(pg.console);
               return (
                 <button
                   key={pg.id}
@@ -821,6 +823,9 @@ export const GameDetailView: React.FC = () => {
                   aria-pressed={isSelected}
                   aria-label={`Selecionar ${cleanTitle(pg.title)}`}
                 >
+                  <div className="h-7 w-5 rounded overflow-hidden shrink-0 bg-black">
+                    <GameCover src={pg.capa} title={pg.title} consoleName={pg.console} size="thumb" />
+                  </div>
                   <div className="text-left">
                     <div className="truncate max-w-[150px] leading-tight">{cleanTitle(pg.title)}</div>
                     <div className="font-mono text-xs opacity-70 mt-0.5 leading-none">⏱ {formatTempoDisplay(getGameEffectiveTime(pg).tempo || pg.tempo || '0:00')}</div>
