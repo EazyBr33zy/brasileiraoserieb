@@ -584,6 +584,31 @@ export const DashboardView: React.FC = () => {
             </div>
           </div>
 
+          {/* Mini-capas clicáveis para navegar entre os jogos ativos */}
+          {slideGames.length > 1 && (
+            <div className="relative flex items-center gap-2 mb-3 sm:mb-4 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }} role="tablist" aria-label="Selecionar jogo em andamento">
+              {slideGames.slice(0, 8).map((g, i) => (
+                <button
+                  key={g.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === safeSlideIndex}
+                  aria-label={`Ver ${cleanTitle(g.title)}`}
+                  title={cleanTitle(g.title)}
+                  onClick={() => setActiveSlideIndex(i)}
+                  className={`shrink-0 rounded-lg overflow-hidden border-2 transition-all duration-300 cursor-pointer min-h-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee] ${
+                    i === safeSlideIndex
+                      ? 'border-[#f97316] shadow-[0_0_14px_rgba(249,115,22,0.55)] scale-100 opacity-100'
+                      : 'border-[#30363d] opacity-50 grayscale hover:opacity-90 hover:grayscale-0 hover:border-[#a855f7]/60'
+                  }`}
+                >
+                  <span className="block w-10 h-14 sm:w-12 sm:h-16">
+                    <GameCover src={g.capa} title={g.title} consoleName={g.console} size="thumb" />
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-5 items-stretch">
             {/* CARD PRINCIPAL DO JOGO (FEATURED) */}
