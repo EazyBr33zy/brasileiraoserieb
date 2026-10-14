@@ -104,28 +104,39 @@
    stretch da capa foram corrigidas NA ORIGEM (removidas), não empilhadas por cima.
    Abaixo de 1024px nada aqui se aplica (mobile inalterado). */
 @media (min-width: 1024px) {
-  /* Painel "Outros em andamento": 320–340px (antes até 360px, comprimindo o card). */
+  /* G1 — Grade ÚNICA da página do jogo em destaque, independente da origem da navegação
+     (#/jogando ou #/jogo/:id aberto pelo "Outros em andamento" do Painel):
+     card principal na coluna 1, painel lateral na coluna 2 (300–330px), ambos na linha 1. */
   .gd-focus-grid.lg\:grid {
-    grid-template-columns: minmax(0, 1fr) clamp(320px, 26vw, 340px) !important;
+    grid-template-columns: minmax(0, 1fr) clamp(300px, 24vw, 330px) !important;
+    gap: 24px !important;                /* vence lg:gap-5 (20px) do JSX base */
+    align-items: stretch !important;
   }
-  /* Coluna 1 define a altura da linha; o aside acompanha via h-full + absolute inset-0
-     (reaproveitado da rodada aprovada — a lista tem rolagem interna, min-h-0/flex-1). */
+  /* Posicionamento explícito NA ORIGEM (linha/coluna fixas para os dois caminhos). */
   .gd-focus-grid > :first-child {
-    align-self: start;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: auto;                    /* era start — com stretch o card define a altura da linha */
+  }
+  .gd-focus-grid > aside {
+    grid-column: 2;
+    grid-row: 1;
+    position: relative;
+    overflow: hidden;
   }
 
-  /* H — Capa: largura clamp(230px, 18vw, 270px), proporção 2:3 NATURAL.
-     Sem height:100%, sem min-height, sem align-self:stretch, sem scale/zoom: a altura
-     do card passa a ser definida pelo conteúdo (coluna mais alta das duas). */
+  /* G2 — Capa: largura clamp(190px, 16vw, 230px) (reduzida para dar ≥150px a cada quadro
+     de estatística a 1305px). Sem height:100%, sem min-height, sem align-self:stretch:
+     a caixa NUNCA acompanha a altura do card. */
   .gd-hero-grid {
-    grid-template-columns: clamp(230px, 18vw, 270px) minmax(0, 1fr) !important;
+    grid-template-columns: clamp(190px, 16vw, 230px) minmax(0, 1fr) !important;
     align-items: start;
   }
-  /* PROBLEMA 2 — Capa com proporção FIXA 3/4 (como no mobile), sem width/height forçados
-     que distorçam. A caixa define o recorte; GameCover usa object-cover + center top. */
+  /* G3 — Capa com proporção FIXA 264/374 (proporção das capas do IGDB), sem width/height
+     forçados que distorçam. A caixa define o recorte; GameCover usa object-cover + center top. */
   .gd-hero-grid > div:first-child {
-    width: clamp(230px, 18vw, 270px); /* vence md:w-[260px] do JSX base (só no desktop) */
-    aspect-ratio: 3 / 4;              /* era 2/3 — corrigido NA ORIGEM (proposta p/ capa 3:4) */
+    width: clamp(190px, 16vw, 230px); /* vence md:w-[260px] do JSX base (só no desktop) */
+    aspect-ratio: 264 / 374;          /* era 3/4 — corrigido NA ORIGEM (proporção IGDB) */
     height: auto;
     min-height: 0;
     align-self: start;
@@ -149,18 +160,20 @@
     align-items: flex-start !important;
     box-sizing: border-box !important;
   }
-  /* Rótulo superior: fixo no topo, alinhado à esquerda */
+  /* Rótulo superior: no topo, alinhado à esquerda, podendo quebrar em 2 linhas.
+     Altura de 2 linhas reservada (32px) nos 4 rótulos para alinhar os valores. */
   .gd-stats-grid > * > div:first-child {
-    white-space: nowrap !important;
-    font-size: 11px !important;
-    letter-spacing: 0.02em !important;
+    white-space: normal !important;      /* era nowrap — rótulo pode quebrar em 2 linhas */
+    font-size: 11px !important;          /* vence lg:text-[10.5px] do JSX base */
+    letter-spacing: 0.04em !important;   /* tracking pedido (era 0.02em) */
     line-height: 16px !important;
+    min-height: 32px;                   /* 2 linhas reservadas → valores alinhados nos 4 quadros */
     margin: 0 !important;
     text-align: left !important;
   }
   /* Valores e texto secundário sem reticências */
   .gd-stats-grid > * > div[class*="font-mono"] {
-    font-size: 16px !important;
+    font-size: 17px !important;          /* valor 17px (era 16px) */
     white-space: nowrap !important;
     text-overflow: clip !important;
     overflow: visible !important;
