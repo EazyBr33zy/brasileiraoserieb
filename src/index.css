@@ -121,9 +121,11 @@
     grid-template-columns: clamp(230px, 18vw, 270px) minmax(0, 1fr) !important;
     align-items: start;
   }
+  /* PROBLEMA 2 — Capa com proporção FIXA 3/4 (como no mobile), sem width/height forçados
+     que distorçam. A caixa define o recorte; GameCover usa object-cover + center top. */
   .gd-hero-grid > div:first-child {
-    width: clamp(230px, 18vw, 270px); /* vence md:w-full do JSX base (só no desktop) */
-    aspect-ratio: 2 / 3;
+    width: clamp(230px, 18vw, 270px); /* vence md:w-[260px] do JSX base (só no desktop) */
+    aspect-ratio: 3 / 4;              /* era 2/3 — corrigido NA ORIGEM (proposta p/ capa 3:4) */
     height: auto;
     min-height: 0;
     align-self: start;
@@ -641,6 +643,71 @@
   button[aria-label^="Ver detalhes do jogo"] button[aria-label^="Excluir"]:hover,
   button[aria-label^="Ver detalhes do jogo"] button[title^="Excluir"]:hover {
     color: #f87171 !important;
+  }
+}
+
+/* ── PROBLEMAS 3-5 (DESKTOP ≥1024px): correcoes pontuais de layout ── */
+@media (min-width: 1024px) {
+  /* ── PROBLEMA 3 — Painel "OUTROS EM ANDAMENTO" do Painel (aba #/painel) ──
+     A lista era distribuída com justify-between dentro da altura esticada do card,
+     espaçando os itens e cortando o 4º. Agora: topo fixo, gap uniforme de 8px e
+     rolagem interna limitada a ~4 itens completos (item ≈ 92px + barra HLTB). */
+  .dashboard-others-panel {
+    min-height: 0;
+  }
+  .dashboard-others-list {
+    justify-content: flex-start !important; /* vence justify-between do JSX base */
+    min-height: 0;
+    max-height: calc(4 * 92px + 3 * 8px);   /* 4 jogos completos; demais rolam */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #30363d #161b22;
+  }
+
+  /* ── PROBLEMA 4 — "DIAS QUE JOGUEI" ──
+     Células com altura UNIFORME e compacta (70px), substituindo aspect-[3/4] NA ORIGEM
+     (só no desktop; mobile mantém a proporção atual). Título limitado a 2 linhas com
+     ellipsis. O painel RESUMO deixa de ser esticado: altura = conteúdo, empilhado no topo. */
+  .gd-calendar-grid {
+    align-items: start !important; /* vence items-stretch do JSX base (colunas pelo topo) */
+  }
+  .gd-calendar-days {
+    grid-auto-rows: 70px;          /* 64–72px pedidos, uniformes em todas as semanas */
+    gap: 8px !important;
+  }
+  .gd-calendar-cell {
+    aspect-ratio: auto !important;  /* neutraliza aspect-[3/4] só no desktop */
+    height: 70px;
+  }
+  .gd-calendar-cell .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;               /* título nunca estoura a célula */
+  }
+  .gd-calendar-summary {
+    align-self: start;              /* sem esticar para a altura do calendário */
+    max-height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #30363d #161b22;
+  }
+
+  /* ── PROBLEMA 5 — Legenda de "DISTRIBUIÇÃO POR PLATAFORMA" dentro do card ──
+     Coluna da legenda com min-width:0 (exigência p/ ellipsis funcionar em flex),
+     rosca um pouco menor e gap reduzido no desktop; colunas numéricas seguem com
+     largura fixa via classes existentes do JSX (shrink-0 / min-w-[34px]). */
+  .gd-platform-card > div:first-child {
+    min-width: 0;
+  }
+  /* Linha rosca+legenda (flex-col xl:flex-row gap-5): reduz o gap no desktop */
+  .gd-platform-card .xl\:flex-row {
+    min-width: 0;
+    gap: 16px !important; /* vence gap-5/gap-6 do JSX base só no desktop */
+  }
+  .gd-platform-legend {
+    min-width: 0;
   }
 }
 

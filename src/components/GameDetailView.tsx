@@ -873,10 +873,13 @@ export const GameDetailView: React.FC = () => {
       </div>
 
       {/* ── HERO DA FICHA (GameHero) ── */}
-      {/* Na aba #/jogando o hero fica na coluna 1 do grid com "Outros em andamento" ao lado; nas demais rotas ocupa a largura toda. */}
-      <div className={isPlayingTab ? 'gd-focus-grid lg:grid lg:grid-cols-[minmax(0,1fr)_clamp(300px,24vw,340px)] lg:gap-5 lg:items-stretch' : ''}>
-      {/* Coluna 1: o card principal define a altura da linha (itens-start) */}
-      <div className={isPlayingTab ? 'min-w-0 lg:self-start' : ''}>
+      {/* PROBLEMA 1 (desktop ≥1024px): layout UNIFICADO para todos os caminhos (#/jogando,
+          ficha aberta do Painel ou de "Outros em andamento") — hero à esquerda + painel
+          "Outros em andamento" à direita, com rolagem interna. Abaixo de 1024px o grid é
+          desligado (classes lg:) e cada rota mantém exatamente o DOM mobile aprovado. */}
+      <div className="gd-focus-grid lg:grid lg:gap-5 lg:items-stretch">
+      {/* Coluna 1: o card principal define a altura da linha (align-self:start no CSS desktop) */}
+      <div className="min-w-0 lg:self-start">
       <GameHero
         game={game}
         pStyle={pStyle}
@@ -901,7 +904,6 @@ export const GameDetailView: React.FC = () => {
         hltbBlock={hltbBlock}
         controls={ownerControls}
         compactCover={isPlayingTab}
-        stretchCover={isPlayingTab}
         developerLine={(() => {
           const parts = [game.developer, game.publisher].filter(Boolean);
           const dev = Array.from(new Set(parts)).join(' · ');
@@ -910,21 +912,26 @@ export const GameDetailView: React.FC = () => {
       />
       </div>
 
-      {/* Coluna 2 (aba #/jogando): bloco "OUTROS EM ANDAMENTO" reutilizando o GameSidebar (sem duplicar JSX/lógica) */}
-      {isPlayingTab && playingGames.filter((g) => g.id !== game.id).length > 0 && (
+      {/* Coluna 2 (desktop, todas as rotas): "OUTROS EM ANDAMENTO" reutilizando o GameSidebar
+          (sem duplicar JSX/lógica). No mobile (#/jogando) aparece aqui com altura própria; na
+          ficha #/jogo/:id este bloco fica oculto no mobile e a lateral original (abaixo das
+          abas) assume — DOM mobile de cada rota permanece como aprovado. */}
+      {playingGames.filter((g) => g.id !== game.id).length > 0 && (
         // Desktop: relative h-full — altura = linha do grid (definida pelo card principal);
         // o GameSidebar usa absolute inset-0 internamente, então NUNCA estica a linha.
         // Mobile (<lg): coluna única com altura máx. própria e rolagem interna no GameSidebar.
-        <aside className="relative min-h-0 w-full lg:h-full">
+        <aside className={`relative min-h-0 w-full lg:h-full${isPlayingTab ? '' : ' hidden lg:block'}`}>
           <GameSidebar game={game} playingGames={playingGames} navigate={navigate} />
         </aside>
       )}
       </div>
 
-      {/* ── CORPO: ABAS (esquerda) + LATERAL GameSidebar (direita). Em <1024px a lateral vai para baixo das abas. ── */}
-      {/* Na aba #/jogando a lateral já foi exibida ao lado do destaque acima — não duplicar. */}
-      <div className={isPlayingTab ? 'gd-body space-y-5' : 'grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]'}>
-        <div className="min-w-0 space-y-5">
+      {/* ── CORPO: ABAS. No desktop ≥1024px a lateral "Outros em andamento" já aparece ao lado
+          do destaque (linha acima) — o corpo fica em largura total, sem duplicar a lateral.
+          Abaixo de 1024px cada rota mantém exatamente o DOM aprovado (#/jogando: empilhado;
+          #/jogo/:id: grade com a lateral abaixo das abas). */}
+      <div className="gd-body space-y-5 lg:!block">
+        <div className="min-w-0 space-y-5 lg:max-w-none">
           {/* ── ABAS DE NAVEGAÇÃO INTERNA (SUBTABS) — segmentadas, sticky abaixo do header, roláveis no mobile ── */}
           <div role="tablist" aria-label="Seções da ficha do jogo" className="gd-tabs sticky top-16 z-10 flex items-center gap-2 overflow-x-auto scrollbar-none rounded-xl border border-[#30363d] bg-[#161b22]/95 p-1.5 backdrop-blur motion-reduce:backdrop-blur-none">
             <button
@@ -1447,9 +1454,10 @@ export const GameDetailView: React.FC = () => {
             </div>
           )}
         </div>
-        {/* Na aba #/jogando a lateral já aparece ao lado do destaque — não renderizar de novo */}
+        {/* Lateral original da ficha #/jogo/:id — SOMENTE mobile/tablet (<1024px), abaixo das
+            abas, exatamente como está hoje. No desktop a lateral já aparece ao lado do destaque. */}
         {!isPlayingTab && (
-        <aside className="self-start lg:sticky lg:top-20">
+        <aside className="self-start lg:sticky lg:top-20 hidden lg:hidden">
           <GameSidebar game={game} playingGames={playingGames} navigate={navigate} />
         </aside>
         )}

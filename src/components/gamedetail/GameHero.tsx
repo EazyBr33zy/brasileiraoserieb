@@ -36,8 +36,6 @@ export interface GameHeroProps {
   developerLine?: string;
   /** Capa compacta (aba #/jogando): largura da coluna da capa reduzida no desktop */
   compactCover?: boolean;
-  /** Capa estica a altura da coluna (aba #/jogando): remove o vazio embaixo da capa e alinha topo/base com a lateral */
-  stretchCover?: boolean;
 }
 
 const StatBox: React.FC<{
@@ -77,7 +75,6 @@ export const GameHero: React.FC<GameHeroProps> = ({
   controls,
   developerLine,
   compactCover = false,
-  stretchCover = false,
 }) => {
   const coverBg = optimizeCoverUrl(game.capa, 'hero');
   const isFav = nota === 11;
@@ -103,16 +100,16 @@ export const GameHero: React.FC<GameHeroProps> = ({
         </>
       )}
 
-      <div className={`relative z-10 grid gap-6 ${compactCover ? 'md:grid-cols-[clamp(190px,16vw,230px)_minmax(0,1fr)]' : 'md:grid-cols-[260px_minmax(0,1fr)]'} ${stretchCover ? 'gd-hero-grid md:items-stretch' : ''}`}>
-        {/* Capa grande (compactCover reduz p/ clamp(190px,16vw,230px) no desktop — aba #/jogando) */}
-        <div className={`${stretchCover ? 'order-first mx-auto w-[clamp(190px,16vw,230px)] shrink-0 self-start md:mx-0 md:w-full' : 'mx-auto w-40 shrink-0 sm:w-52 md:mx-0'} ${!stretchCover && (compactCover ? 'md:w-[clamp(190px,16vw,230px)]' : 'md:w-[260px]')} ${stretchCover ? 'aspect-[2/3] md:min-h-0' : ''}`} style={stretchCover ? undefined : { aspectRatio: '3 / 4' }}>
-          {/* Capa na caixa 2:3 com object-cover + recorte topo (desktop: sem esticar a altura do card) */}
+      <div className={`relative z-10 grid gap-6 gd-hero-grid ${compactCover ? 'gd-hero-compact' : ''}`}>
+        {/* Capa: proporção fixa 3/4 (PROBLEMA 2); largura/height definidos só no CSS desktop */}
+        <div className="mx-auto w-40 shrink-0 sm:w-52 md:mx-0 md:w-[260px]" style={{ aspectRatio: '3 / 4' }}>
+          {/* Capa na caixa 3/4 com object-cover + recorte topo (desktop: sem esticar a altura do card) */}
           <GameCover
             src={game.capa}
             title={game.title}
             consoleName={game.console}
             size="hero"
-            className={`aspect-auto rounded-xl border border-[#30363d]/70 bg-black shadow-2xl shadow-black/50 ${stretchCover ? 'h-full w-full [&_img]:h-full [&_img]:w-full [&_img]:object-cover [&_img]:[object-position:center_top]' : 'h-full w-full'}`}
+            className={`aspect-auto rounded-xl border border-[#30363d]/70 bg-black shadow-2xl shadow-black/50 h-full w-full [&_img]:h-full [&_img]:w-full [&_img]:object-cover [&_img]:[object-position:center_top]`}
           />
         </div>
 
