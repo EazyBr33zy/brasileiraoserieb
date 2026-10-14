@@ -43,7 +43,7 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
               : 'border-dashed border-[#facc15]/40 bg-[#0d1117] opacity-70'
           }`}
         >
-          <div className="pointer-events-none absolute -right-2 -top-4 select-none font-heading text-6xl font-black text-[#facc15]/10 sm:text-7xl lg:top-2 lg:right-6">
+          <div className="pointer-events-none absolute -right-2 -top-4 z-0 select-none font-heading text-6xl font-black text-[#facc15]/[0.05] sm:text-7xl lg:top-2 lg:right-16">
             GOTY
           </div>
           <div className="flex items-center gap-4 min-w-0">

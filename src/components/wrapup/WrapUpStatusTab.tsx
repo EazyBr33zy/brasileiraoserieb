@@ -116,7 +116,7 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
           Distribuição de Notas (Todos os Anos Somados)
         </div>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <div className="wu-chart-row grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div className="rounded-xl border border-white/10 bg-black/30 p-3 sm:p-4">
             <div className="grid grid-cols-7 items-end gap-1.5 sm:gap-2 border-b border-white/10 pb-2" style={{ minHeight: '9rem' }}>
             {Object.entries(lifetime.histLifetime).map(([faixa, qtd]) => {
@@ -394,7 +394,7 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
           Evolução e Comparativo de Todos os Anos
         </div>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <div className="wu-evolution-row grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div className="rounded-xl border border-white/10 bg-black/30 p-3 sm:p-4">
             <div className="flex h-36 items-end justify-between gap-2 border-b border-white/10 pb-2 sm:gap-3">
               {anosStats.map((item) => {

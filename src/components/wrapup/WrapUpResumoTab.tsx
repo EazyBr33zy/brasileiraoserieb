@@ -167,7 +167,7 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
                 </div>
                 <div
                   className={`mt-1 font-mono text-[clamp(18px,1.5vw,24px)] font-bold tabular-nums leading-tight flex items-center min-h-[36px] ${
-                    isLongText ? 'line-clamp-2 text-[15px] sm:text-[18px]' : 'whitespace-nowrap'
+                    isLongText ? 'line-clamp-2 text-[15px] sm:text-[18px] lg:line-clamp-none lg:text-[clamp(18px,1.5vw,24px)] lg:min-w-0 lg:overflow-hidden' : 'whitespace-nowrap'
                   }`}
                   style={{ color: kpi.cor }}
                   title={kpi.value}
@@ -256,7 +256,7 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
           </button>
         </div>
 
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-4 lg:items-stretch">
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-4 lg:items-stretch">
           {/* GOTY Supreme Card */}
           {gotAwards.goty && (
             <GotWinnerCard game={gotAwards.goty} ano={ANO} onClick={() => onGameClick(gotAwards.goty!.id)} />
