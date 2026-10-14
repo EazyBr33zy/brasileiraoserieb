@@ -1014,12 +1014,12 @@ export const GameDetailView: React.FC = () => {
                       Histórico de Sessões de Gameplay
                     </h2>
                     <span className="block sm:hidden text-xs font-mono text-[#22d3ee] font-bold mt-0.5">
-                      {game.sessoes?.length || 0} dias registrados
+                      {game.sessoes?.length || 0} {(game.sessoes?.length || 0) === 1 ? 'dia registrado' : 'dias registrados'}
                     </span>
                   </div>
                 </div>
                 <span className="hidden sm:inline-block shrink-0 text-xs font-mono text-[#22d3ee] font-bold sm:pl-2 sm:text-right">
-                  {game.sessoes?.length || 0} dias registrados
+                  {game.sessoes?.length || 0} {(game.sessoes?.length || 0) === 1 ? 'dia registrado' : 'dias registrados'}
                 </span>
               </div>
 

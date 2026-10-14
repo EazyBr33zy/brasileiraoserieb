@@ -101,9 +101,9 @@ export const GameHero: React.FC<GameHeroProps> = ({
       )}
 
       <div className={`relative z-10 grid gap-6 gd-hero-grid ${compactCover ? 'gd-hero-compact' : ''}`}>
-        {/* Capa: proporção fixa 3/4 (PROBLEMA 2); largura/height definidos só no CSS desktop */}
-        <div className="mx-auto w-40 shrink-0 sm:w-52 md:mx-0 md:w-[260px]" style={{ aspectRatio: '3 / 4' }}>
-          {/* Capa na caixa 3/4 com object-cover + recorte topo (desktop: sem esticar a altura do card) */}
+        {/* Capa: proporção fixa 264/374 (IGDB — PROBLEMA/G3); largura/height definidos só no CSS desktop */}
+        <div className="mx-auto w-40 shrink-0 sm:w-52 md:mx-0 md:w-[260px]" style={{ aspectRatio: '264 / 374' }}>
+          {/* Capa na caixa 264/374 com object-cover + recorte topo (desktop: sem esticar a altura do card) */}
           <GameCover
             src={game.capa}
             title={game.title}
