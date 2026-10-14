@@ -236,6 +236,12 @@
 
   /* ── TAREFAS A1 a A6 (DESKTOP ≥1024px): MELHORIAS VISUAIS NA ABA PAINEL ── */
 
+  /* ── P4 (novo pedido): Cards à direita do perfil (Meta anual, Em andamento,
+     Acervo total, Tempo investido) — coluna com clamp(320px, 27%, 360px); o perfil
+     usa o restante. Corrige NA ORIGEM os utilitários lg:/xl:grid-cols-[...] do JSX. */
+  .dashboard-main-grid {
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 27%, 360px) !important;
+  }
   /* ── A1: Cards KPI à direita do perfil ── */
   .dashboard-stats-grid {
     gap: 12px !important;
@@ -248,6 +254,67 @@
     justify-content: center !important;
     position: relative !important;
     overflow: hidden !important;
+  }
+  /* P4: cabeçalho de Meta/Andamento/Acervo — ícone 32px + gap mínimo 12px entre
+     título e valor; valor com flex-shrink:0 (sem reticências). */
+  .dashboard-stats-grid > div:not(:last-child) > div:first-child {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+  .dashboard-stats-grid > div:not(:last-child) > div:first-child > span.shrink-0 {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+  .dashboard-stats-grid > div:not(:last-child) > div:first-child > span.shrink-0 svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .dashboard-stats-grid > div:not(:last-child) > div:first-child > div.min-w-0 {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+  /* Título 12px, UMA linha, sem ellipsis (nowrap + overflow visível dentro da coluna) */
+  .dashboard-stats-grid > div:not(:last-child) p:first-child {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    white-space: nowrap !important;
+    text-overflow: clip !important;
+    overflow: visible !important;
+    color: #c9d1d9 !important;
+    margin: 0 !important;
+  }
+  /* Subtexto 11px, pode quebrar em 2 linhas (era truncate → "2026 · faltam …") */
+  .dashboard-stats-grid > div:not(:last-child) p:last-child {
+    white-space: normal !important;
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+    color: #9aa4b2 !important;
+    margin: 0 !important;
+    padding-top: 2px !important;
+    display: block !important;
+  }
+  .dashboard-stats-grid > div:not(:last-child) > div:first-child > div.shrink-0 {
+    flex-shrink: 0 !important;
+    margin-left: auto !important;
+  }
+  .dashboard-stats-grid > div:not(:last-child) > div:first-child > div.shrink-0 div[class*="font-mono"] {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    color: #f0f6fc !important;
+    line-height: 1 !important;
   }
   .dashboard-stats-grid > div > div:last-child[aria-hidden="true"] {
     position: absolute !important;
@@ -319,56 +386,95 @@
     line-height: 1 !important;
   }
 
-  /* ── P5: Bloco "Jogando agora": lista "Outros em andamento" ── */
+  /* ── P1 (novo pedido): Bloco "Jogando agora" — capa do card em destaque e painel
+     "Outros em andamento". O card em destaque define a altura do bloco (min-height
+     300px a 1305px) e o painel fica com a MESMA altura via wrapper absoluto interno. */
   section[aria-label="Jogando agora"] .lg\:col-span-8 {
-    height: auto !important;
-    align-self: start !important;
+    min-height: 300px;               /* o card em destaque define a altura do bloco */
+    height: auto !important;         /* desfaz h-full que esticava além do conteúdo */
+    align-self: stretch !important;
+  }
+  /* Capa do destaque: caixa com proporção IGDB 264/374, largura clamp(170px,14.5vw,200px),
+     height:auto e align-self:start — NUNCA acompanha/é esticada pela altura do card.
+     (Corrige NA ORIGEM o md:w-60/max-w-[260px] do JSX e o aspect-[3/4] do GameCover.) */
+  section[aria-label="Jogando agora"] .lg\:col-span-8 .md\:w-60 {
+    width: clamp(170px, 14.5vw, 200px) !important; /* vence md:w-60 (240px) e max-w-[260px] */
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    align-self: start;
+    height: auto;
+  }
+  section[aria-label="Jogando agora"] .lg\:col-span-8 .md\:w-60 > div:first-child {
+    aspect-ratio: 264 / 374;                      /* era 3/4 (GameCover) — regra 14 */
+    height: auto;
+    object-position: center top;
+  }
+  section[aria-label="Jogando agora"] .lg\:col-span-8 .md\:w-60 > div:first-child img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
   }
   section[aria-label="Jogando agora"] .lg\:col-span-4 {
     height: 100% !important;
     position: relative !important;
+    overflow: hidden !important;
   }
   section[aria-label="Jogando agora"] .lg\:col-span-4 > div:first-child {
     position: absolute !important;
     inset: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important;
+    justify-content: flex-start !important;      /* regra 14: sem space-between vertical */
     padding: 14px 16px !important;
+  }
+  /* Cabeçalho fixo + lista rolável ocupando o restante da altura */
+  section[aria-label="Jogando agora"] .lg\:col-span-4 > div:first-child > div:first-child {
+    flex-shrink: 0 !important;
   }
   section[aria-label="Jogando agora"] .lg\:col-span-4 > div:first-child > div:last-child {
     flex: 1 1 0% !important;
     overflow-y: auto !important;
     min-height: 0 !important;
   }
+  /* Itens: padding 8px 10px, capa 40px, gap 8px entre itens (space-y-2 do JSX = 8px) */
   section[aria-label="Jogando agora"] .lg\:col-span-4 a {
-    padding: 10px 12px !important;
+    padding: 8px 10px !important;                /* era 10px 12px */
     display: flex !important;
     align-items: center !important;
-    gap: 12px !important;
+    gap: 8px !important;                         /* era 12px */
   }
   section[aria-label="Jogando agora"] .lg\:col-span-4 a > div:first-child {
-    width: 42px !important;
-    min-width: 42px !important;
-    max-width: 42px !important;
-    height: 58px !important;
-    aspect-ratio: 2 / 3 !important;
+    width: 40px !important;                      /* capa 40px (era 42×58, aspect 2/3) */
+    min-width: 40px !important;
+    max-width: 40px !important;
+    height: auto !important;                     /* removida a altura fixa que esticava */
+    aspect-ratio: 264 / 374 !important;          /* proporção IGDB (regra 14) */
     flex-shrink: 0 !important;
   }
+  section[aria-label="Jogando agora"] .lg\:col-span-4 a > div:first-child img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
   section[aria-label="Jogando agora"] .lg\:col-span-4 a .font-heading {
-    font-size: 14px !important;
+    font-size: 14px !important;                  /* nome 14px */
     font-weight: 600 !important;
   }
   section[aria-label="Jogando agora"] .lg\:col-span-4 a .font-mono,
   section[aria-label="Jogando agora"] .lg\:col-span-4 a div.text-xs,
   section[aria-label="Jogando agora"] .lg\:col-span-4 a span {
-    font-size: 12px !important;
+    font-size: 12px !important;                  /* plataforma/tempo/"% HLTB" 12px */
   }
 
-  /* ── P4: Calendário "Dias que joguei" e painel de resumo ── */
+  /* ── P2 (novo pedido): Calendário "Dias que joguei" e painel de resumo ──
+     Células COM sessão: min-height 112px; SEM sessão: min-height 64px.
+     aspect-ratio removido na origem (classe aspect-[3/4] do JSX neutralizada). */
   .calendar-cell {
-    aspect-ratio: 3 / 4 !important;
-    min-height: 150px !important;
+    aspect-ratio: auto !important;   /* era 3/4 — removido (regra 9: corrigir na origem) */
+    min-height: 64px !important;     /* padrão: célula SEM sessão */
     height: auto !important;
     position: relative !important;
     overflow: hidden !important;
@@ -378,6 +484,10 @@
     justify-content: space-between !important;
     padding: 8px !important;
   }
+  /* Célula COM sessão = <button>; células sem sessão e pads = <div> */
+  button.calendar-cell {
+    min-height: 112px !important;
+  }
   .calendar-cell.bg-\[\#0d1117\],
   div.calendar-cell:not([aria-hidden="true"]) {
     background-color: #0d1117 !important;
@@ -386,25 +496,60 @@
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+    object-position: center top;
   }
+  /* Capa de fundo com gradiente (valores pedidos); texto acima via z-10 do JSX */
   .calendar-cell > div:first-child > div:last-child {
     position: absolute !important;
     inset: 0 !important;
-    background: linear-gradient(to bottom, rgba(10,14,20,.25) 0%, rgba(10,14,20,.55) 45%, rgba(10,14,20,.92) 100%) !important;
+    background: linear-gradient(to bottom, rgba(10,14,20,.35) 0%, rgba(10,14,20,.65) 50%, rgba(10,14,20,.92) 100%) !important;
+  }
+  /* Número do dia: 11px, sem caixa (fundo/borda/padding zerados na origem) */
+  .calendar-cell > div:nth-child(2) > div:first-child {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+  }
+  /* Pílula "+1": 14×14px, fonte 9px — no topo, ao lado do número, sem sobreposição */
+  .calendar-cell > div:nth-child(2) > div:last-child {
+    width: 14px !important;
+    height: 14px !important;
+    min-width: 14px !important;
+    padding: 0 !important;
+    font-size: 9px !important;
+    line-height: 1 !important;
+  }
+  /* Base da célula com sessão: título (line-clamp 2) + pílula de tempo em coluna, gap 4px */
+  .calendar-cell > div:last-child {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+  .calendar-cell > div:last-child span {
+    font-size: 11px !important;      /* pílula de tempo 11px (era até 12px no desktop) */
+    line-height: 1.2 !important;
   }
   .calendar-cell .drop-shadow-\[0_1px_2px_rgba\(0\,0\,0\,0\.85\)\],
   .calendar-cell div.line-clamp-2 {
-    font-size: 12px !important;
+    font-size: 11px !important;      /* título 11px (era 12px) */
     font-weight: 600 !important;
     line-height: 1.25 !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
     color: #ffffff !important;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85) !important;
   }
+  /* Painel "Resumo de outubro": altura = conteúdo, empilhado no topo (sem space-between) */
   section[aria-labelledby="play-days-calendar-heading"] .hidden.lg\:flex {
-    height: 100% !important;
+    align-self: start !important;
+    height: auto !important;         /* desfaz o stretch à altura do calendário */
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important;
+    justify-content: flex-start !important;
+    gap: 16px !important;            /* substitui space-y-4 (16px) já equivalente */
   }
 
   /* ── P1: "Próximos jogos" (grade horizontal) ── */
@@ -469,13 +614,22 @@
     padding: 4px 6px !important;
   }
 
-  /* ── P2: "Distribuição por plataforma" (donut e legenda) ── */
+  /* ── P3 (novo pedido): "Distribuição por plataforma" (donut e legenda) ──
+     Donut com largura FIXA de 180px; legenda na coluna ao lado; nada ultrapassa o card. */
   div:has(> div > svg[aria-label*="Gráfico de pizza"]) {
-    display: flex !important;
-    flex-direction: row !important;
+    display: grid !important;                    /* era flex row — agora grade explícita */
+    grid-template-columns: 180px minmax(0, 1fr) !important;
+    gap: 24px !important;                        /* era 28px */
     align-items: center !important;
-    gap: 28px !important;
-    justify-content: center !important;
+    justify-content: normal !important;
+    min-width: 0 !important;
+  }
+  div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:first-child {
+    width: 180px !important;                     /* donut fixo 180px (era 230px via sm:w/h) */
+    height: 180px !important;
+    margin-left: 0 !important;                   /* desfaz mx-auto da linha de grid */
+    margin-right: 0 !important;
+    min-width: 0 !important;
   }
   div:has(> svg[aria-label*="Gráfico de pizza"]) {
     margin-left: 0 !important;
@@ -483,25 +637,64 @@
     flex-shrink: 0 !important;
   }
   div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child {
-    flex: 1 1 0% !important;
+    flex: none !important;                       /* coluna da grade (não flex) */
     min-width: 0 !important;
   }
+  /* Cada linha da legenda em 2 linhas: L1 = bolinha+nome | % (direita, nowrap);
+     L2 = "N jogos" + "Nh NNm" juntos (12px, gap 12px, cor secundária). */
   div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child > button {
     display: grid !important;
-    grid-template-columns: 10px minmax(110px, 1fr) auto auto 44px !important;
-    column-gap: 14px !important;
+    grid-template-columns: 10px minmax(0, 1fr) auto !important; /* era 5 colunas que estouravam o card */
+    grid-template-rows: auto auto !important;
+    column-gap: 12px !important;
+    row-gap: 2px !important;
     align-items: center !important;
     padding: 8px 14px !important;
+    min-width: 0 !important;
   }
-  div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child > button span {
-    font-size: 13px !important;
-    white-space: nowrap !important;
+  div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child > button > div:nth-child(1) > div:first-child {
+    display: contents !important;                /* bolinha e nome entram direto na grade */
+    min-width: 0 !important;
   }
   div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child > button span.rounded-full {
     width: 10px !important;
     height: 10px !important;
+    grid-row: 1 !important;
     grid-column: 1 !important;
     justify-self: center !important;
+  }
+  /* Nome: linha 1, coluna 2 — pode quebrar (sem ellipsis cortando), nunca invade a % */
+  div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child > button span.font-bold {
+    grid-row: 1 !important;
+    grid-column: 2 !important;
+    font-size: 13px !important;
+    white-space: normal !important;              /* era nowrap — evita texto fora do quadro */
+    overflow-wrap: anywhere;
+    min-width: 0 !important;
+  }
+  /* "%": linha 1, coluna 3, à direita, nowrap */
+  div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child > button > div:nth-child(1) > span:last-child {
+    grid-row: 1 !important;
+    grid-column: 3 !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+    text-align: right !important;
+    width: auto !important;                      /* desfaz w-[44px] fixo do JSX */
+    min-width: 0 !important;
+  }
+  /* Linha 2: "N jogos" + tempo juntos, 12px, gap 12px, cor secundária */
+  div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child > button > div:nth-child(2) {
+    display: flex !important;
+    grid-row: 2 !important;
+    grid-column: 2 / -1 !important;
+    gap: 12px !important;
+    min-width: 0 !important;
+  }
+  div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child > button > div:nth-child(2) span {
+    font-size: 12px !important;                  /* eram 13px */
+    color: #9aa4b2 !important;                   /* cor secundária (inclusive o valor antes branco) */
+    white-space: nowrap !important;
+    text-align: left !important;
   }
 
   /* ── P6: Gráfico "Ritmo de zeramentos" ── */
@@ -685,12 +878,12 @@
     align-items: start !important; /* vence items-stretch do JSX base (colunas pelo topo) */
   }
   .gd-calendar-days {
-    grid-auto-rows: 70px;          /* 64–72px pedidos, uniformes em todas as semanas */
+    grid-auto-rows: auto;           /* P2: linhas acompanham o conteúdo (64px vazias / 112px c/ sessão) */
     gap: 8px !important;
   }
   .gd-calendar-cell {
     aspect-ratio: auto !important;  /* neutraliza aspect-[3/4] só no desktop */
-    height: 70px;
+    height: auto;                   /* P2: removida a altura fixa de 70px (min-height manda) */
   }
   .gd-calendar-cell .line-clamp-2 {
     display: -webkit-box;
@@ -714,10 +907,17 @@
   .gd-platform-card > div:first-child {
     min-width: 0;
   }
-  /* Linha rosca+legenda (flex-col xl:flex-row gap-5): reduz o gap no desktop */
-  .gd-platform-card .xl\:flex-row {
+  /* Container do card: recorte para nada ultrapassar a borda (overflow:hidden já no JSX) */
+  .gd-platform-card {
+    overflow: hidden !important;
+  }
+  .gd-platform-card * {
+    min-width: 0;                                /* todos os filhos flex/grid podem encolher */
+  }
+  /* Linha rosca+legenda (flex-col lg:flex-row): reduz o gap no desktop */
+  .gd-platform-card .lg\:flex-row {
     min-width: 0;
-    gap: 16px !important; /* vence gap-5/gap-6 do JSX base só no desktop */
+    gap: 24px !important; /* iguala o gap pedido (grade donut|legenda) */
   }
   .gd-platform-legend {
     min-width: 0;
