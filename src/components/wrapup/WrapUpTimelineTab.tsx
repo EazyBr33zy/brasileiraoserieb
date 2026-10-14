@@ -156,11 +156,11 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
               </div>
 
               {/* Calendário */}
-              <div className="grid grid-cols-7 gap-1 sm:gap-2">
+              <div className="grid grid-cols-7 gap-1 sm:gap-2 wu-cal-grid">
                 {Array.from({ length: firstDay }, (_, i) => (
                   <div
                     key={`empty-${i}`}
-                    className="min-h-[56px] sm:min-h-[128px] lg:min-h-[144px] rounded-lg sm:rounded-xl border border-transparent bg-transparent"
+                    className="min-h-[56px] sm:min-h-[64px] lg:min-h-[64px] rounded-lg sm:rounded-xl border border-transparent bg-transparent"
                   ></div>
                 ))}
 
@@ -220,7 +220,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                           </div>
 
                           <div className="hidden sm:flex group/cal relative flex-col items-center w-full">
-                            <div className="relative aspect-[3/4] sm:h-16 lg:h-20 overflow-hidden rounded bg-black border border-[#22d3ee]/50 shadow-md flex-shrink-0">
+                            <div className="relative aspect-[264/374] sm:h-16 lg:h-auto wu-cal-cover overflow-hidden rounded bg-black border border-[#22d3ee]/50 shadow-md flex-shrink-0">
                               <img
                                 src={firstGame.capa}
                                 alt={firstGame.title}

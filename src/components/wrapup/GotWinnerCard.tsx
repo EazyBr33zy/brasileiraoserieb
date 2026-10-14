@@ -45,7 +45,7 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
   return (
     <div
       onClick={onClick}
-      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border-2 border-[#ffd700]/80 bg-[#0d1117] p-4 shadow-[0_0_24px_rgba(255,215,0,0.25)] transition-shadow hover:shadow-[0_0_36px_rgba(255,215,0,0.4)] sm:p-6"
+      className="goty-card group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border-2 border-[#ffd700]/80 bg-[#0d1117] p-4 shadow-[0_0_24px_rgba(255,215,0,0.25)] transition-shadow hover:shadow-[0_0_36px_rgba(255,215,0,0.4)] sm:p-6"
     >
       {/* Fundo: capa desfocada + degradê escuro + brilho radial dourado */}
       {hasCapa && (
@@ -77,8 +77,8 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
       {/* Linha 1: capa + conteúdo */}
       <div className="relative z-10 flex flex-1 flex-col gap-4 md:flex-row md:items-stretch">
         {/* Capa grande (esquerda, ~200px de largura) */}
-        <div className="w-[110px] shrink-0 self-start md:w-[200px] lg:w-[clamp(180px,15vw,210px)] md:self-stretch flex flex-col">
-          <div className="aspect-[3/4] md:aspect-none lg:aspect-[2/3] md:h-full lg:h-auto md:w-full overflow-hidden rounded-xl border-2 border-[#ffd700]/70 shadow-[0_0_18px_rgba(255,215,0,0.25)] flex">
+        <div className="w-[110px] shrink-0 self-start md:w-[200px] lg:w-[clamp(170px,14vw,200px)] md:self-start flex flex-col">
+          <div className="aspect-[3/4] md:aspect-none lg:aspect-[264/374] md:h-full lg:h-auto md:w-full overflow-hidden rounded-xl border-2 border-[#ffd700]/70 shadow-[0_0_18px_rgba(255,215,0,0.25)] flex">
             <GameCover
               src={game.capa}
               title={game.title}
@@ -124,11 +124,11 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
 
           {/* Destaques (mini-estatísticas) — responsivo no mobile para evitar corte do 3º quadro */}
           {stats.length > 0 && (
-            <div className="grid grid-cols-2 min-[430px]:grid-cols-3 sm:grid-cols-3 lg:[grid-template-columns:repeat(3,auto)] lg:justify-between gap-2 sm:gap-[10px] lg:gap-[10px]">
+            <div className="grid grid-cols-2 min-[430px]:grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-[10px] lg:gap-[8px]">
               {stats.map((s) => (
-                <div key={s.label} className="min-w-0 rounded-lg border border-white/10 bg-black/40 py-2 sm:py-[10px] px-2.5 sm:px-[14px] lg:p-[10px_12px]">
-                  <div className="text-[11px] sm:text-xs font-medium text-slate-400 truncate lg:text-[12px] lg:whitespace-nowrap lg:overflow-visible">{s.label}</div>
-                  <div className="mt-0.5 truncate font-mono text-sm min-[390px]:text-base font-bold tabular-nums text-white lg:text-[16px] lg:whitespace-nowrap lg:overflow-visible">
+                <div key={s.label} className="min-w-0 rounded-lg border border-white/10 bg-black/40 py-2 sm:py-[10px] px-2.5 sm:px-[14px] lg:p-[8px_10px]">
+                  <div className="text-[11px] sm:text-xs font-medium text-slate-400 truncate lg:text-[11px] lg:whitespace-nowrap lg:overflow-visible">{s.label}</div>
+                  <div className="mt-0.5 truncate font-mono text-sm min-[390px]:text-base font-bold tabular-nums text-white lg:text-[15px] lg:whitespace-nowrap lg:overflow-visible">
                     {s.value}
                   </div>
                 </div>
