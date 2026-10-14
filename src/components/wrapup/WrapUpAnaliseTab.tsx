@@ -68,7 +68,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
           Distribuição de Notas
         </div>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <div className="wu-chart-row grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
           {/* Histogram bars */}
           <div className="rounded-xl border border-white/10 bg-black/30 p-3 sm:p-4">
             <div className="grid grid-cols-7 items-end gap-1.5 sm:gap-2 border-b border-white/10 pb-2" style={{ minHeight: '9rem' }}>
