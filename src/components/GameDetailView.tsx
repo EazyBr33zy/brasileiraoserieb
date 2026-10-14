@@ -647,10 +647,10 @@ export const GameDetailView: React.FC = () => {
 
           return (
             <div className="gd-hltb rounded-xl border border-[#30363d] bg-[#0d1117] p-3 space-y-2">
-              <div className="flex items-center justify-between gap-2 text-xs">
-                <div className="flex min-w-0 items-center gap-1.5 font-bold uppercase tracking-wide text-[#9aa4b2]">
+              <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 text-xs">
+                <div className="flex flex-1 min-w-0 items-center gap-1.5 font-bold uppercase tracking-tight text-[#9aa4b2]">
                   <span className="h-2 w-2 shrink-0 rounded-full bg-[#22d3ee] shadow-[0_0_6px_#22d3ee]" aria-hidden="true" />
-                  <span className="truncate">PROGRESSO DA CAMPANHA (HLTB)</span>
+                  <span className="text-xs leading-tight tracking-tight whitespace-normal break-words">PROGRESSO DA CAMPANHA (HLTB)</span>
                 </div>
                 <div className="shrink-0 whitespace-nowrap text-right font-mono font-bold text-xs">
                   {hltbMinutes > 0 ? (
@@ -700,7 +700,7 @@ export const GameDetailView: React.FC = () => {
   );
 
   const ownerControls = (
-        <div className="gd-owner-controls gd-owner-row grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-stretch gap-2.5 p-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
+        <div className="gd-owner-controls gd-owner-row grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-stretch gap-2.5 py-2.5 px-3.5 rounded-xl border border-[#30363d] bg-[#0d1117]">
           {/* Status */}
           <div className="flex flex-col">
             <label className="text-xs uppercase font-bold text-[#9aa4b2] block mb-1">Status</label>
@@ -708,7 +708,7 @@ export const GameDetailView: React.FC = () => {
               <select
                 value={localStatus}
                 onChange={(e) => setLocalStatus(e.target.value as GameStatus)}
-                className="w-full min-h-[44px] flex-1 rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-base md:text-xs font-bold text-white focus:border-[#22d3ee] focus:outline-none cursor-pointer"
+                className="w-full h-9 box-border rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-xs sm:text-sm font-bold text-white focus:border-[#22d3ee] focus:outline-none cursor-pointer"
               >
                 <option value="jogando">Jogando</option>
                 <option value="fila">Na Fila</option>
@@ -734,7 +734,7 @@ export const GameDetailView: React.FC = () => {
                 value={localNota}
                 onChange={(e) => setLocalNota(e.target.value)}
                 placeholder="—"
-                className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-base md:text-xs font-mono font-bold text-[#ffd700] focus:border-[#22d3ee] focus:outline-none text-center"
+                className="w-full h-9 box-border rounded-lg border border-[#30363d] bg-[#161b22] px-2 text-xs sm:text-sm font-mono font-bold text-[#ffd700] focus:border-[#22d3ee] focus:outline-none text-center"
               />
             ) : (
               <span className="text-sm font-mono font-bold text-[#ffd700]">
@@ -752,7 +752,7 @@ export const GameDetailView: React.FC = () => {
                 value={localTempo}
                 onChange={(e) => setLocalTempo(e.target.value)}
                 placeholder="0:00"
-                className="w-full min-h-[44px] rounded-lg border border-[#30363d] bg-[#161b22] px-2.5 text-base md:text-xs font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none text-center"
+                className="w-full h-9 box-border rounded-lg border border-[#30363d] bg-[#161b22] px-2 text-xs sm:text-sm font-mono font-bold text-white focus:border-[#22d3ee] focus:outline-none text-center"
               />
             ) : (
               <span className="text-sm font-mono font-bold text-white">
@@ -769,7 +769,7 @@ export const GameDetailView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => openEditModal(game)}
-                  className="flex-1 min-h-[44px] flex items-center justify-center gap-1 rounded-lg border border-[#30363d] bg-[#161b22] hover:bg-white/5 text-xs font-bold text-white transition-colors cursor-pointer"
+                  className="flex-1 h-9 box-border flex items-center justify-center gap-1 rounded-lg border border-[#30363d] bg-[#161b22] hover:bg-white/5 text-xs sm:text-sm font-bold text-white transition-colors cursor-pointer"
                   title="Editar ficha completa"
                 >
                   <Edit3 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
@@ -778,7 +778,7 @@ export const GameDetailView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => exportGameMarkdown(game)}
-                  className="flex-1 min-h-[44px] flex items-center justify-center gap-1 rounded-lg border border-[#30363d] bg-[#161b22] hover:bg-white/5 text-xs font-bold text-[#22d3ee] transition-colors cursor-pointer"
+                  className="flex-1 h-9 box-border flex items-center justify-center gap-1 rounded-lg border border-[#30363d] bg-[#161b22] hover:bg-white/5 text-xs sm:text-sm font-bold text-[#22d3ee] transition-colors cursor-pointer"
                   title="Baixar arquivo Markdown do Obsidian"
                 >
                   <FileDown className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
@@ -786,7 +786,7 @@ export const GameDetailView: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="min-h-[44px] flex items-center justify-center rounded-lg border border-[#30363d]/40 bg-black/20 text-xs font-mono text-[#9aa4b2]">
+              <div className="h-9 box-border flex items-center justify-center rounded-lg border border-[#30363d]/40 bg-black/20 text-xs sm:text-sm font-mono text-[#9aa4b2] px-3">
                 Modo Leitura
               </div>
             )}
@@ -874,7 +874,7 @@ export const GameDetailView: React.FC = () => {
 
       {/* ── HERO DA FICHA (GameHero) ── */}
       {/* Na aba #/jogando o hero fica na coluna 1 do grid com "Outros em andamento" ao lado; nas demais rotas ocupa a largura toda. */}
-      <div className={isPlayingTab ? 'gd-focus-grid lg:grid lg:gap-5 lg:items-stretch' : ''}>
+      <div className={isPlayingTab ? 'gd-focus-grid lg:grid lg:grid-cols-[minmax(0,1fr)_clamp(300px,24vw,340px)] lg:gap-5 lg:items-stretch' : ''}>
       {/* Coluna 1: o card principal define a altura da linha (itens-start) */}
       <div className={isPlayingTab ? 'min-w-0 lg:self-start' : ''}>
       <GameHero
@@ -999,14 +999,19 @@ export const GameDetailView: React.FC = () => {
           {/* ── CONTEÚDO DA SUBTAB: SESSÕES DE GAMEPLAY ── */}
           {activeSubTab === 'sessoes' && (
             <div role="tabpanel" id="game-detail-tabpanel" aria-labelledby="tab-sessoes" className="gd-panel rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4">
-              <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-3">
-                <div className="gd-hist-title flex items-center gap-2">
-                  <Clock className="h-5 w-5 shrink-0 text-[#22d3ee]" aria-hidden="true" />
-                  <h2 className="font-heading text-lg font-bold uppercase text-white">
-                    Histórico de Sessões de Gameplay
-                  </h2>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#30363d]/60 pb-3 gap-1.5 sm:gap-2">
+                <div className="gd-hist-title flex items-start gap-2.5 min-w-0">
+                  <Clock className="h-5 w-5 shrink-0 text-[#22d3ee] mt-0.5" aria-hidden="true" />
+                  <div className="min-w-0">
+                    <h2 className="font-heading text-base sm:text-lg font-bold uppercase text-white leading-tight">
+                      Histórico de Sessões de Gameplay
+                    </h2>
+                    <span className="block sm:hidden text-xs font-mono text-[#22d3ee] font-bold mt-0.5">
+                      {game.sessoes?.length || 0} dias registrados
+                    </span>
+                  </div>
                 </div>
-                <span className="shrink-0 pl-2 text-right text-xs font-mono text-[#22d3ee] font-bold">
+                <span className="hidden sm:inline-block shrink-0 text-xs font-mono text-[#22d3ee] font-bold sm:pl-2 sm:text-right">
                   {game.sessoes?.length || 0} dias registrados
                 </span>
               </div>
@@ -1076,7 +1081,7 @@ export const GameDetailView: React.FC = () => {
                         <tr>
                           <th className="py-2.5 px-4">Data</th>
                           <th className="py-2.5 px-4">Horários / Intervalos</th>
-                          <th className="py-2.5 px-4 text-right">Tempo Total</th>
+                          <th className="py-2.5 px-4 text-right whitespace-nowrap w-[120px] min-w-[120px]">Tempo Total</th>
                           {isOwner && <th className="py-2.5 px-4 text-center w-28">Ações</th>}
                         </tr>
                       </thead>
@@ -1128,14 +1133,18 @@ export const GameDetailView: React.FC = () => {
                   <div className="sm:hidden space-y-2">
                     {game.sessoes.map((s, idx) => (
                       <div key={idx} className="p-3 rounded-xl border border-[#30363d] bg-[#0d1117] flex items-center justify-between gap-2">
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <div className="font-mono text-xs font-bold text-[#22d3ee]">{s.data}</div>
-                          <div className="text-xs text-[#9aa4b2] font-mono mt-0.5">
-                            {s.intervalos.map((i) => `${i.inicio}-${i.fim}`).join(', ')}
+                          <div className="text-xs text-[#9aa4b2] font-mono mt-1 flex flex-col gap-1">
+                            {s.intervalos.map((i, iIdx) => (
+                              <span key={iIdx} className="whitespace-nowrap inline-block">
+                                {i.inicio}–{i.fim}
+                              </span>
+                            ))}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-bold text-white bg-black/40 px-2 py-1 rounded border border-[#30363d]">
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="font-mono text-xs font-bold text-white bg-black/40 px-2 py-1 rounded border border-[#30363d] shrink-0">
                             {fmtMinutes(s.totalMinutos)}
                           </span>
                           {isOwner && (
@@ -1143,7 +1152,7 @@ export const GameDetailView: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => handleOpenEditSession(idx)}
-                                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-[#22d3ee] hover:bg-[#22d3ee]/10 rounded-lg cursor-pointer"
+                                className="h-10 w-10 min-h-[40px] min-w-[40px] flex items-center justify-center text-[#22d3ee] hover:bg-[#22d3ee]/10 rounded-lg cursor-pointer transition-colors"
                                 aria-label={`Editar sessão de ${s.data}`}
                                 title="Editar sessão"
                               >
@@ -1152,7 +1161,7 @@ export const GameDetailView: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => handleDeleteSession(idx)}
-                                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-red-400 hover:bg-red-500/10 rounded-lg cursor-pointer"
+                                className="h-10 w-10 min-h-[40px] min-w-[40px] flex items-center justify-center text-red-400 hover:bg-red-500/10 rounded-lg cursor-pointer transition-colors"
                                 aria-label={`Excluir sessão de ${s.data}`}
                                 title="Excluir sessão"
                               >

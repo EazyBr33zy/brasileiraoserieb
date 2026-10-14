@@ -130,35 +130,50 @@
     overflow: hidden; /* mantém border-radius/borda e o recorte topo do object-cover */
   }
 
-  /* H — Quadros de estatística: volta para UMA linha com 4 quadros iguais (o 2x2 fica
-     apenas abaixo de 1024px, como no JSX base). Padding 12px 14px e mesma altura. */
-  .gd-stats-grid.lg\:grid-cols-4 {
+  /* J1 — Jogando agora: quadros de estatística do card em destaque
+     Alinha todos os 4 ao topo (justify-content: flex-start), mesmo padding 12px 14px e mesma altura */
+  .gd-stats-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     gap: 12px !important;
+    align-items: stretch !important;
   }
   .gd-stats-grid > * {
-    min-width: 0;
-    padding: 12px 14px !important; /* padroniza px-3 py-2.5 dos quadros (desktop) */
+    min-width: 0 !important;
+    padding: 12px 14px !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    box-sizing: border-box !important;
   }
-  /* Rótulos em UMA linha só (inclusive "TEMPO REGISTRADO"): nowrap + 11px + letter-spacing reduzido */
-  .gd-stats-grid [class*="min-h-[76px]"] > div:first-child {
-    white-space: nowrap;
-    font-size: 11px;
-    letter-spacing: 0.02em;
+  /* Rótulo superior: fixo no topo, alinhado à esquerda */
+  .gd-stats-grid > * > div:first-child {
+    white-space: nowrap !important;
+    font-size: 11px !important;
+    letter-spacing: 0.02em !important;
+    line-height: 16px !important;
+    margin: 0 !important;
+    text-align: left !important;
   }
-  /* Valores e texto secundário sem reticências: nowrap vence o truncate do JSX base.
-     Se apertar, reduza aqui (gap/padding acima e valor mín. 16px) antes de mexer capa/painel. */
-  .gd-stats-grid [class*="min-h-[76px]"] > div[class*="font-mono"],
-  .gd-stats-grid [class*="min-h-[76px]"] > div:last-child {
-    white-space: nowrap;
-    text-overflow: clip;
-    overflow: visible;
+  /* Valores e texto secundário sem reticências */
+  .gd-stats-grid > * > div[class*="font-mono"] {
+    font-size: 16px !important;
+    white-space: nowrap !important;
+    text-overflow: clip !important;
+    overflow: visible !important;
+    margin-top: 4px !important;
+    line-height: 1.2 !important;
+    text-align: left !important;
   }
-  .gd-stats-grid [class*="min-h-[76px]"] > div[class*="font-mono"] {
-    font-size: 16px;              /* valor (piso da escala pedida); era ~18px utilitário */
-  }
-  .gd-stats-grid [class*="min-h-[76px]"] > div:last-child {
-    font-size: 13px;              /* "último: 12/10/2026", "há 192 dias" completos */
+  .gd-stats-grid > * > div:last-child:not([class*="font-mono"]) {
+    font-size: 13px !important;
+    white-space: nowrap !important;
+    text-overflow: clip !important;
+    overflow: visible !important;
+    margin-top: 4px !important;
+    line-height: 1.2 !important;
+    text-align: left !important;
   }
 
   /* I — Linha de controles: grade 1.4fr / 1fr / 1fr / auto, itens alinhados pelo topo */
@@ -180,12 +195,15 @@
   .gd-owner-controls input[type="number"],
   .gd-owner-controls input[type="text"],
   .gd-owner-controls button,
+  .gd-owner-controls > div > span,
   .gd-owner-controls [class*="min-h-[44px]"] {
     height: 48px;
-    min-height: 0;
+    min-height: 48px;
     box-sizing: border-box;
     font-size: 15px !important; /* vence text-base/md:text-xs do JSX base */
     border-radius: 8px;
+    display: flex;
+    align-items: center;
   }
   .gd-owner-controls > *:last-child {
     width: max-content; /* coluna "auto" dimensionada pelo próprio grupo de botões */
@@ -199,6 +217,430 @@
     flex-shrink: 0;
     white-space: nowrap;
     padding-inline: 16px;
+  }
+
+  /* ── TAREFAS A1 a A6 (DESKTOP ≥1024px): MELHORIAS VISUAIS NA ABA PAINEL ── */
+
+  /* ── A1: Cards KPI à direita do perfil ── */
+  .dashboard-stats-grid {
+    gap: 12px !important;
+    height: 100% !important;
+  }
+  .dashboard-stats-grid > div {
+    padding: 14px 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+  .dashboard-stats-grid > div > div:last-child[aria-hidden="true"] {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin-top: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* ── P3: Card "Tempo investido" (nada sobreposto, subtexto flexível, valor destacado) ── */
+  .dashboard-stats-grid > div:last-child {
+    padding: 14px 16px !important;
+  }
+  .dashboard-stats-grid > div:last-child > div:first-child {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+  .dashboard-stats-grid > div:last-child > div:first-child > span.shrink-0 {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+  .dashboard-stats-grid > div:last-child > div:first-child > span.shrink-0 svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .dashboard-stats-grid > div:last-child > div:first-child > div.min-w-0 {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+  .dashboard-stats-grid > div:last-child p:first-child {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    white-space: nowrap !important;
+    color: #c9d1d9 !important;
+    margin: 0 !important;
+  }
+  .dashboard-stats-grid > div:last-child p:last-child {
+    white-space: normal !important;
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+    color: #9aa4b2 !important;
+    margin: 0 !important;
+    padding-top: 2px !important;
+    display: block !important;
+  }
+  .dashboard-stats-grid > div:last-child > div:first-child > div.shrink-0 {
+    flex-shrink: 0 !important;
+    margin-left: auto !important;
+  }
+  .dashboard-stats-grid > div:last-child > div:first-child > div.shrink-0 div[class*="font-mono"] {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    color: #f0f6fc !important;
+    line-height: 1 !important;
+  }
+
+  /* ── P5: Bloco "Jogando agora": lista "Outros em andamento" ── */
+  section[aria-label="Jogando agora"] .lg\:col-span-8 {
+    height: auto !important;
+    align-self: start !important;
+  }
+  section[aria-label="Jogando agora"] .lg\:col-span-4 {
+    height: 100% !important;
+    position: relative !important;
+  }
+  section[aria-label="Jogando agora"] .lg\:col-span-4 > div:first-child {
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding: 14px 16px !important;
+  }
+  section[aria-label="Jogando agora"] .lg\:col-span-4 > div:first-child > div:last-child {
+    flex: 1 1 0% !important;
+    overflow-y: auto !important;
+    min-height: 0 !important;
+  }
+  section[aria-label="Jogando agora"] .lg\:col-span-4 a {
+    padding: 10px 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+  section[aria-label="Jogando agora"] .lg\:col-span-4 a > div:first-child {
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    height: 58px !important;
+    aspect-ratio: 2 / 3 !important;
+    flex-shrink: 0 !important;
+  }
+  section[aria-label="Jogando agora"] .lg\:col-span-4 a .font-heading {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+  }
+  section[aria-label="Jogando agora"] .lg\:col-span-4 a .font-mono,
+  section[aria-label="Jogando agora"] .lg\:col-span-4 a div.text-xs,
+  section[aria-label="Jogando agora"] .lg\:col-span-4 a span {
+    font-size: 12px !important;
+  }
+
+  /* ── P4: Calendário "Dias que joguei" e painel de resumo ── */
+  .calendar-cell {
+    aspect-ratio: 3 / 4 !important;
+    min-height: 150px !important;
+    height: auto !important;
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding: 8px !important;
+  }
+  .calendar-cell.bg-\[\#0d1117\],
+  div.calendar-cell:not([aria-hidden="true"]) {
+    background-color: #0d1117 !important;
+  }
+  .calendar-cell > div:first-child img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  .calendar-cell > div:first-child > div:last-child {
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(to bottom, rgba(10,14,20,.25) 0%, rgba(10,14,20,.55) 45%, rgba(10,14,20,.92) 100%) !important;
+  }
+  .calendar-cell .drop-shadow-\[0_1px_2px_rgba\(0\,0\,0\,0\.85\)\],
+  .calendar-cell div.line-clamp-2 {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85) !important;
+  }
+  section[aria-labelledby="play-days-calendar-heading"] .hidden.lg\:flex {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+
+  /* ── P1: "Próximos jogos" (grade horizontal) ── */
+  section[aria-labelledby="upcoming-games-heading"] > div:last-child {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+    gap: 12px !important;
+  }
+  section[aria-labelledby="upcoming-games-heading"] a.group {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    position: relative !important;
+    padding: 12px !important;
+    min-height: 96px !important;
+    height: auto !important;
+    gap: 12px !important;
+  }
+  section[aria-labelledby="upcoming-games-heading"] a.group > div:first-child {
+    width: 64px !important;
+    min-width: 64px !important;
+    max-width: 64px !important;
+    height: auto !important;
+    aspect-ratio: 2 / 3 !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 8px !important;
+  }
+  section[aria-labelledby="upcoming-games-heading"] a.group > div:first-child img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  section[aria-labelledby="upcoming-games-heading"] a.group > div:nth-child(2) {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    padding-right: 28px !important;
+    gap: 6px !important;
+  }
+  section[aria-labelledby="upcoming-games-heading"] a.group h3 {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    line-height: 1.3 !important;
+    color: #ffffff !important;
+  }
+  section[aria-labelledby="upcoming-games-heading"] a.group > div:last-child {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    z-index: 10 !important;
+    width: auto !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4px 6px !important;
+  }
+
+  /* ── P2: "Distribuição por plataforma" (donut e legenda) ── */
+  div:has(> div > svg[aria-label*="Gráfico de pizza"]) {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 28px !important;
+    justify-content: center !important;
+  }
+  div:has(> svg[aria-label*="Gráfico de pizza"]) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+  }
+  div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child > button {
+    display: grid !important;
+    grid-template-columns: 10px minmax(110px, 1fr) auto auto 44px !important;
+    column-gap: 14px !important;
+    align-items: center !important;
+    padding: 8px 14px !important;
+  }
+  div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child > button span {
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+  div:has(> div > svg[aria-label*="Gráfico de pizza"]) > div:last-child > button span.rounded-full {
+    width: 10px !important;
+    height: 10px !important;
+    grid-column: 1 !important;
+    justify-self: center !important;
+  }
+
+  /* ── P6: Gráfico "Ritmo de zeramentos" ── */
+  .monthly-rhythm-card,
+  div.grid.grid-cols-1.lg\:grid-cols-2 > div:first-child:has(.grid-cols-12) {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    height: 100% !important;
+  }
+  .monthly-rhythm-body,
+  div.grid.grid-cols-1.lg\:grid-cols-2 > div:first-child:has(.grid-cols-12) > div:first-child {
+    flex: 1 1 0% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    min-height: 0 !important;
+  }
+  .monthly-rhythm-bars,
+  div.grid.grid-cols-1.lg\:grid-cols-2 > div:first-child:has(.grid-cols-12) .grid-cols-12 {
+    flex: 1 1 0% !important;
+    min-height: 160px !important;
+    height: auto !important;
+    align-items: flex-end !important;
+  }
+
+  /* ── A6: Cabeçalho da seção "DIAS QUE JOGUEI" ── */
+  section[aria-labelledby="play-days-calendar-heading"] span:has(> #play-days-calendar-heading) {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    gap: 10px !important;
+  }
+  section[aria-labelledby="play-days-calendar-heading"] span:has(> #play-days-calendar-heading) > svg {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 6px !important;
+    box-sizing: border-box !important;
+    background-color: rgba(168, 85, 247, 0.15) !important;
+    border: 1px solid rgba(168, 85, 247, 0.3) !important;
+    border-radius: 8px !important;
+    color: #c084fc !important;
+    flex-shrink: 0 !important;
+  }
+  #play-days-calendar-heading {
+    font-family: var(--font-heading) !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.05em !important;
+    color: #ffffff !important;
+    text-transform: uppercase !important;
+  }
+
+  /* ── B1: Barra de filtros da aba Backlog (desktop) ── */
+  .backlog-filters-bar {
+    display: grid !important;
+    grid-template-columns: minmax(260px, 1fr) repeat(3, minmax(160px, 200px)) !important;
+    gap: 12px !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+  .backlog-filters-bar > div:first-child {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  .backlog-filters-bar input,
+  .backlog-filters-bar select {
+    height: 44px !important;
+    min-height: 44px !important;
+    font-size: 14px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+
+  /* ── TAREFA B1 (DESKTOP ≥1024px): CARDS DE JOGO DA ABA BACKLOG ── */
+  /* Todos os cards da mesma linha com a mesma altura */
+  div:has(> [role="button"][aria-label^="Ver detalhes do jogo"]),
+  div:has(> button[aria-label^="Ver detalhes do jogo"]) {
+    align-items: stretch !important;
+  }
+  [role="button"][aria-label^="Ver detalhes do jogo"],
+  button[aria-label^="Ver detalhes do jogo"] {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+  [role="button"][aria-label^="Ver detalhes do jogo"] > div:first-child,
+  button[aria-label^="Ver detalhes do jogo"] > div:first-child {
+    aspect-ratio: 3 / 4 !important;
+    width: 100% !important;
+    flex-shrink: 0 !important;
+  }
+  [role="button"][aria-label^="Ver detalhes do jogo"] > div:last-child,
+  button[aria-label^="Ver detalhes do jogo"] > div:last-child {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+
+  /* Título 13px (peso 600, máx. 2 linhas) */
+  [role="button"][aria-label^="Ver detalhes do jogo"] h3,
+  button[aria-label^="Ver detalhes do jogo"] h3 {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Plataforma/gênero 12px */
+  [role="button"][aria-label^="Ver detalhes do jogo"] h3 + div,
+  button[aria-label^="Ver detalhes do jogo"] h3 + div {
+    font-size: 12px !important;
+  }
+
+  /* Horas 12px; quando forem "0h00", opacidade 0.5 (não ocultar) */
+  [role="button"][aria-label^="Ver detalhes do jogo"] > div:last-child > div:last-child > span:first-child,
+  button[aria-label^="Ver detalhes do jogo"] > div:last-child > div:last-child > span:first-child {
+    font-size: 12px !important;
+  }
+  [role="button"][aria-label^="Ver detalhes do jogo"] span[title*="0h00"],
+  button[aria-label^="Ver detalhes do jogo"] span[title*="0h00"] {
+    opacity: 0.5 !important;
+  }
+
+  /* Botões de ação (editar, .md, excluir): área clicável 32x32px, gap 8px */
+  [role="button"][aria-label^="Ver detalhes do jogo"] > div:last-child > div:last-child > div:last-child,
+  button[aria-label^="Ver detalhes do jogo"] > div:last-child > div:last-child > div:last-child {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  [role="button"][aria-label^="Ver detalhes do jogo"] > div:last-child > div:last-child > div:last-child > button,
+  button[aria-label^="Ver detalhes do jogo"] > div:last-child > div:last-child > div:last-child > button {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #9aa4b2 !important;
+  }
+  /* Ícone de excluir usa a mesma cor dos outros e fica vermelho SÓ no hover */
+  [role="button"][aria-label^="Ver detalhes do jogo"] button[aria-label^="Excluir"]:hover,
+  [role="button"][aria-label^="Ver detalhes do jogo"] button[title^="Excluir"]:hover,
+  button[aria-label^="Ver detalhes do jogo"] button[aria-label^="Excluir"]:hover,
+  button[aria-label^="Ver detalhes do jogo"] button[title^="Excluir"]:hover {
+    color: #f87171 !important;
   }
 }
 

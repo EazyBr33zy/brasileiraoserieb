@@ -152,28 +152,35 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* ── Faixa de KPIs: 2 colunas no mobile, 3 no tablet, 6 no desktop ── */}
-      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-6">
-        {kpis.map((kpi) => (
-          <div
-            key={kpi.label}
-            className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 transition-colors hover:border-white/25"
-          >
-            <div className="absolute inset-x-0 top-0 h-0.5" style={{ background: kpi.cor }}></div>
-            <div className="text-xs font-bold uppercase tracking-wider text-slate-400 truncate">
-              {kpi.label}
-            </div>
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-6 items-stretch">
+        {kpis.map((kpi) => {
+          const isLongText = kpi.label === 'Gênero Mais Jogado' || kpi.label === 'Plataforma do Ano';
+          return (
             <div
-              className="mt-1 truncate font-mono text-xl sm:text-2xl font-bold tabular-nums leading-tight"
-              style={{ color: kpi.cor }}
-              title={kpi.value}
+              key={kpi.label}
+              className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 flex flex-col justify-between h-full transition-colors hover:border-white/25"
             >
-              {kpi.value}
+              <div className="absolute inset-x-0 top-0 h-0.5" style={{ background: kpi.cor }}></div>
+              <div>
+                <div className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 line-clamp-2 min-h-[2rem] sm:min-h-0 leading-tight">
+                  {kpi.label}
+                </div>
+                <div
+                  className={`mt-1 font-mono text-[clamp(18px,1.5vw,24px)] font-bold tabular-nums leading-tight flex items-center min-h-[36px] ${
+                    isLongText ? 'line-clamp-2 text-[15px] sm:text-[18px]' : 'whitespace-nowrap'
+                  }`}
+                  style={{ color: kpi.cor }}
+                  title={kpi.value}
+                >
+                  {kpi.value}
+                </div>
+              </div>
+              <div className="mt-1 line-clamp-2 sm:truncate text-[11px] sm:text-xs text-slate-400 leading-tight" title={kpi.sub}>
+                {kpi.sub}
+              </div>
             </div>
-            <div className="mt-1 truncate text-xs text-slate-400" title={kpi.sub}>
-              {kpi.sub}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* ── DESTAQUE DO ANO: 4 jogos — 2 em cada coluna (horizontal) ── */}
@@ -249,19 +256,19 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
           </button>
         </div>
 
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-4">
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-4 lg:items-stretch">
           {/* GOTY Supreme Card */}
           {gotAwards.goty && (
             <GotWinnerCard game={gotAwards.goty} ano={ANO} onClick={() => onGameClick(gotAwards.goty!.id)} />
           )}
 
           {/* Grade de prêmios especializados */}
-          <div className="grid grid-cols-1 content-start gap-2.5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 content-start gap-2.5 sm:grid-cols-2 lg:content-stretch lg:h-full lg:[grid-template-rows:repeat(5,1fr)]">
             {premiados.slice(0, 8).map((item, i) => (
               <div
                 key={i}
                 onClick={() => item.g && onGameClick(item.g.id)}
-                className="group flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-[#0d1117] p-2.5 transition-all hover:border-white/30"
+                className="group flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-[#0d1117] p-2.5 transition-all hover:border-white/30 lg:h-full"
               >
                 <div className="h-14 w-11 flex-shrink-0 overflow-hidden rounded-md border border-white/10 bg-black">
                   {item.g?.capa ? (

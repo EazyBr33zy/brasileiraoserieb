@@ -111,7 +111,7 @@ export const ActiveGamesSlider: React.FC = () => {
               type="button"
               onClick={handlePrev}
               aria-label="Jogo Anterior"
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white/5 text-slate-300 hover:border-accent hover:text-accent transition-colors"
+              className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-border bg-white/5 text-slate-300 hover:border-accent hover:text-accent transition-colors cursor-pointer"
             >
               <ChevronLeft className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -119,7 +119,7 @@ export const ActiveGamesSlider: React.FC = () => {
               type="button"
               onClick={handleNext}
               aria-label="Próximo Jogo"
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white/5 text-slate-300 hover:border-accent hover:text-accent transition-colors"
+              className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-border bg-white/5 text-slate-300 hover:border-accent hover:text-accent transition-colors cursor-pointer"
             >
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </button>

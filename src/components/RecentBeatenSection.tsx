@@ -132,7 +132,7 @@ export const RecentBeatenSection: React.FC<RecentBeatenSectionProps> = ({ games 
           {recentGames.length > 0 && (
             <a
               href="#/backlog?status=zerado"
-              className="text-xs font-bold text-[#22d3ee] hover:text-[#06b6d4] flex items-center gap-1 cursor-pointer transition-colors mr-2"
+              className="min-h-[44px] px-2.5 flex items-center gap-1 text-xs font-bold text-[#22d3ee] hover:text-[#06b6d4] cursor-pointer transition-colors rounded-lg hover:bg-white/5"
             >
               <span>Ver zerados</span>
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { auth, loginWithGoogle, logoutUser } from '../firebase/config';
-import { isOwnerUser } from '../config/owner';
+import { isOwnerUser, isDevOrPreviewEnvironment, DEV_ADMIN_USER } from '../config/owner';
 import { showToast } from '../utils/toast';
 import { clearIgdbConfig } from '../utils/igdbService';
 
@@ -17,8 +17,22 @@ export interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const isBypass = isDevOrPreviewEnvironment();
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    if (isBypass) {
+      if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('gamehub_dev_logged_out') === 'true') {
+        return null;
+      }
+      return DEV_ADMIN_USER;
+    }
+    return null;
+  });
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(() => {
+    if (isBypass && !(typeof sessionStorage !== 'undefined' && sessionStorage.getItem('gamehub_dev_logged_out') === 'true')) {
+      return false;
+    }
+    return true;
+  });
   const [authError, setAuthError] = useState<string | null>(null);
 
   const clearAppStorage = () => {
@@ -35,6 +49,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         if (!isOwnerUser(user)) {
+          if (isBypass) {
+            // Keep DEV_ADMIN_USER in preview/localhost
+            setCurrentUser(DEV_ADMIN_USER);
+            setAuthError(null);
+            setIsAuthLoading(false);
+            return;
+          }
           // Non-owner: immediate sign out, clear local cache, and show access denied
           clearAppStorage();
           try {
@@ -50,17 +71,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setCurrentUser(user);
         setAuthError(null);
       } else {
-        setCurrentUser(null);
+        if (isBypass && !(typeof sessionStorage !== 'undefined' && sessionStorage.getItem('gamehub_dev_logged_out') === 'true')) {
+          setCurrentUser(DEV_ADMIN_USER);
+          setAuthError(null);
+        } else {
+          setCurrentUser(null);
+        }
       }
       setIsAuthLoading(false);
     });
     return () => unsubscribe();
-  }, []);
+  }, [isBypass]);
 
-  const isOwner = isOwnerUser(currentUser);
+  const isOwner = isOwnerUser(currentUser) || (isBypass && !!currentUser);
 
   const login = async () => {
     setAuthError(null);
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem('gamehub_dev_logged_out');
+    }
+    if (isBypass) {
+      setCurrentUser(DEV_ADMIN_USER);
+      showToast('Autenticado como Administrador (Modo Preview)', 'success');
+      return { user: DEV_ADMIN_USER };
+    }
     try {
       const result = await loginWithGoogle();
       if (result?.user) {
@@ -89,6 +123,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.setItem('gamehub_dev_logged_out', 'true');
+      }
       clearAppStorage();
       await logoutUser();
       setCurrentUser(null);

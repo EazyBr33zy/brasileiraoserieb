@@ -68,30 +68,37 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
 
       {/* Marca d'água GOTY inteira, atrás do título, canto superior direito */}
       <span
-        className="pointer-events-none absolute right-4 top-10 select-none font-heading text-5xl font-black uppercase tracking-widest text-[#ffd700]/[0.05] sm:text-6xl"
+        className="pointer-events-none absolute right-2 top-2 select-none font-heading text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-widest text-[#ffd700]/[0.05] overflow-hidden max-w-[40%]"
         aria-hidden="true"
       >
         GOTY
       </span>
 
       {/* Linha 1: capa + conteúdo */}
-      <div className="relative z-10 flex flex-1 flex-col gap-4 md:flex-row">
+      <div className="relative z-10 flex flex-1 flex-col gap-4 md:flex-row md:items-stretch">
         {/* Capa grande (esquerda, ~200px de largura) */}
-        <div className="w-[110px] shrink-0 self-start md:w-[200px]">
-          <div className="aspect-[3/4] overflow-hidden rounded-xl border-2 border-[#ffd700]/70 shadow-[0_0_18px_rgba(255,215,0,0.25)]">
-            <GameCover src={game.capa} title={game.title} consoleName={game.console} size="lg" priority />
+        <div className="w-[110px] shrink-0 self-start md:w-[200px] lg:w-[clamp(180px,15vw,210px)] md:self-stretch flex flex-col">
+          <div className="aspect-[3/4] md:aspect-none lg:aspect-[2/3] md:h-full lg:h-auto md:w-full overflow-hidden rounded-xl border-2 border-[#ffd700]/70 shadow-[0_0_18px_rgba(255,215,0,0.25)] flex">
+            <GameCover
+              src={game.capa}
+              title={game.title}
+              consoleName={game.console}
+              size="lg"
+              priority
+              className="h-full w-full [&_img]:h-full [&_img]:w-full [&_img]:object-cover [&_img]:[object-position:center_top]"
+            />
           </div>
         </div>
 
         {/* Bloco de texto ao lado da capa */}
         <div className="flex min-w-0 flex-1 flex-col justify-between gap-4">
           <div>
-            <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#ffd700]">
-              <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
-              <span className="truncate">Game of the Year · {ano}</span>
+            <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-black uppercase tracking-widest text-[#ffd700]">
+              <Trophy className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              <span className="whitespace-nowrap">Game of the Year · {ano}</span>
             </div>
             <h3
-              className="mt-1 line-clamp-2 font-heading text-[clamp(1.75rem,4vw,2.75rem)] font-black uppercase leading-tight tracking-wide text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]"
+              className="mt-1 line-clamp-2 font-heading text-[clamp(1.4rem,4vw,2.75rem)] font-black uppercase leading-tight tracking-wide text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)] break-words"
               title={game.title}
             >
               {game.title}
@@ -115,13 +122,13 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
             </div>
           </div>
 
-          {/* Destaques (mini-estatísticas) — grade 2x2, valores sem truncar */}
+          {/* Destaques (mini-estatísticas) — responsivo no mobile para evitar corte do 3º quadro */}
           {stats.length > 0 && (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 min-[430px]:grid-cols-3 sm:grid-cols-3 lg:[grid-template-columns:repeat(3,auto)] lg:justify-between gap-2 sm:gap-[10px] lg:gap-[10px]">
               {stats.map((s) => (
-                <div key={s.label} className="rounded-lg border border-white/10 bg-black/40 px-2.5 py-2">
-                  <div className="text-xs font-medium text-slate-400">{s.label}</div>
-                  <div className="mt-0.5 whitespace-nowrap font-mono text-[18px] font-bold tabular-nums text-white">
+                <div key={s.label} className="min-w-0 rounded-lg border border-white/10 bg-black/40 py-2 sm:py-[10px] px-2.5 sm:px-[14px] lg:p-[10px_12px]">
+                  <div className="text-[11px] sm:text-xs font-medium text-slate-400 truncate lg:text-[12px] lg:whitespace-nowrap lg:overflow-visible">{s.label}</div>
+                  <div className="mt-0.5 truncate font-mono text-sm min-[390px]:text-base font-bold tabular-nums text-white lg:text-[16px] lg:whitespace-nowrap lg:overflow-visible">
                     {s.value}
                   </div>
                 </div>

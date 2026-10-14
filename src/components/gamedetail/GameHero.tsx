@@ -46,11 +46,12 @@ const StatBox: React.FC<{
   sub?: string;
   valueClass?: string;
 }> = ({ label, value, sub, valueClass = 'text-white' }) => (
-  <div className="flex min-h-[76px] min-w-0 flex-col justify-center rounded-lg border border-[#30363d] bg-black/25 px-3 py-2.5">
-    {/* min-h no rótulo: "TEMPO REGISTRADO" pode quebrar em 2 linhas sem alterar altura/padding das 4 caixas */}
-    <div className="min-h-[16px] text-xs font-bold uppercase leading-4 tracking-wide text-[#9aa4b2]">{label}</div>
-    <div className={`mt-1 truncate font-mono font-bold leading-tight ${valueClass}`}>{value}</div>
-    {sub && <div className="mt-0.5 truncate text-xs text-[#9aa4b2]" title={sub}>{sub}</div>}
+  <div className="flex h-full min-w-0 w-full flex-col justify-start rounded-lg border border-[#30363d] bg-black/25 px-2.5 py-2 sm:px-3 sm:py-2.5 lg:px-[14px] lg:py-3">
+    <div className="text-[11px] lg:text-[10.5px] font-bold uppercase leading-4 tracking-tight sm:tracking-[0.04em] text-[#9aa4b2] whitespace-nowrap">{label}</div>
+    <div className={`mt-0.5 whitespace-nowrap font-mono font-bold leading-tight ${valueClass}`}>{value}</div>
+    {sub ? (
+      <div className="mt-0.5 whitespace-nowrap text-[11px] sm:text-xs lg:text-[13px] text-[#9aa4b2]" title={sub}>{sub}</div>
+    ) : null}
   </div>
 );
 
@@ -102,9 +103,9 @@ export const GameHero: React.FC<GameHeroProps> = ({
         </>
       )}
 
-      <div className={`relative z-10 grid gap-6 ${compactCover ? 'md:grid-cols-[200px_minmax(0,1fr)]' : 'md:grid-cols-[260px_minmax(0,1fr)]'} ${stretchCover ? 'gd-hero-grid md:items-stretch' : ''}`}>
-        {/* Capa grande (compactCover reduz p/ 200px no desktop — aba #/jogando) */}
-        <div className={`${stretchCover ? 'order-first mx-auto w-[clamp(170px,55vw,200px)] shrink-0 md:mx-0 md:w-full' : 'mx-auto w-40 shrink-0 sm:w-52 md:mx-0'} ${!stretchCover && (compactCover ? 'md:w-[200px]' : 'md:w-[260px]')} ${stretchCover ? 'aspect-[2/3] md:min-h-0' : ''}`} style={stretchCover ? undefined : { aspectRatio: '3 / 4' }}>
+      <div className={`relative z-10 grid gap-6 ${compactCover ? 'md:grid-cols-[clamp(190px,16vw,230px)_minmax(0,1fr)]' : 'md:grid-cols-[260px_minmax(0,1fr)]'} ${stretchCover ? 'gd-hero-grid md:items-stretch' : ''}`}>
+        {/* Capa grande (compactCover reduz p/ clamp(190px,16vw,230px) no desktop — aba #/jogando) */}
+        <div className={`${stretchCover ? 'order-first mx-auto w-[clamp(190px,16vw,230px)] shrink-0 self-start md:mx-0 md:w-full' : 'mx-auto w-40 shrink-0 sm:w-52 md:mx-0'} ${!stretchCover && (compactCover ? 'md:w-[clamp(190px,16vw,230px)]' : 'md:w-[260px]')} ${stretchCover ? 'aspect-[2/3] md:min-h-0' : ''}`} style={stretchCover ? undefined : { aspectRatio: '3 / 4' }}>
           {/* Capa na caixa 2:3 com object-cover + recorte topo (desktop: sem esticar a altura do card) */}
           <GameCover
             src={game.capa}
@@ -169,7 +170,7 @@ export const GameHero: React.FC<GameHeroProps> = ({
           )}
 
           {/* Grade de 4 caixas iguais */}
-          <div className="gd-stats-grid grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div className="gd-stats-grid grid grid-cols-2 [grid-template-columns:repeat(2,minmax(0,1fr))] gap-2.5 w-full min-w-0 lg:gap-3 lg:grid-cols-4 lg:[grid-template-columns:repeat(4,minmax(0,1fr))]">
             <StatBox
               label="Tempo registrado"
               value={tempoRegistrado ? formatTempoDisplay(tempoRegistrado) : '0h00'}

@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { GameProvider, useGame } from './context/GameContext';
 import { ToastProvider } from './context/ToastContext';
 import { useAuth } from './context/AuthContext';
@@ -15,11 +15,10 @@ import { ToastContainer } from './components/ToastContainer';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AlertCircle, Gamepad2, LogIn, Lock } from 'lucide-react';
 
-// Code-splitting via React.lazy
-const DashboardView = lazy(() => import('./components/DashboardView').then((m) => ({ default: m.DashboardView })));
-const BacklogView = lazy(() => import('./components/BacklogView').then((m) => ({ default: m.BacklogView })));
-const GameDetailView = lazy(() => import('./components/GameDetailView').then((m) => ({ default: m.GameDetailView })));
-const WrapUpView = lazy(() => import('./components/WrapUpView').then((m) => ({ default: m.WrapUpView })));
+import { DashboardView } from './components/DashboardView';
+import { BacklogView } from './components/BacklogView';
+import { GameDetailView } from './components/GameDetailView';
+import { WrapUpView } from './components/WrapUpView';
 
 const AppContent: React.FC = () => {
   const { serverSyncStatus } = useGame();

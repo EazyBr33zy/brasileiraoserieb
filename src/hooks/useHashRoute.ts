@@ -94,8 +94,8 @@ export function useHashRoute() {
     };
 
     window.addEventListener('hashchange', handleHashChange);
-    // If no hash initially, set default hash
-    if (!window.location.hash) {
+    // If no hash initially, set default hash to #/painel
+    if (!window.location.hash || window.location.hash === '#' || window.location.hash === '#/') {
       window.location.hash = '#/painel';
     }
 

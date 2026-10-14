@@ -70,33 +70,41 @@ export const WrapUpStatusTab: React.FC<WrapUpStatusTabProps> = ({
 
       {/* All-time KPIs */}
       <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4">
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4 flex flex-col justify-between">
           <div className="absolute inset-x-0 top-0 h-0.5 bg-[#22d3ee]"></div>
-          <div className="truncate text-xs font-bold uppercase tracking-wider text-slate-400">Total Zerados (Vida)</div>
-          <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#22d3ee]">{lifetime.totalLifetime}</div>
+          <div>
+            <div className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 line-clamp-2 min-h-[2rem] sm:min-h-0 leading-tight">Total Zerados (Vida)</div>
+            <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#22d3ee]">{lifetime.totalLifetime}</div>
+          </div>
           <div className="mt-1 truncate text-xs text-slate-400">Todos os anos somados</div>
         </div>
 
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4">
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4 flex flex-col justify-between">
           <div className="absolute inset-x-0 top-0 h-0.5 bg-[#34d399]"></div>
-          <div className="truncate text-xs font-bold uppercase tracking-wider text-slate-400">Tempo Total Jogado</div>
-          <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#34d399]">{fmtH(lifetime.horasLifetime)}</div>
+          <div>
+            <div className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 line-clamp-2 min-h-[2rem] sm:min-h-0 leading-tight">Tempo Total Jogado</div>
+            <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#34d399]">{fmtH(lifetime.horasLifetime)}</div>
+          </div>
           <div className="mt-1 truncate text-xs text-slate-400">Horas registradas</div>
         </div>
 
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4">
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4 flex flex-col justify-between">
           <div className="absolute inset-x-0 top-0 h-0.5 bg-[#ffd700]"></div>
-          <div className="truncate text-xs font-bold uppercase tracking-wider text-slate-400">Nota Média Histórica</div>
-          <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#ffd700]">
-            {lifetime.mediaLifetime ? lifetime.mediaLifetime.toFixed(2) : '—'}
+          <div>
+            <div className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 line-clamp-2 min-h-[2rem] sm:min-h-0 leading-tight">Nota Média Histórica</div>
+            <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#ffd700]">
+              {lifetime.mediaLifetime ? lifetime.mediaLifetime.toFixed(2) : '—'}
+            </div>
           </div>
           <div className="mt-1 truncate text-xs text-slate-400">{lifetime.notasLifetimeArr.length} jogos avaliados</div>
         </div>
 
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4">
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] p-3 sm:p-4 flex flex-col justify-between">
           <div className="absolute inset-x-0 top-0 h-0.5 bg-[#a855f7]"></div>
-          <div className="truncate text-xs font-bold uppercase tracking-wider text-slate-400">Masterpieces (10★)</div>
-          <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#a855f7]">{lifetime.notas10Lifetime}</div>
+          <div>
+            <div className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 line-clamp-2 min-h-[2rem] sm:min-h-0 leading-tight">Masterpieces (10★)</div>
+            <div className="mt-1 font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#a855f7]">{lifetime.notas10Lifetime}</div>
+          </div>
           <div className="mt-1 truncate text-xs text-slate-400">Jogos supremos</div>
         </div>
       </div>

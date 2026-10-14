@@ -388,18 +388,18 @@ export const DashboardView: React.FC = () => {
     <div className="dashboard-page space-y-4 sm:space-y-6 pb-16 font-sans">
       {/* ── 1. HERO PANEL: IDENTIDADE, AÇÕES & TELEMETRIA ── */}
       <section
-        className="hero-glow cyber-grid dashboard-hero animate-fade-up rounded-3xl border border-[#30363d] bg-gradient-to-br from-[#161b22] via-[#131a22] to-[#0d1117] p-4 sm:p-6 md:p-8 shadow-2xl"
+        className="hero-glow cyber-grid dashboard-hero animate-fade-up rounded-3xl border-0 bg-transparent sm:border sm:border-[#30363d] sm:bg-gradient-to-br sm:from-[#161b22] sm:via-[#131a22] sm:to-[#0d1117] p-0 sm:p-6 md:p-8 shadow-2xl"
         aria-label="Visão geral do painel"
       >
         {/* Top Badges + Ações Rápidas */}
         <div className="dashboard-topbar flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
-            <div className="flex items-center gap-1.5 rounded-full bg-[#f97316]/10 border border-[#f97316]/40 px-2.5 py-1 sm:px-3 font-bold uppercase tracking-wider text-[#fb923c]">
+            <div className="flex items-center gap-1.5 rounded-full bg-[#f97316]/10 border border-[#f97316]/40 px-2.5 py-1 sm:px-3 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#fb923c]">
               <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#f97316]" aria-hidden="true" />
               <span>Ciclo {currentCycleYear}</span>
             </div>
 
-            <div className="flex items-center gap-1.5 rounded-full bg-[#10b981]/10 border border-[#10b981]/40 px-2.5 py-1 sm:px-3 font-bold uppercase tracking-wider text-[#34d399]">
+            <div className="flex items-center gap-1.5 rounded-full bg-[#10b981]/10 border border-[#10b981]/40 px-2.5 py-1 sm:px-3 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#34d399]">
               <span className="relative flex h-2 w-2" aria-hidden="true">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-60" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10b981]" />
@@ -428,7 +428,7 @@ export const DashboardView: React.FC = () => {
 
             <a
               href="#/backlog"
-              className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl border border-[#30363d] bg-[#0d1117]/80 hover:border-[#22d3ee]/60 hover:bg-white/5 px-4 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-200 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none"
+              className="min-h-[44px] h-[44px] flex items-center justify-center gap-2 rounded-xl border border-[#30363d] bg-[#0d1117]/80 hover:border-[#22d3ee]/60 hover:bg-white/5 px-3 py-2.5 text-[13px] sm:text-sm font-bold uppercase tracking-normal sm:tracking-wider text-slate-200 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none"
             >
               <Layers className="h-4 w-4 text-[#22d3ee]" aria-hidden="true" />
               <span>Explorar Acervo</span>
@@ -465,7 +465,7 @@ export const DashboardView: React.FC = () => {
           </div>
 
           {/* ── TELEMETRIA: COLUNA DIREITA COM OS 4 CARTÕES (META · ANDAMENTO · ACERVO · TEMPO) ── */}
-          <div className="dashboard-stats-grid grid content-start gap-2.5 sm:grid-cols-2 lg:content-stretch lg:grid-cols-1 lg:grid-rows-[auto_1fr_1fr_1fr]">
+          <div className="dashboard-stats-grid grid content-start gap-2.5 sm:grid-cols-2 lg:flex lg:flex-col lg:justify-between lg:gap-3">
           {/* META ANUAL — mais alto por causa da barra de progresso */}
           <StatCard
             label="Meta Anual"
@@ -628,9 +628,9 @@ export const DashboardView: React.FC = () => {
 
                   {/* Stats */}
                   <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#30363d]/50 text-xs">
-                    <div className="bg-black/30 p-2.5 rounded-lg border border-[#22d3ee]/25">
-                      <div className="text-[#9aa4b2] uppercase font-bold text-xs flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5 text-[#22d3ee]" />
+                    <div className="bg-black/30 p-2.5 rounded-lg border border-[#22d3ee]/25 flex flex-col justify-between">
+                      <div className="text-[#9aa4b2] uppercase font-bold text-xs min-h-[32px] sm:min-h-0 flex items-center gap-1">
+                        <Clock className="h-3.5 w-3.5 text-[#22d3ee] shrink-0" />
                         <span>TEMPO REGISTRADO</span>
                       </div>
                       <div className="text-base sm:text-lg font-bold text-[#67e8f9] mt-0.5 font-mono drop-shadow-[0_0_6px_rgba(34,211,238,0.4)]">
@@ -638,9 +638,9 @@ export const DashboardView: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="bg-black/30 p-2.5 rounded-lg border border-emerald-400/25">
-                      <div className="text-[#9aa4b2] uppercase font-bold text-xs flex items-center gap-1">
-                        <Trophy className="h-3.5 w-3.5 text-emerald-400" />
+                    <div className="bg-black/30 p-2.5 rounded-lg border border-emerald-400/25 flex flex-col justify-between">
+                      <div className="text-[#9aa4b2] uppercase font-bold text-xs min-h-[32px] sm:min-h-0 flex items-center gap-1">
+                        <Trophy className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
                         <span>STATUS</span>
                       </div>
                       <div className="text-base sm:text-lg font-bold text-emerald-400 mt-0.5 uppercase">
@@ -688,7 +688,7 @@ export const DashboardView: React.FC = () => {
                           />
                         </div>
 
-                        <div className="flex items-center justify-between text-xs font-mono text-[#9aa4b2]">
+                        <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between gap-1 text-[11px] sm:text-xs font-mono text-[#9aa4b2]">
                           <span>
                             Jogado: <strong className="text-white">{formatTempoDisplay(currentFeaturedGame.tempo)}</strong>
                           </span>
@@ -698,7 +698,7 @@ export const DashboardView: React.FC = () => {
                               {currentFeaturedGame.hltb ? formatTempoDisplay(currentFeaturedGame.hltb) : '—'}
                             </strong>
                             {hltbMin > 0 && remainingMin > 0 && (
-                              <span className="text-[#9aa4b2] ml-1">
+                              <span className="text-[#9aa4b2] ml-1 inline-block sm:inline">
                                 (~{formatMinutes(remainingMin)} restante)
                               </span>
                             )}
@@ -723,73 +723,75 @@ export const DashboardView: React.FC = () => {
             </div>
 
             {/* LISTA EM ANDAMENTO (COLUNA DIREITA) - ORDENADO POR SESSÃO RECENTE */}
-            <div className="lg:col-span-4 rounded-xl border border-[#22d3ee]/25 bg-[#0d1117]/70 p-3 sm:p-4 flex flex-col justify-between">
-              <div className="flex items-center justify-between border-b border-[#22d3ee]/25 pb-2 mb-2.5">
-                <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
-                  <span className="text-[#f97316]" aria-hidden="true">≡</span>
-                  <span>OUTROS EM ANDAMENTO</span>
-                </h3>
-                <span className="rounded-md bg-[#a855f7]/15 border border-[#a855f7]/30 px-1.5 py-0.5 text-[10px] font-mono font-bold text-[#d8b4fe]">
-                  {activeGamesList.length} ATIVOS
-                </span>
-              </div>
+            <div className="lg:col-span-4 relative rounded-xl border border-[#22d3ee]/25 bg-[#0d1117]/70 overflow-hidden min-h-[300px] lg:min-h-0">
+              <div className="p-3 sm:p-4 lg:absolute lg:inset-0 flex flex-col justify-between">
+                <div className="flex items-center justify-between border-b border-[#22d3ee]/25 pb-2 mb-2.5 shrink-0">
+                  <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
+                    <span className="text-[#f97316]" aria-hidden="true">≡</span>
+                    <span>OUTROS EM ANDAMENTO</span>
+                  </h3>
+                  <span className="rounded-md bg-[#a855f7]/15 border border-[#a855f7]/30 px-1.5 py-0.5 text-[10px] font-mono font-bold text-[#d8b4fe]">
+                    {activeGamesList.length} ATIVOS
+                  </span>
+                </div>
 
-              <div className="space-y-2 flex-1 flex flex-col justify-between">
-                {otherActiveGames.map((g, gi) => {
-                  const pStyle = getPlatformStyle(g.console);
-                  const gPlayedMin = parseToMinutes(g.tempo);
-                  const gHltbMin = parseToMinutes(g.hltb);
-                  const gPercent = gHltbMin > 0 ? Math.round((gPlayedMin / gHltbMin) * 100) : 0;
-                  // Paleta rotativa para dar personalidade a cada item da lista
-                  const accents = [
-                    { ring: 'hover:border-[#22d3ee]', bar: 'bg-gradient-to-r from-[#22d3ee] to-[#a855f7]', pct: 'text-[#22d3ee]' },
-                    { ring: 'hover:border-[#f97316]', bar: 'bg-gradient-to-r from-[#f97316] to-[#fbbf24]', pct: 'text-[#fb923c]' },
-                    { ring: 'hover:border-[#a855f7]', bar: 'bg-gradient-to-r from-[#a855f7] to-[#f472b6]', pct: 'text-[#d8b4fe]' },
-                    { ring: 'hover:border-emerald-400', bar: 'bg-gradient-to-r from-emerald-400 to-[#22d3ee]', pct: 'text-emerald-400' },
-                    { ring: 'hover:border-[#f472b6]', bar: 'bg-gradient-to-r from-[#f472b6] to-[#a855f7]', pct: 'text-[#f472b6]' },
-                  ];
-                  const accent = accents[gi % accents.length];
-                  return (
-                    <a
-                      key={g.id}
-                      href={`#/jogo/${encodeURIComponent(g.id)}`}
-                      className={`flex items-center gap-2.5 p-2 rounded-xl border border-[#30363d] bg-[#161b22] ${accent.ring} transition-all group cursor-pointer`}
-                    >
-                      <div className="h-12 w-9 rounded-lg overflow-hidden shrink-0 border border-[#30363d] group-hover:border-transparent group-hover:shadow-[0_0_10px_rgba(34,211,238,0.35)]">
-                        <GameCover
-                          src={g.capa}
-                          title={g.title}
-                          consoleName={g.console}
-                          size="thumb"
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-xs font-mono font-bold text-[#9aa4b2] group-hover:text-white/80 transition-colors">
-                          {pStyle.name}
+                <div className="space-y-2 flex-1 min-h-0 overflow-y-auto pr-1 flex flex-col justify-between">
+                  {otherActiveGames.map((g, gi) => {
+                    const pStyle = getPlatformStyle(g.console);
+                    const gPlayedMin = parseToMinutes(g.tempo);
+                    const gHltbMin = parseToMinutes(g.hltb);
+                    const gPercent = gHltbMin > 0 ? Math.round((gPlayedMin / gHltbMin) * 100) : 0;
+                    // Paleta rotativa para dar personalidade a cada item da lista
+                    const accents = [
+                      { ring: 'hover:border-[#22d3ee]', bar: 'bg-gradient-to-r from-[#22d3ee] to-[#a855f7]', pct: 'text-[#22d3ee]' },
+                      { ring: 'hover:border-[#f97316]', bar: 'bg-gradient-to-r from-[#f97316] to-[#fbbf24]', pct: 'text-[#fb923c]' },
+                      { ring: 'hover:border-[#a855f7]', bar: 'bg-gradient-to-r from-[#a855f7] to-[#f472b6]', pct: 'text-[#d8b4fe]' },
+                      { ring: 'hover:border-emerald-400', bar: 'bg-gradient-to-r from-emerald-400 to-[#22d3ee]', pct: 'text-emerald-400' },
+                      { ring: 'hover:border-[#f472b6]', bar: 'bg-gradient-to-r from-[#f472b6] to-[#a855f7]', pct: 'text-[#f472b6]' },
+                    ];
+                    const accent = accents[gi % accents.length];
+                    return (
+                      <a
+                        key={g.id}
+                        href={`#/jogo/${encodeURIComponent(g.id)}`}
+                        className={`flex items-center gap-3 py-[10px] px-3 rounded-xl border border-[#30363d] bg-[#161b22] ${accent.ring} transition-all group cursor-pointer`}
+                      >
+                        <div className="h-[58px] w-[42px] min-w-[42px] max-w-[42px] aspect-[2/3] rounded-lg overflow-hidden shrink-0 border border-[#30363d] group-hover:border-transparent group-hover:shadow-[0_0_10px_rgba(34,211,238,0.35)]">
+                          <GameCover
+                            src={g.capa}
+                            title={g.title}
+                            consoleName={g.console}
+                            size="thumb"
+                          />
                         </div>
-                        <div className="font-heading text-xs font-bold text-white group-hover:text-[#22d3ee] truncate">
-                          {cleanTitle(g.title)}
-                        </div>
-                        <div className="text-xs text-[#9aa4b2] font-mono mt-0.5 flex items-center justify-between">
-                          <span>⏱ {g.tempo ? formatTempoDisplay(g.tempo) : '0h00'}</span>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[12px] font-mono font-bold text-[#9aa4b2] group-hover:text-white/80 transition-colors">
+                            {pStyle.name}
+                          </div>
+                          <div className="font-heading text-[14px] font-semibold text-white group-hover:text-[#22d3ee] truncate">
+                            {cleanTitle(g.title)}
+                          </div>
+                          <div className="text-[12px] text-[#9aa4b2] font-mono mt-0.5 flex items-center justify-between">
+                            <span>⏱ {g.tempo ? formatTempoDisplay(g.tempo) : '0h00'}</span>
+                            {gHltbMin > 0 && (
+                              <span className={`${gPercent >= 100 ? 'text-emerald-400' : accent.pct} font-bold text-[12px]`}>
+                                {gPercent}% HLTB
+                              </span>
+                            )}
+                          </div>
                           {gHltbMin > 0 && (
-                            <span className={`${gPercent >= 100 ? 'text-emerald-400' : accent.pct} font-bold`}>
-                              {gPercent}% HLTB
-                            </span>
+                            <div className="h-1 w-full rounded-full bg-black/60 overflow-hidden mt-1">
+                              <div
+                                className={`h-full rounded-full ${gPercent >= 100 ? 'bg-emerald-400' : accent.bar}`}
+                                style={{ width: `${Math.min(100, Math.max(gPlayedMin > 0 ? 5 : 0, gPercent))}%` }}
+                              />
+                            </div>
                           )}
                         </div>
-                        {gHltbMin > 0 && (
-                          <div className="h-1 w-full rounded-full bg-black/60 overflow-hidden mt-1">
-                            <div
-                              className={`h-full rounded-full ${gPercent >= 100 ? 'bg-emerald-400' : accent.bar}`}
-                              style={{ width: `${Math.min(100, Math.max(gPlayedMin > 0 ? 5 : 0, gPercent))}%` }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </a>
-                  );
-                })}
+                      </a>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
@@ -807,16 +809,16 @@ export const DashboardView: React.FC = () => {
 
       {/* ── 4. ANALYTICS & TELEMETRIA DO CICLO ── */}
       <section className="animate-fade-up rounded-3xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl" style={{ animationDelay: '160ms' }} aria-label="Analytics e telemetria do ciclo">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#30363d]/60 pb-3 mb-4">
-          <div className="flex items-center gap-2.5">
+        <div className="flex items-center justify-between gap-3 border-b border-[#30363d]/60 pb-3 mb-4">
+          <div className="flex items-center gap-2.5 min-w-0">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#10b981]/15 border border-[#10b981]/30 text-[#10b981] shrink-0">
               <Activity className="h-5 w-5" aria-hidden="true" />
             </div>
-            <div>
-              <h2 className="font-heading text-lg sm:text-xl font-black uppercase text-white tracking-tight">
+            <div className="min-w-0">
+              <h2 className="font-heading text-sm min-[390px]:text-base sm:text-xl font-black uppercase text-white tracking-tight break-words sm:truncate leading-tight">
                 ANALYTICS & RITMO DE CONCLUÍDOS ({currentCycleYear})
               </h2>
-              <p className="text-xs text-[#9aa4b2]">
+              <p className="text-xs text-[#9aa4b2] truncate">
                 Evolução mês a mês e distribuição por plataformas
               </p>
             </div>
@@ -824,23 +826,24 @@ export const DashboardView: React.FC = () => {
 
           <a
             href="#/wrapup"
-            className="text-xs font-bold text-[#f59e0b] hover:text-[#fbbf24] flex items-center gap-1 cursor-pointer transition-colors"
+            className="min-h-[44px] min-w-[44px] px-2.5 flex items-center justify-center text-xs font-bold text-[#f59e0b] hover:text-[#fbbf24] cursor-pointer transition-colors shrink-0 rounded-lg hover:bg-white/5"
+            aria-label="Ver Wrap-Up completo"
           >
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </a>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6 items-stretch">
           {/* RITMO MÊS A MÊS */}
-          <div className="rounded-xl border border-[#30363d]/80 bg-[#0d1117]/70 p-4 sm:p-5 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-3 text-xs">
+          <div className="rounded-xl border border-[#30363d]/80 bg-[#0d1117]/70 p-4 sm:p-5 flex flex-col justify-between h-full">
+            <div className="flex-1 min-h-0 flex flex-col justify-between">
+              <div className="flex items-center justify-between mb-3 text-xs shrink-0">
                 <span className="font-bold text-white uppercase">Ritmo de Zeramentos</span>
                 <span className="font-mono text-[#06b6d4] font-bold">Média: {monthlyRhythm.avgPerMonth} jogos/mês</span>
               </div>
 
               {/* Gráfico 12 Barras Interativo */}
-              <div className="grid grid-cols-12 gap-1.5 sm:gap-2 items-end h-32 sm:h-40 pt-3">
+              <div className="grid grid-cols-12 gap-1.5 sm:gap-2 items-end flex-1 min-h-[160px] h-32 sm:h-40 lg:h-auto pt-3">
                 {monthlyRhythm.months.map((m) => {
                   const heightPercent = m.count > 0 
                     ? Math.max(22, Math.round((m.count / monthlyRhythm.maxCount) * 100))
@@ -942,7 +945,7 @@ export const DashboardView: React.FC = () => {
               </div>
 
               {/* GRÁFICO DE PIZZA (DONUT) SVG + LEGENDA */}
-              <div className="flex flex-col xl:flex-row items-center gap-5 sm:gap-6 py-2">
+              <div className="flex flex-col lg:flex-row items-center justify-center gap-5 sm:gap-8 lg:gap-[40px] py-2">
                 {/* SVG DONUT CHART (CENTRALIZADO COM 200-240PX NO MOBILE) */}
                 <div className="w-[210px] h-[210px] sm:w-[230px] sm:h-[230px] shrink-0 mx-auto relative flex items-center justify-center">
                   <svg
@@ -1086,7 +1089,7 @@ export const DashboardView: React.FC = () => {
                             setSelectedPlatform((prev) => (prev === slice.name ? null : slice.name));
                           }
                         }}
-                        className={`w-full min-h-[44px] flex items-center justify-between px-3 py-2 rounded-xl border transition-all cursor-pointer ${
+                        className={`w-full min-h-[44px] flex flex-col lg:grid lg:grid-cols-[10px_minmax(110px,1fr)_auto_auto_44px] items-stretch lg:items-center gap-1.5 lg:gap-0 lg:gap-x-[14px] px-3 py-2 rounded-xl border transition-all cursor-pointer ${
                           isSelected
                             ? 'border-[#22d3ee] bg-[#22d3ee]/10 shadow-lg shadow-[#22d3ee]/10 ring-1 ring-[#22d3ee]/40'
                             : selectedPlatform
@@ -1096,21 +1099,26 @@ export const DashboardView: React.FC = () => {
                         aria-pressed={isSelected}
                         aria-label={`${slice.name}: ${slice.count} jogos, ${slice.percentage}%, ${slice.hoursText} jogadas`}
                       >
-                        <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                          <span
-                            className="h-3 w-3 rounded-full shrink-0 shadow-sm"
-                            style={{ backgroundColor: slice.color }}
-                            aria-hidden="true"
-                          />
-                          <span className="text-xs font-bold text-white truncate">
-                            {slice.name}
-                          </span>
+                        {/* Linha 1 no Mobile (Bolinha + Nome + % à direita) */}
+                        <div className="flex items-center justify-between w-full lg:contents">
+                          <div className="flex items-center gap-2.5 min-w-0 lg:contents">
+                            <span
+                              className="h-2.5 w-2.5 rounded-full shrink-0 shadow-sm lg:col-start-1 lg:justify-self-center"
+                              style={{ backgroundColor: slice.color }}
+                              aria-hidden="true"
+                            />
+                            <span className="text-xs sm:text-[13px] font-bold text-white truncate lg:col-start-2 lg:text-left">
+                              {slice.name}
+                            </span>
+                          </div>
+                          <span className="text-xs font-mono text-white font-bold text-right shrink-0 whitespace-nowrap lg:col-start-5 lg:min-w-[44px] lg:w-[44px] lg:text-[13px]">{slice.percentage}%</span>
                         </div>
 
-                        <div className="flex items-center gap-2 sm:gap-3 text-xs font-mono shrink-0">
-                          <span className="text-[#9aa4b2]">{slice.count} jogos</span>
-                          <span className="text-emerald-400 font-semibold">{slice.hoursText}</span>
-                          <span className="text-white font-bold min-w-[34px] text-right">{slice.percentage}%</span>
+                        {/* Linha 2 no Mobile (98 jogos · 268h 46m em 11px) */}
+                        <div className="flex items-center gap-1.5 text-[11px] lg:text-[13px] font-mono text-[#9aa4b2] text-left lg:contents">
+                          <span className="whitespace-nowrap lg:col-start-3 lg:text-right lg:text-white/90">{slice.count} {slice.count === 1 ? 'jogo' : 'jogos'}</span>
+                          <span className="lg:hidden text-[#30363d]">·</span>
+                          <span className="text-emerald-400 font-semibold whitespace-nowrap lg:col-start-4 lg:text-right">{slice.hoursText}</span>
                         </div>
                       </button>
                     );

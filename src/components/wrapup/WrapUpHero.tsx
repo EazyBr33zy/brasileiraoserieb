@@ -54,7 +54,7 @@ export const WrapUpHero: React.FC<WrapUpHeroProps> = ({
           <h1 className="font-heading text-xl sm:text-3xl lg:text-4xl font-black uppercase tracking-normal sm:tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-[#22d3ee] to-[#a855f7]">
             Wrap-Up Anual
           </h1>
-          <p className="hidden sm:block text-xs text-slate-400 mt-1 max-w-xl leading-relaxed">
+          <p className="hidden sm:block text-xs text-slate-400 mt-1 max-w-2xl lg:max-w-3xl [text-wrap:balance] leading-relaxed">
             KPIs de desempenho, gráficos de análise, pódio dos melhores jogos e calendário de zeradas — tudo do ciclo selecionado.
           </p>
         </div>
@@ -88,21 +88,21 @@ export const WrapUpHero: React.FC<WrapUpHeroProps> = ({
 
       {/* ── Navegação por abas: pills deslizantes ── */}
       <div className="relative z-10 mt-4 px-3 pb-3 sm:px-5 sm:pb-4">
-        {/* Mobile: grade 5 colunas */}
-        <div className="grid grid-cols-5 gap-1.5 sm:hidden">
+        {/* Mobile: scroll horizontal suave com snap para evitar cortes nos rótulos */}
+        <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-3 px-3 scrollbar-none sm:hidden">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTabLocal(tab.id)}
               aria-pressed={activeTab === tab.id}
-              className={`flex min-h-[44px] flex-col items-center justify-center gap-0.5 rounded-lg border px-0.5 py-1.5 text-center transition-all cursor-pointer ${
+              className={`flex min-h-[44px] shrink-0 min-w-[70px] flex-col items-center justify-center gap-0.5 rounded-lg border px-2 py-1.5 text-center transition-all cursor-pointer ${
                 activeTab === tab.id
                   ? 'border-[#22d3ee]/60 bg-[#22d3ee]/10 text-[#22d3ee] shadow-sm shadow-[#22d3ee]/20 font-black'
                   : 'border-white/5 bg-white/[0.02] text-slate-400 hover:text-white'
               }`}
             >
               <span className="text-sm leading-none">{tab.icon}</span>
-              <span className="w-full truncate px-0.5 text-xs font-bold leading-tight">
+              <span className="whitespace-nowrap text-[11px] font-bold leading-tight">
                 {tab.label}
               </span>
             </button>

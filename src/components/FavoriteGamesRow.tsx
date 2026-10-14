@@ -123,7 +123,7 @@ export const FavoriteGamesRow: React.FC = () => {
                   className="!rounded-lg border border-[#30363d] shadow-md shadow-black/30 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:border-[#fbbf24]/50"
                 />
                 {/* Selo dourado ★ 11 */}
-                <span className="absolute right-1 top-1 z-10 flex items-center gap-0.5 rounded-md border border-[#fbbf24]/50 bg-[#0d1117]/90 px-1 py-0.5 font-mono text-[10px] font-black leading-none text-[#fbbf24] shadow">
+                <span className="absolute right-1 top-1 z-10 flex items-center gap-0.5 rounded-md border border-[#fbbf24]/50 bg-[#0d1117]/90 px-1 py-0.5 font-mono text-[11px] font-black leading-none text-[#fbbf24] shadow">
                   <Star className="h-2.5 w-2.5 fill-[#fbbf24]" aria-hidden="true" />
                   <span>11</span>
                 </span>

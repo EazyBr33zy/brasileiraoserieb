@@ -47,7 +47,7 @@ export const UpcomingGamesSection: React.FC<UpcomingGamesSectionProps> = ({ game
         {upcomingGames.length > 0 && (
           <a
             href="#/backlog?prioridade=1"
-            className="text-xs font-bold text-[#22d3ee] hover:text-[#06b6d4] flex items-center gap-1 cursor-pointer transition-colors"
+            className="min-h-[44px] px-2.5 flex items-center gap-1 text-xs font-bold text-[#22d3ee] hover:text-[#06b6d4] cursor-pointer transition-colors rounded-lg hover:bg-white/5"
           >
             <span>Ver todos ({upcomingGames.length})</span>
             <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -71,7 +71,10 @@ export const UpcomingGamesSection: React.FC<UpcomingGamesSectionProps> = ({ game
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-3.5">
+        <div 
+          className="grid gap-3 w-full"
+          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}
+        >
           {visibleGames.map((game) => {
             const pStyle = getPlatformStyle(game.console);
 
@@ -79,30 +82,28 @@ export const UpcomingGamesSection: React.FC<UpcomingGamesSectionProps> = ({ game
               <a
                 key={game.id}
                 href={`#/jogo/${encodeURIComponent(game.id)}`}
-                className="group flex flex-col justify-between overflow-hidden rounded-xl border border-[#30363d] bg-[#0d1117] hover:border-[#22d3ee] hover:-translate-y-1 hover:shadow-lg transition-all text-left focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none"
+                className="group relative flex items-center gap-3 p-3 min-h-[96px] overflow-hidden rounded-xl border border-[#30363d] bg-gradient-to-r from-[#0d1117] to-[#161b22] hover:border-[#22d3ee] hover:-translate-y-0.5 hover:shadow-lg transition-all text-left focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none"
                 aria-label={`Ver jogo prioritário ${cleanTitle(game.title)}`}
               >
-                {/* Cover with GameCover fallback and priority badge */}
-                <div className="relative aspect-[3/4] w-full overflow-hidden bg-black/60">
+                {/* Cover left (64px width, 2:3 ratio) */}
+                <div className="relative w-[64px] min-w-[64px] aspect-[2/3] overflow-hidden rounded-lg bg-black/60 shrink-0 border border-[#30363d]">
                   <GameCover
                     src={game.capa}
                     title={game.title}
                     consoleName={game.console}
-                    size="lg"
+                    size="thumb"
+                    className="h-full w-full object-cover"
                   />
-                  <div className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 z-10 flex items-center justify-center rounded-md bg-black/80 px-1 py-1 text-amber-400 border border-amber-400/40 shadow-xs">
-                    <Star className="h-3 w-3 fill-amber-400 text-amber-400" aria-hidden="true" />
-                  </div>
                 </div>
 
-                {/* Metadata */}
-                <div className="p-2 flex flex-col justify-between flex-1">
-                  <h3 className="font-heading text-xs font-bold text-white line-clamp-2 leading-tight group-hover:text-[#22d3ee] transition-colors">
+                {/* Metadata right */}
+                <div className="min-w-0 flex-1 pr-6 flex flex-col justify-center space-y-1.5">
+                  <h3 className="font-heading text-[14px] font-semibold text-white line-clamp-2 leading-snug group-hover:text-[#22d3ee] transition-colors">
                     {cleanTitle(game.title)}
                   </h3>
-                  <div className="mt-1.5 flex items-center gap-1">
+                  <div>
                     <span
-                      className="rounded px-1.5 py-0.5 text-xs font-mono font-bold uppercase truncate max-w-full"
+                      className="inline-block rounded px-2 py-0.5 text-xs font-mono font-bold uppercase truncate max-w-full"
                       style={{
                         backgroundColor: `${pStyle.col}20`,
                         color: pStyle.col,
@@ -112,6 +113,11 @@ export const UpcomingGamesSection: React.FC<UpcomingGamesSectionProps> = ({ game
                       {game.console}
                     </span>
                   </div>
+                </div>
+
+                {/* Priority star top right */}
+                <div className="absolute top-3 right-3 flex items-center justify-center rounded-md bg-black/80 px-1.5 py-1 text-amber-400 border border-amber-400/40 shadow-xs shrink-0">
+                  <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
                 </div>
               </a>
             );

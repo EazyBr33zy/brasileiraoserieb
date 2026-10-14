@@ -127,13 +127,15 @@ export const PlayDaysCalendar: React.FC<PlayDaysCalendarProps> = ({ games }) => 
         <div className="flex flex-col space-y-3.5 sm:space-y-4 min-w-0">
           {/* ── HEADER ── */}
           <div className="space-y-3 border-b border-[#30363d]/60 pb-3 sm:pb-4">
-            {/* Top Tag */}
+            {/* Top Header */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-lg bg-purple-500/20 border border-purple-500/35 px-2.5 py-1 text-xs font-black uppercase tracking-wider text-purple-300 shadow-sm">
-                  <Gamepad2 className="h-3.5 w-3.5" aria-hidden="true" />
-                  <span id="play-days-calendar-heading">DIAS QUE JOGUEI</span>
-                </span>
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-400 shrink-0">
+                  <Gamepad2 className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <h2 id="play-days-calendar-heading" className="font-heading text-lg sm:text-xl font-black uppercase text-white tracking-tight">
+                  DIAS QUE JOGUEI
+                </h2>
               </div>
 
               {/* "Hoje" button when not in current month */}
@@ -247,7 +249,7 @@ export const PlayDaysCalendar: React.FC<PlayDaysCalendarProps> = ({ games }) => 
               <div
                 key={`pad-before-${idx}`}
                 aria-hidden="true"
-                className="aspect-[3/4] rounded-md sm:rounded-xl border border-transparent bg-transparent"
+                className="calendar-cell aspect-[3/4] rounded-md sm:rounded-xl border border-transparent bg-transparent"
               />
             ))}
 
@@ -266,14 +268,14 @@ export const PlayDaysCalendar: React.FC<PlayDaysCalendarProps> = ({ games }) => 
                     type="button"
                     onClick={() => setActiveDayDetail(sessionData)}
                     aria-label={ariaText}
-                    className={`group relative aspect-[3/4] w-full overflow-hidden rounded-md sm:rounded-xl border transition-all duration-200 cursor-pointer text-left focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none p-0 ${
+                    className={`calendar-cell group relative aspect-[3/4] w-full overflow-hidden rounded-md sm:rounded-xl border transition-all duration-200 cursor-pointer text-left focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none p-0 flex flex-col justify-between ${
                       isToday
                         ? 'border-[#22d3ee] ring-1.5 ring-[#22d3ee]/60 shadow-[0_0_10px_rgba(34,211,238,0.25)]'
                         : 'border-purple-500/50 hover:border-[#22d3ee]'
                     }`}
                   >
                     {/* Background Cover */}
-                    <div className="absolute inset-0 bg-black/80">
+                    <div className="absolute inset-0 bg-black/80 z-0 pointer-events-none overflow-hidden">
                       <GameCover
                         src={topGame.capa}
                         title={topGame.title}
@@ -282,35 +284,34 @@ export const PlayDaysCalendar: React.FC<PlayDaysCalendarProps> = ({ games }) => 
                         className="h-full w-full object-cover rounded-md sm:rounded-xl"
                       />
                       {/* Dark gradient for text legibility */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/50" />
+                      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e14]/25 via-[#0a0e14]/55 to-[#0a0e14]/92" />
                     </div>
 
-                    {/* Day Number Badge (Top-Left) */}
-                    <div className="absolute top-0.5 left-0.5 sm:top-1 sm:left-1 z-10 flex items-center justify-center rounded bg-black/80 border border-white/10 px-1 py-0.5 text-xs font-black font-mono text-white shadow-xs">
-                      {dayNumber}
-                    </div>
-
-                    {/* Multiple Games Indicator (Top-Right or Bottom beside time) */}
-                    {otherGamesCount > 0 && (
-                      <div 
-                        className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 z-10 flex items-center justify-center rounded bg-purple-600/90 border border-purple-400/40 px-1 py-0.5 text-xs font-black text-white shadow-xs"
-                        title={`+${otherGamesCount} outro(s) jogo(s)`}
-                      >
-                        +{otherGamesCount}
+                    {/* Top row in normal flow (Day Number & +N) */}
+                    <div className="relative z-10 w-full flex items-start justify-between p-1 sm:p-2">
+                      <div className="flex items-center justify-center rounded bg-[#0a0e14]/75 px-1 sm:px-1.5 py-0.5 border border-white/15 text-[10px] sm:text-xs font-black font-mono text-white leading-none shadow-xs">
+                        {dayNumber}
                       </div>
-                    )}
 
-                    {/* Play Time Badge (Bottom) */}
-                    <div className="absolute bottom-0.5 left-0.5 right-0.5 sm:bottom-1 sm:left-1 sm:right-auto z-10 flex items-center justify-center sm:justify-start">
-                      <span className="rounded bg-black/85 border border-white/15 px-1 py-0.5 text-xs font-bold font-mono text-white sm:text-emerald-400 shadow-xs truncate max-w-full">
-                        {formattedTime}
-                      </span>
+                      {otherGamesCount > 0 && (
+                        <div 
+                          className="flex min-w-[15px] h-[15px] sm:h-auto sm:w-auto items-center justify-center rounded bg-purple-600/90 border border-purple-400/40 px-0.5 sm:px-1 sm:py-0.5 text-[9px] sm:text-xs font-black text-white leading-none shadow-xs"
+                          title={`+${otherGamesCount} outro(s) jogo(s)`}
+                        >
+                          +{otherGamesCount}
+                        </div>
+                      )}
                     </div>
 
-                    {/* Title overlay (Desktop only, ≥768px) */}
-                    <div className="hidden md:block absolute bottom-6 left-1 right-1 z-10">
-                      <div className="line-clamp-2 text-xs font-bold text-white drop-shadow-md group-hover:text-[#22d3ee] transition-colors leading-tight">
+                    {/* Bottom row in normal flow (Title & Time Pill) */}
+                    <div className="relative z-10 w-full p-1 sm:p-2 flex flex-col gap-1">
+                      <div className="hidden md:block line-clamp-2 text-[12px] font-semibold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)] group-hover:text-[#22d3ee] transition-colors leading-tight">
                         {cleanTitle(topGame.title)}
+                      </div>
+                      <div className="flex items-center">
+                        <span className="rounded bg-[#0a0e14]/90 border border-emerald-500/30 px-1.5 py-0.5 text-[9px] min-[390px]:text-[10px] sm:text-xs leading-none sm:leading-normal font-bold font-mono text-emerald-300 shadow-xs truncate max-w-full">
+                          {formattedTime}
+                        </span>
                       </div>
                     </div>
                   </button>
@@ -321,7 +322,7 @@ export const PlayDaysCalendar: React.FC<PlayDaysCalendarProps> = ({ games }) => 
               return (
                 <div
                   key={cell.dateKey}
-                  className={`relative aspect-[3/4] w-full rounded-md sm:rounded-xl p-0.5 min-[360px]:p-1 sm:p-1.5 flex flex-col justify-between transition-colors bg-[#0d1117] ${
+                  className={`calendar-cell relative aspect-[3/4] w-full rounded-md sm:rounded-xl p-1 sm:p-2 flex flex-col justify-between transition-colors bg-[#0d1117] ${
                     isToday
                       ? 'border border-[#22d3ee] shadow-[0_0_8px_rgba(34,211,238,0.2)]'
                       : 'border border-[#30363d]/40'

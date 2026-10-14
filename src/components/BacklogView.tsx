@@ -324,9 +324,9 @@ export const BacklogView: React.FC = () => {
         </div>
 
         {/* ── 2. BARRA DE ESTATÍSTICAS ORIGINAL (GRID UNIFORME DE 5 STATS) ── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
+        <div className="grid grid-cols-6 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
           {/* TOTAL */}
-          <div className="rounded-xl border border-[#30363d] bg-[#0d1117] py-2.5 px-3 text-center shadow-md">
+          <div className="col-span-2 sm:col-span-1 rounded-xl border border-[#30363d] bg-[#0d1117] py-2.5 px-2 sm:px-3 text-center shadow-md">
             <div className="font-heading text-xl sm:text-2xl font-extrabold text-[#f43f5e] font-mono leading-none">
               {isInitialLoading ? '—' : stats.totalJogos}
             </div>
@@ -336,17 +336,17 @@ export const BacklogView: React.FC = () => {
           </div>
 
           {/* QUERO JOGAR */}
-          <div className="rounded-xl border border-[#30363d] bg-[#0d1117] py-2.5 px-3 text-center shadow-md">
+          <div className="col-span-2 sm:col-span-1 rounded-xl border border-[#30363d] bg-[#0d1117] py-2.5 px-2 sm:px-3 text-center shadow-md">
             <div className="font-heading text-xl sm:text-2xl font-extrabold text-[#38bdf8] font-mono leading-none">
               {isInitialLoading ? '—' : stats.backlogCount}
             </div>
-            <div className="text-xs font-bold uppercase tracking-wider text-[#9aa4b2] mt-1.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#9aa4b2] mt-1.5 truncate">
               QUERO JOGAR
             </div>
           </div>
 
           {/* ZERADOS */}
-          <div className="rounded-xl border border-[#30363d] bg-[#0d1117] py-2.5 px-3 text-center shadow-md">
+          <div className="col-span-2 sm:col-span-1 rounded-xl border border-[#30363d] bg-[#0d1117] py-2.5 px-2 sm:px-3 text-center shadow-md">
             <div className="font-heading text-xl sm:text-2xl font-extrabold text-[#06b6d4] font-mono leading-none">
               {isInitialLoading ? '—' : stats.zeradosCount}
             </div>
@@ -356,7 +356,7 @@ export const BacklogView: React.FC = () => {
           </div>
 
           {/* CONSOLES */}
-          <div className="rounded-xl border border-[#30363d] bg-[#0d1117] py-2.5 px-3 text-center shadow-md">
+          <div className="col-span-3 sm:col-span-1 rounded-xl border border-[#30363d] bg-[#0d1117] py-2.5 px-2 sm:px-3 text-center shadow-md">
             <div className="font-heading text-xl sm:text-2xl font-extrabold text-[#facc15] font-mono leading-none">
               {isInitialLoading ? '—' : stats.uniqueConsoles}
             </div>
@@ -366,7 +366,7 @@ export const BacklogView: React.FC = () => {
           </div>
 
           {/* GÊNEROS */}
-          <div className="col-span-2 sm:col-span-1 rounded-xl border border-[#30363d] bg-[#0d1117] py-2.5 px-3 text-center shadow-md">
+          <div className="col-span-3 sm:col-span-1 rounded-xl border border-[#30363d] bg-[#0d1117] py-2.5 px-2 sm:px-3 text-center shadow-md">
             <div className="font-heading text-xl sm:text-2xl font-extrabold text-[#c084fc] font-mono leading-none">
               {isInitialLoading ? '—' : stats.uniqueGenres}
             </div>
@@ -376,10 +376,10 @@ export const BacklogView: React.FC = () => {
           </div>
         </div>
 
-        {/* ── 3. FILTROS & BUSCA ORIGINAIS ── */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
-          {/* Campo de Busca */}
-          <div className="relative flex-1">
+        {/* ── 3. FILTROS & BUSCA (B1 Desktop: grid-template-columns: minmax(260px, 1fr) repeat(3, minmax(160px, 200px)); gap: 12px; align-items: center) ── */}
+        <div className="backlog-filters-bar flex flex-col sm:flex-row lg:grid lg:grid-cols-[minmax(260px,1fr)_repeat(3,minmax(160px,200px))] items-stretch sm:items-center gap-2 sm:gap-2.5 lg:gap-3 pt-1">
+          {/* Campo de Busca (Linha 1 no Mobile / Coluna 1 no Desktop) */}
+          <div className="relative w-full sm:flex-1 lg:w-full min-w-0">
             <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9aa4b2] pointer-events-none" aria-hidden="true" />
             <input
               type="text"
@@ -401,42 +401,43 @@ export const BacklogView: React.FC = () => {
             )}
           </div>
 
-          {/* Select de Plataforma */}
-          <select
-            value={filterPlatform}
-            onChange={(e) => setFilterPlatform(e.target.value)}
-            aria-label="Filtrar por plataforma"
-            className="h-11 rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 text-xs text-white focus:border-[#22d3ee] focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none cursor-pointer"
-          >
-            <option value="TODAS">Todas Plataformas</option>
-            {availablePlatforms.filter(p => p !== 'TODAS').map(p => (
-              <option key={p} value={p}>{p}</option>
-            ))}
-          </select>
+          {/* Selects de Plataforma & Status (Linha 2 no Mobile: lado a lado em 2 colunas iguais / Colunas 2 e 3 no Desktop via subgrid/contents) */}
+          <div className="grid grid-cols-2 gap-2 w-full sm:contents lg:contents">
+            <select
+              value={filterPlatform}
+              onChange={(e) => setFilterPlatform(e.target.value)}
+              aria-label="Filtrar por plataforma"
+              className="w-full h-11 rounded-xl border border-[#30363d] bg-[#0d1117] px-3 text-sm text-white focus:border-[#22d3ee] focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none cursor-pointer"
+            >
+              <option value="TODAS">Todas Plataformas</option>
+              {availablePlatforms.filter(p => p !== 'TODAS').map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
 
-          {/* Select de Status */}
-          <select
-            value={filterStatus}
-            onChange={(e) => {
-              const val = e.target.value;
-              setFilterStatus(val);
-              setQueryParams({ status: val !== 'TODAS' ? val : null });
-            }}
-            aria-label="Filtrar por status"
-            className="h-11 rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 text-xs text-white focus:border-[#22d3ee] focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none cursor-pointer"
-          >
-            <option value="TODAS">Todos Status</option>
-            <option value="quero_jogar">Quero Jogar</option>
-            <option value="zerado">Zerados</option>
-            <option value="abandonado">Abandonados</option>
-          </select>
+            <select
+              value={filterStatus}
+              onChange={(e) => {
+                const val = e.target.value;
+                setFilterStatus(val);
+                setQueryParams({ status: val !== 'TODAS' ? val : null });
+              }}
+              aria-label="Filtrar por status"
+              className="w-full h-11 rounded-xl border border-[#30363d] bg-[#0d1117] px-3 text-sm text-white focus:border-[#22d3ee] focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none cursor-pointer"
+            >
+              <option value="TODAS">Todos Status</option>
+              <option value="quero_jogar">Quero Jogar</option>
+              <option value="zerado">Zerados</option>
+              <option value="abandonado">Abandonados</option>
+            </select>
+          </div>
 
-          {/* Select de Gênero */}
+          {/* Select de Gênero (Linha 3 no Mobile / Coluna 4 no Desktop) */}
           <select
             value={filterGenre}
             onChange={(e) => setFilterGenre(e.target.value)}
             aria-label="Filtrar por gênero"
-            className="h-11 rounded-xl border border-[#30363d] bg-[#0d1117] px-3.5 text-xs text-white focus:border-[#22d3ee] focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none cursor-pointer"
+            className="w-full h-11 rounded-xl border border-[#30363d] bg-[#0d1117] px-3 text-sm text-white focus:border-[#22d3ee] focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus:outline-none cursor-pointer"
           >
             <option value="TODOS">Todos Gêneros</option>
             {availableGenres.filter(g => g !== 'TODOS').map(g => (
@@ -581,7 +582,7 @@ export const BacklogView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => toggleConsole(item.consoleName)}
-                    className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left hover:bg-white/[0.02] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none"
+                    className="w-full flex items-center justify-between py-2.5 px-3.5 sm:p-4 min-h-[52px] h-[64px] sm:h-auto text-left hover:bg-white/[0.02] transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#22d3ee] outline-none"
                     aria-expanded={isExpanded}
                   >
                     <div className="flex items-center gap-3 min-w-0">
@@ -626,10 +627,17 @@ export const BacklogView: React.FC = () => {
                           const scoreColor = getScoreColor(game.nota);
 
                           return (
-                            <button
+                            <div
                               key={game.id}
-                              type="button"
+                              role="button"
+                              tabIndex={0}
                               onClick={() => handleCardClick(game)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault();
+                                  handleCardClick(game);
+                                }
+                              }}
                               className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-[#30363d] bg-[#0d1117] transition-all duration-200 hover:-translate-y-1 hover:border-[#22d3ee]/60 hover:shadow-xl hover:shadow-[#22d3ee]/10 active:scale-[0.98] cursor-pointer text-left focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none"
                               aria-label={`Ver detalhes do jogo ${cleanTitle(game.title)}`}
                             >
@@ -693,23 +701,26 @@ export const BacklogView: React.FC = () => {
                               <div className="p-2 sm:p-2.5 flex flex-col justify-between flex-1 w-full">
                                 <div>
                                   <h3 
-                                    className="font-heading text-xs leading-snug font-bold text-white group-hover:text-[#22d3ee] transition-colors line-clamp-2"
+                                    className="font-heading text-xs leading-snug font-bold text-white group-hover:text-[#22d3ee] transition-colors line-clamp-2 lg:text-[13px] lg:font-semibold"
                                     title={cleanTitle(game.title)}
                                   >
                                     {cleanTitle(game.title)}
                                   </h3>
-                                  <div className="text-xs text-[#9aa4b2] mt-0.5 line-clamp-1">
+                                  <div className="text-xs text-[#9aa4b2] mt-0.5 line-clamp-1 lg:text-[12px]">
                                     {game.genero}
                                   </div>
                                 </div>
 
                                 {/* Rodapé com tempo e ações de toque acessíveis */}
-                                <div className="mt-2 pt-1.5 border-t border-[#30363d]/50 flex items-center justify-between text-xs text-[#9aa4b2] font-mono">
-                                  <span className="truncate max-w-[70px]" title={game.tempo ? formatTempoDisplay(game.tempo) : '0h00'}>
-                                    {game.tempo ? `⏱ ${formatTempoDisplay(game.tempo)}` : '—'}
+                                <div className="mt-2 pt-1.5 border-t border-[#30363d]/50 flex items-center justify-between text-xs text-[#9aa4b2] font-mono lg:text-[12px]">
+                                  <span 
+                                    className={`truncate max-w-[75px] ${(!game.tempo || game.tempo === '0h00') ? 'opacity-50' : ''}`} 
+                                    title={game.tempo ? formatTempoDisplay(game.tempo) : '0h00'}
+                                  >
+                                    {game.tempo ? `⏱ ${formatTempoDisplay(game.tempo)}` : '⏱ 0h00'}
                                   </span>
                                   
-                                  <div className="flex items-center gap-0.5" onClick={(e) => e.stopPropagation()}>
+                                  <div className="flex items-center gap-0.5 lg:gap-2" onClick={(e) => e.stopPropagation()}>
                                     {/* Editar jogo */}
                                     {isOwner && (
                                       <button
@@ -754,7 +765,7 @@ export const BacklogView: React.FC = () => {
                                   </div>
                                 </div>
                               </div>
-                            </button>
+                            </div>
                           );
                         })}
                       </div>

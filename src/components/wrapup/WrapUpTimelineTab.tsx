@@ -147,7 +147,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
           <div className="overflow-x-auto rounded-xl border border-white/10 bg-black/40 p-2 sm:p-4">
             <div className="min-w-[320px] sm:min-w-0">
               {/* Dias da Semana */}
-              <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 text-center text-xs font-black text-slate-400 uppercase tracking-wider">
+              <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 text-center text-[10px] min-[390px]:text-xs font-black text-slate-400 uppercase tracking-tight sm:tracking-wider">
                 {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((d) => (
                   <div key={d} className="py-1">
                     {d}

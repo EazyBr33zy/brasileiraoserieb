@@ -37,46 +37,53 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
         {/* GOTY — caixa destacada com borda amarelo neon */}
         <div
           onClick={() => gotAwards.goty && onGameClick(gotAwards.goty.id)}
-          className={`group relative mb-3 flex items-center gap-4 overflow-hidden rounded-2xl border-2 p-4 shadow-[0_0_24px_rgba(250,204,21,0.25)] transition-all ${
+          className={`group relative mb-3 flex items-center gap-4 overflow-hidden rounded-2xl border-2 p-4 shadow-[0_0_24px_rgba(250,204,21,0.25)] transition-all lg:justify-between lg:items-center ${
             gotAwards.goty
               ? 'cursor-pointer border-[#facc15] bg-gradient-to-br from-[#facc15]/15 via-[#0d1117] to-[#161b22] hover:shadow-[0_0_36px_rgba(250,204,21,0.4)]'
               : 'border-dashed border-[#facc15]/40 bg-[#0d1117] opacity-70'
           }`}
         >
-          <div className="pointer-events-none absolute -right-2 -top-4 select-none font-heading text-6xl font-black text-[#facc15]/10 sm:text-7xl">
+          <div className="pointer-events-none absolute -right-2 -top-4 select-none font-heading text-6xl font-black text-[#facc15]/10 sm:text-7xl lg:top-2 lg:right-6">
             GOTY
           </div>
-          <div className="h-28 w-[84px] flex-shrink-0 overflow-hidden rounded-xl border border-[#facc15]/50 bg-black shadow-lg sm:h-32 sm:w-[96px]">
-            {gotAwards.goty?.capa ? (
-              <img
-                src={gotAwards.goty.capa}
-                alt={gotAwards.goty.title}
-                referrerPolicy="no-referrer"
-                className="h-full w-full object-cover transition-transform group-hover:scale-105"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-2xl">🏆</div>
-            )}
-          </div>
-          <div className="min-w-0">
-            <div className="text-xs font-black uppercase tracking-widest text-[#facc15]">
-              🏆 Game of the Year — {ANO}
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="h-28 w-[84px] flex-shrink-0 overflow-hidden rounded-xl border border-[#facc15]/50 bg-black shadow-lg sm:h-32 sm:w-[96px]">
+              {gotAwards.goty?.capa ? (
+                <img
+                  src={gotAwards.goty.capa}
+                  alt={gotAwards.goty.title}
+                  referrerPolicy="no-referrer"
+                  className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-2xl">🏆</div>
+              )}
             </div>
-            <h3
-              className="mt-1 truncate font-heading text-xl font-black uppercase text-white drop-shadow-[0_0_10px_rgba(250,204,21,0.35)] sm:text-2xl"
-              title={gotAwards.goty?.title}
-            >
-              {gotAwards.goty?.title || 'Não definido'}
-            </h3>
-            {gotAwards.goty?.console && (
-              <div className="mt-1 truncate font-mono text-xs text-slate-400">{gotAwards.goty.console}</div>
-            )}
-            {gotAwards.goty?.nota !== undefined && (
-              <div className="mt-2 font-mono text-3xl font-bold tabular-nums text-[#facc15]">
-                ★ {gotAwards.goty.nota.toFixed(1)}
+            <div className="min-w-0">
+              <div className="text-xs font-black uppercase tracking-widest text-[#facc15]">
+                🏆 Game of the Year — {ANO}
               </div>
-            )}
+              <h3
+                className="mt-1 truncate font-heading text-xl font-black uppercase text-white drop-shadow-[0_0_10px_rgba(250,204,21,0.35)] sm:text-2xl"
+                title={gotAwards.goty?.title}
+              >
+                {gotAwards.goty?.title || 'Não definido'}
+              </h3>
+              {gotAwards.goty?.console && (
+                <div className="mt-1 truncate font-mono text-xs text-slate-400">{gotAwards.goty.console}</div>
+              )}
+              {gotAwards.goty?.nota !== undefined && (
+                <div className="mt-2 font-mono text-3xl font-bold tabular-nums text-[#facc15] lg:hidden">
+                  ★ {gotAwards.goty.nota.toFixed(1)}
+                </div>
+              )}
+            </div>
           </div>
+          {gotAwards.goty?.nota !== undefined && (
+            <div className="hidden lg:flex items-center font-mono font-bold tabular-nums text-[#facc15] lg:text-[48px] lg:shrink-0 lg:pr-6 z-10">
+              ★ {gotAwards.goty.nota.toFixed(1)}
+            </div>
+          )}
         </div>
 
         {/* Demais premiações — duas colunas */}

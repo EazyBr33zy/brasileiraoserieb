@@ -40,10 +40,10 @@ const StatCard: React.FC<{ label: string; value: string; accent?: string }> = ({
 export const SessionsSummary: React.FC<SessionsSummaryProps> = ({ sessions, hideSummary = false }) => {
   const [showAllMonths, setShowAllMonths] = useState(false);
 
-  // Solicitação do dono: remover o resumo/agrupamentos por mês (aba #/jogando) — só JSX de exibição
-  if (hideSummary) return null;
-
   const summary = useMemo(() => {
+    if (hideSummary) {
+      return { total: 0, totalMin: 0, avg: 0, biggest: null, groups: [] };
+    }
     const total = sessions.length;
     const totalMin = sessions.reduce((acc, s) => acc + (s.totalMinutos || 0), 0);
     const avg = total > 0 ? Math.round(totalMin / total) : 0;
@@ -69,9 +69,10 @@ export const SessionsSummary: React.FC<SessionsSummaryProps> = ({ sessions, hide
     }
 
     return { total, totalMin, avg, biggest, groups };
-  }, [sessions]);
+  }, [sessions, hideSummary]);
 
-  if (summary.total === 0) return null;
+  // Solicitação do dono: remover o resumo/agrupamentos por mês (aba #/jogando) — só JSX de exibição
+  if (hideSummary || summary.total === 0) return null;
 
   const visibleGroups = showAllMonths ? summary.groups : summary.groups.slice(0, 3);
 

@@ -161,7 +161,7 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
                         boxShadow: isPico ? '0 0 10px rgba(255,215,0,0.5)' : undefined,
                       }}
                     ></div>
-                    <span className="text-xs font-bold uppercase text-slate-400">{m.nome}</span>
+                    <span className="text-[10px] min-[390px]:text-xs font-bold uppercase tracking-tight text-slate-400">{m.nome}</span>
                   </div>
                 );
               })}
