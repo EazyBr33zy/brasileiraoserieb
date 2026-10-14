@@ -122,7 +122,7 @@ export const PlayDaysCalendar: React.FC<PlayDaysCalendarProps> = ({ games }) => 
       aria-labelledby="play-days-calendar-heading"
       className="w-full rounded-2xl border border-[#30363d] bg-[#161b22] p-4 sm:p-6 shadow-xl space-y-4 overflow-hidden"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-6 items-stretch">
+      <div className="gd-calendar-grid grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-6 items-stretch">
         {/* ── LEFT COLUMN: CALENDAR (FLEXIBLE) ── */}
         <div className="flex flex-col space-y-3.5 sm:space-y-4 min-w-0">
           {/* ── HEADER ── */}
@@ -241,13 +241,13 @@ export const PlayDaysCalendar: React.FC<PlayDaysCalendarProps> = ({ games }) => 
           </div>
 
           {/* ── CALENDAR 7-COLUMN GRID ── */}
-          <div className="grid grid-cols-7 gap-1 min-[360px]:gap-1.5 sm:gap-1.5">
+          <div className="gd-calendar-days grid grid-cols-7 gap-1 min-[360px]:gap-1.5 sm:gap-1.5">
             {/* Leading empty cells for proper week alignment */}
             {Array.from({ length: grid.paddingBefore }).map((_, idx) => (
               <div
                 key={`pad-before-${idx}`}
                 aria-hidden="true"
-                className="aspect-[3/4] rounded-md sm:rounded-xl border border-transparent bg-transparent"
+                className="gd-calendar-cell aspect-[3/4] rounded-md sm:rounded-xl border border-transparent bg-transparent"
               />
             ))}
 
@@ -266,7 +266,7 @@ export const PlayDaysCalendar: React.FC<PlayDaysCalendarProps> = ({ games }) => 
                     type="button"
                     onClick={() => setActiveDayDetail(sessionData)}
                     aria-label={ariaText}
-                    className={`group relative aspect-[3/4] w-full overflow-hidden rounded-md sm:rounded-xl border transition-all duration-200 cursor-pointer text-left focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none p-0 ${
+                    className={`gd-calendar-cell group relative aspect-[3/4] w-full overflow-hidden rounded-md sm:rounded-xl border transition-all duration-200 cursor-pointer text-left focus-visible:ring-2 focus-visible:ring-[#22d3ee] focus-visible:outline-none p-0 ${
                       isToday
                         ? 'border-[#22d3ee] ring-1.5 ring-[#22d3ee]/60 shadow-[0_0_10px_rgba(34,211,238,0.25)]'
                         : 'border-purple-500/50 hover:border-[#22d3ee]'
@@ -321,7 +321,7 @@ export const PlayDaysCalendar: React.FC<PlayDaysCalendarProps> = ({ games }) => 
               return (
                 <div
                   key={cell.dateKey}
-                  className={`relative aspect-[3/4] w-full rounded-md sm:rounded-xl p-0.5 min-[360px]:p-1 sm:p-1.5 flex flex-col justify-between transition-colors bg-[#0d1117] ${
+                  className={`gd-calendar-cell relative aspect-[3/4] w-full rounded-md sm:rounded-xl p-0.5 min-[360px]:p-1 sm:p-1.5 flex flex-col justify-between transition-colors bg-[#0d1117] ${
                     isToday
                       ? 'border border-[#22d3ee] shadow-[0_0_8px_rgba(34,211,238,0.2)]'
                       : 'border border-[#30363d]/40'
@@ -370,7 +370,7 @@ export const PlayDaysCalendar: React.FC<PlayDaysCalendarProps> = ({ games }) => 
         </div>
 
         {/* ── RIGHT COLUMN: RESUMO DO MÊS PANEL (DESKTOP ONLY ≥1024px) ── */}
-        <div className="hidden lg:flex flex-col justify-start rounded-xl border border-[#30363d]/70 bg-[#0d1117]/60 p-4 space-y-4 min-w-[320px] max-w-[320px]">
+        <div className="gd-calendar-summary hidden lg:flex flex-col justify-start rounded-xl border border-[#30363d]/70 bg-[#0d1117]/60 p-4 space-y-4 min-w-[320px] max-w-[320px]">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-[#30363d]/60 pb-2.5">
             <span className="text-xs font-black uppercase tracking-wider text-purple-300">

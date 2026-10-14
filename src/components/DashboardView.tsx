@@ -723,7 +723,7 @@ export const DashboardView: React.FC = () => {
             </div>
 
             {/* LISTA EM ANDAMENTO (COLUNA DIREITA) - ORDENADO POR SESSÃO RECENTE */}
-            <div className="lg:col-span-4 rounded-xl border border-[#22d3ee]/25 bg-[#0d1117]/70 p-3 sm:p-4 flex flex-col justify-between">
+            <div className="dashboard-others-panel lg:col-span-4 rounded-xl border border-[#22d3ee]/25 bg-[#0d1117]/70 p-3 sm:p-4 flex flex-col justify-between">
               <div className="flex items-center justify-between border-b border-[#22d3ee]/25 pb-2 mb-2.5">
                 <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
                   <span className="text-[#f97316]" aria-hidden="true">≡</span>
@@ -734,7 +734,7 @@ export const DashboardView: React.FC = () => {
                 </span>
               </div>
 
-              <div className="space-y-2 flex-1 flex flex-col justify-between">
+              <div className="dashboard-others-list space-y-2 flex-1 flex flex-col justify-between">
                 {otherActiveGames.map((g, gi) => {
                   const pStyle = getPlatformStyle(g.console);
                   const gPlayedMin = parseToMinutes(g.tempo);
@@ -918,7 +918,7 @@ export const DashboardView: React.FC = () => {
           </div>
 
           {/* ── DISTRIBUIÇÃO POR PLATAFORMA — BIBLIOTECA TOTAL (GRÁFICO DE PIZZA / DONUT SVG) ── */}
-          <div className="rounded-xl border border-[#30363d]/80 bg-[#0d1117]/70 p-4 sm:p-5 flex flex-col justify-between">
+          <div className="gd-platform-card rounded-xl border border-[#30363d]/80 bg-[#0d1117]/70 p-4 sm:p-5 flex flex-col justify-between overflow-hidden">
             <div>
               <div className="flex items-center justify-between gap-2 mb-3">
                 <div>
@@ -1071,7 +1071,7 @@ export const DashboardView: React.FC = () => {
                 </div>
 
                 {/* LEGENDA AO LADO (DESKTOP) OU ABAIXO (MOBILE) */}
-                <div className="w-full flex-1 space-y-1.5">
+                <div className="gd-platform-legend w-full min-w-0 flex-1 space-y-1.5">
                   {platformDonutData.slices.map((slice) => {
                     const isSelected = selectedPlatform === slice.name;
                     return (
