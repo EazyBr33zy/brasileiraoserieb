@@ -146,7 +146,7 @@
   /* J1 — Jogando agora: quadros de estatística do card em destaque
      Alinha todos os 4 ao topo (justify-content: flex-start), mesmo padding 12px 14px e mesma altura */
   .gd-stats-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.8fr) minmax(0, 1.2fr) minmax(0, 1.1fr) !important;
     gap: 12px !important;
     align-items: stretch !important;
   }
@@ -1367,11 +1367,10 @@
 @media (min-width: 1024px) {
   /* W1 — card GOTY: grade de 3 quadros com colunas fluidas e min-width:0
      (complementa lg:grid-cols-3 do JSX; impede invasão de "15/03/2026") */
-  .goty-card [class*="lg:grid-cols-3"] {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 8px;
+  .goty-stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  .goty-card [class*="lg:grid-cols-3"] > * {
+  .goty-stats-grid > * {
     min-width: 0;
     box-sizing: border-box;
     overflow: hidden;
@@ -1381,29 +1380,14 @@
      Vira 2 colunas com "Zerado em" ocupando a linha inteira — reordenado só
      visualmente (order/grid-column), HTML intacto. */
   @media (max-width: 1279.98px) {
-    .goty-card [class*="lg:grid-cols-3"] {
-      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    .goty-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .goty-card [class*="lg:grid-cols-3"] > *:nth-child(2) {
+    .goty-stats-grid > *:nth-child(2) {
       order: 3;
       grid-column: 1 / -1;
     }
-    .goty-card [class*="lg:grid-cols-3"] > *:nth-child(3) {
-      order: 2;
-    }
-  }
-
-  /* Fallback a ~1024–1279px: cada quadro fica < 150px e a data não cabe em 15px.
-     Vira 2 colunas com "Zerado em" na linha inteira — reordenado só visualmente (order), HTML intacto. */
-  @media (max-width: 1279.98px) {
-    .goty-card [class*="lg:grid-cols-3"] {
-      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-    .goty-card [class*="lg:grid-cols-3"] > *:nth-child(2) {
-      order: 3;
-      grid-column: 1 / -1;
-    }
-    .goty-card [class*="lg:grid-cols-3"] > *:nth-child(3) {
+    .goty-stats-grid > *:nth-child(3) {
       order: 2;
     }
   }
@@ -1448,15 +1432,24 @@
   }
 
   /* W2 — Prêmios do Ano: grade de prêmios ocupa exatamente a altura do card GOTY */
-  [class*="lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)"] > div[class*="lg:h-full"][class*="repeat\(5,1fr\)"] {
+  .awards-grid {
     height: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 1fr);
   }
 
   .wu-cal-grid {
     grid-auto-rows: auto;
+  }
+  /* W2 — dias sem jogo voltam a 64px (desfaz o min-h-[128px] de sm:/md:, que é
+     da tabela de breakpoint mobile/tablet, não do desktop ≥1024px) */
+  .wu-cal-day-empty {
+    min-height: 64px;
+  }
+  /* W2 — dia com jogo: altura automática pelo conteúdo, piso 120px */
+  .wu-cal-day-game {
+    height: auto;
   }
   .wu-cal-cover {
     width: clamp(44px, 4vw, 56px);

@@ -68,7 +68,7 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
 
       {/* Marca d'água GOTY inteira, atrás do título, canto superior direito */}
       <span
-        className="pointer-events-none absolute right-2 top-2 select-none font-heading text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-widest text-[#ffd700]/[0.05] overflow-hidden max-w-[40%]"
+        className="pointer-events-none absolute right-2 top-2 select-none font-heading text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-widest text-[#ffd700]/[0.05] overflow-hidden max-w-[40%] -z-0"
         aria-hidden="true"
       >
         GOTY
@@ -77,7 +77,7 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
       {/* Linha 1: capa + conteúdo */}
       <div className="relative z-10 flex flex-1 flex-col gap-4 md:flex-row md:items-stretch">
         {/* Capa grande (esquerda, ~200px de largura) */}
-        <div className="w-[110px] shrink-0 self-start md:w-[200px] lg:w-[clamp(170px,14vw,200px)] md:self-start flex flex-col">
+        <div className="w-[110px] shrink-0 self-start md:w-[200px] lg:w-[clamp(190px,17vw,220px)] md:self-start flex flex-col">
           <div className="aspect-[3/4] md:aspect-none lg:aspect-[264/374] md:h-full lg:h-auto md:w-full overflow-hidden rounded-xl border-2 border-[#ffd700]/70 shadow-[0_0_18px_rgba(255,215,0,0.25)] flex">
             <GameCover
               src={game.capa}
@@ -87,6 +87,18 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
               priority
               className="h-full w-full [&_img]:h-full [&_img]:w-full [&_img]:object-cover [&_img]:[object-position:center_top]"
             />
+          </div>
+
+          {/* Desktop: "Vencedor Supremo ★ nota" logo abaixo da capa (mover JSX permitido; mobile permanece como estava) */}
+          <div className="hidden lg:flex lg:flex-col lg:items-center lg:gap-1 lg:border-t lg:border-[#ffd700]/30 lg:pt-3">
+            <span className="text-xs font-black uppercase tracking-widest text-[#ffd700]">Vencedor Supremo</span>
+            <span
+              className="flex items-center gap-1.5 font-mono font-bold tabular-nums text-[#ffd700]"
+              style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', textShadow: '0 0 18px rgba(255,215,0,0.45)' }}
+            >
+              <Star className="h-6 w-6 shrink-0 fill-[#ffd700] stroke-[#ffd700]" aria-hidden="true" />
+              {game.nota !== undefined && Number.isFinite(game.nota) ? game.nota.toFixed(1) : '—'}
+            </span>
           </div>
         </div>
 
@@ -124,11 +136,11 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
 
           {/* Destaques (mini-estatísticas) — responsivo no mobile para evitar corte do 3º quadro */}
           {stats.length > 0 && (
-            <div className="grid grid-cols-2 min-[430px]:grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-[10px] lg:gap-[8px]">
+            <div className="goty-stats-grid grid grid-cols-2 min-[430px]:grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-[10px] lg:gap-[8px]">
               {stats.map((s) => (
-                <div key={s.label} className="min-w-0 rounded-lg border border-white/10 bg-black/40 py-2 sm:py-[10px] px-2.5 sm:px-[14px] lg:p-[8px_10px]">
+                <div key={s.label} className={`min-w-0 rounded-lg border border-white/10 bg-black/40 py-2 sm:py-[10px] px-2.5 sm:px-[14px] lg:p-[8px_10px]${s.label === 'Zerado em' ? ' goty-stat-date' : ''}`}>
                   <div className="text-[11px] sm:text-xs font-medium text-slate-400 truncate lg:text-[11px] lg:whitespace-nowrap lg:overflow-visible">{s.label}</div>
-                  <div className="mt-0.5 truncate font-mono text-sm min-[390px]:text-base font-bold tabular-nums text-white lg:text-[15px] lg:whitespace-nowrap lg:overflow-visible">
+                  <div className={`mt-0.5 truncate font-mono text-sm min-[390px]:text-base font-bold tabular-nums text-white lg:whitespace-nowrap lg:overflow-visible${s.label === 'Zerado em' ? ' lg:text-[14px]' : ' lg:text-[15px]'}`}>
                     {s.value}
                   </div>
                 </div>
@@ -136,8 +148,8 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
             </div>
           )}
 
-          {/* Rodapé */}
-          <div className="flex items-center justify-between gap-3 border-t border-[#ffd700]/30 pt-3">
+          {/* Rodapé (mobile/tablet; no desktop move para baixo da capa) */}
+          <div className="flex items-center justify-between gap-3 border-t border-[#ffd700]/30 pt-3 lg:hidden">
             <span className="text-xs font-black uppercase tracking-widest text-[#ffd700]">Vencedor Supremo</span>
             <span
               className="flex items-center gap-1.5 font-mono font-bold tabular-nums text-[#ffd700]"
@@ -147,6 +159,9 @@ export const GotWinnerCard: React.FC<GotWinnerCardProps> = ({ game, ano, onClick
               {game.nota !== undefined && Number.isFinite(game.nota) ? game.nota.toFixed(1) : '—'}
             </span>
           </div>
+
+          {/* Desktop: stats colados na base da coluna direita (exceção à regra 12 pedida na tarefa) */}
+          {stats.length > 0 && <div className="hidden lg:block lg:mt-auto" aria-hidden="true" />}
         </div>
       </div>
 

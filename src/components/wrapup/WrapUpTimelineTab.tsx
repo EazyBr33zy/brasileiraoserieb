@@ -160,7 +160,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                 {Array.from({ length: firstDay }, (_, i) => (
                   <div
                     key={`empty-${i}`}
-                    className="min-h-[56px] sm:min-h-[64px] lg:min-h-[64px] rounded-lg sm:rounded-xl border border-transparent bg-transparent"
+                    className="wu-cal-day-empty min-h-[56px] sm:min-h-[64px] lg:min-h-[64px] rounded-lg sm:rounded-xl border border-transparent bg-transparent"
                   ></div>
                 ))}
 
@@ -181,7 +181,7 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
                       onClick={() => {
                         if (firstGame) onGameClick(firstGame.id);
                       }}
-                      className={`relative min-h-[56px] sm:min-h-[128px] lg:min-h-[144px] rounded-lg sm:rounded-xl border p-1 sm:p-2 transition-all flex flex-col justify-between overflow-hidden cursor-pointer ${
+                      className={`relative min-h-[56px] sm:min-h-[128px] lg:min-h-[120px] rounded-lg sm:rounded-xl border p-1 sm:p-2 transition-all flex flex-col justify-between overflow-hidden cursor-pointer ${hasGames ? 'wu-cal-day-game' : 'wu-cal-day-empty'} ${
                         hasGames
                           ? 'border-[#22d3ee]/70 bg-gradient-to-b from-[#22d3ee]/20 via-[#0d1117] to-[#161b22] shadow-md shadow-[#22d3ee]/15 ring-1 ring-[#22d3ee]/30 hover:border-[#22d3ee]'
                           : isToday
