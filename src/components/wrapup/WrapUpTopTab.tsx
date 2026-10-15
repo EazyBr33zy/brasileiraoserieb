@@ -43,10 +43,10 @@ export const WrapUpTopTab: React.FC<WrapUpTopTabProps> = ({
               : 'border-dashed border-[#facc15]/40 bg-[#0d1117] opacity-70'
           }`}
         >
-          <div className="pointer-events-none absolute -right-2 -top-4 z-0 select-none font-heading text-6xl font-black text-[#facc15]/[0.05] sm:text-7xl lg:top-2 lg:right-16">
+          <div className="pointer-events-none absolute -right-2 -top-4 z-0 select-none font-heading text-6xl font-black text-[#facc15]/[0.05] sm:text-7xl lg:top-2 lg:right-2">
             GOTY
           </div>
-          <div className="flex items-center gap-4 min-w-0">
+          <div className="relative z-10 flex items-center gap-4 min-w-0">
             <div className="h-28 w-[84px] flex-shrink-0 overflow-hidden rounded-xl border border-[#facc15]/50 bg-black shadow-lg sm:h-32 sm:w-[96px]">
               {gotAwards.goty?.capa ? (
                 <img

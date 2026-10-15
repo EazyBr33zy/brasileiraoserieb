@@ -263,20 +263,20 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
           )}
 
           {/* Grade de prêmios especializados */}
-          <div className="grid grid-cols-1 content-start gap-2.5 sm:grid-cols-2 lg:content-stretch lg:h-full lg:[grid-template-rows:repeat(5,1fr)]">
+          <div className="awards-grid grid grid-cols-1 content-start gap-2.5 sm:grid-cols-2 lg:content-stretch lg:h-full lg:[grid-template-rows:repeat(4,1fr)]">
             {premiados.slice(0, 8).map((item, i) => (
               <div
                 key={i}
                 onClick={() => item.g && onGameClick(item.g.id)}
                 className="group flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-[#0d1117] p-2.5 transition-all hover:border-white/30 lg:h-full"
               >
-                <div className="h-14 w-11 flex-shrink-0 overflow-hidden rounded-md border border-white/10 bg-black">
+                <div className="h-14 w-11 flex-shrink-0 overflow-hidden rounded-md border border-white/10 bg-black lg:w-[56px] lg:h-auto lg:aspect-[264/374]">
                   {item.g?.capa ? (
                     <img
                       src={item.g.capa}
                       alt={item.g.title}
                       referrerPolicy="no-referrer"
-                      className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                      className="h-full w-full object-cover transition-transform group-hover:scale-105 lg:object-top"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-xs">🎮</div>
@@ -284,7 +284,7 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
                 </div>
                 <div className="min-w-0 flex-1">
                   <div
-                    className="truncate text-xs font-bold uppercase tracking-wider"
+                    className="truncate text-xs font-bold uppercase tracking-wider lg:text-[12px] lg:tracking-normal lg:whitespace-normal lg:overflow-visible"
                     style={{ color: item.cor }}
                   >
                     {item.cat}

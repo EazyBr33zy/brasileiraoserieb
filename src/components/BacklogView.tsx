@@ -653,7 +653,7 @@ export const BacklogView: React.FC = () => {
 
                                 {/* Tag ZERADO em vermelho (canto superior) */}
                                 {game.status === 'zerado' && (
-                                  <div className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 z-20 flex items-center gap-1 rounded bg-[#f43f5e]/25 text-[#fda4af] border border-[#f43f5e]/40 px-1.5 py-0.5 text-xs font-black uppercase tracking-wider shadow-sm backdrop-blur-sm">
+                                  <div className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 z-20 flex items-center gap-1 rounded bg-[rgba(10,14,20,.8)] text-[#fda4af] border-transparent px-1.5 py-0.5 text-xs font-black uppercase tracking-wider shadow-sm backdrop-blur-sm">
                                     <Check className="h-3 w-3 stroke-[3] text-[#fda4af]" aria-hidden="true" />
                                     <span>ZERADO</span>
                                   </div>
@@ -670,7 +670,7 @@ export const BacklogView: React.FC = () => {
                                 {/* Score badge */}
                                 {game.nota !== undefined && !isNaN(game.nota) && (
                                   <div 
-                                    className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 rounded bg-black/90 px-1.5 py-0.5 font-heading text-xs font-black shadow z-20"
+                                    className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 rounded bg-[rgba(10,14,20,.8)] px-1.5 py-0.5 font-heading text-xs font-black shadow z-20"
                                     style={{ color: scoreColor }}
                                   >
                                     ★ {game.nota.toFixed(1)}
