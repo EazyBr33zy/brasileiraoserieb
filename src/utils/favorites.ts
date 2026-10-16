@@ -133,3 +133,65 @@ export function filterGamesByTitle(games: GameItem[], query: string): GameItem[]
   if (!q) return games;
   return games.filter((g) => normalizeTitleKey(g.title).includes(q));
 }
+
+/** Busca por título OU console (case/acento-insensitive) para o editor de favoritos. */
+export function filterGamesByTitleOrConsole(games: GameItem[], query: string): GameItem[] {
+  const q = normalizeTitleKey(query || '');
+  if (!q) return games;
+  return games.filter(
+    (g) => normalizeTitleKey(g.title).includes(q) || normalizeTitleKey(g.console || '').includes(q)
+  );
+}
+
+/** Candidatos ao grid do editor de favoritos: zerados no ciclo atual ou com nota registrada. */
+export function getFavoriteCandidates(games: GameItem[], cycleYear: number): GameItem[] {
+  return games.filter((g) => {
+    const isBeatenCycle = g.status === 'zerado' && Number(g.ano_zerado) === cycleYear;
+    const hasNota = typeof g.nota === 'number' && !isNaN(g.nota);
+    return isBeatenCycle || hasNota;
+  });
+}
+
+/**
+ * Ops de gravação para o editor de favoritos (salva tudo de uma vez):
+ * - jogo novo → nota = FAVORITE_NOTA (11), guarda notaAnterior e favoritoEm;
+ * - jogo removido → restaura notaAnterior (ou remove a nota se não havia) e
+ *   apaga notaAnterior e favoritoEm (null/undefined → deleteField no Firestore);
+ * - a posição na lista define favoritoEm (crescente).
+ */
+export function buildFavoritesListUpdates(
+  games: GameItem[],
+  orderedIds: string[],
+  now: number = Date.now()
+): Array<{ id: string; updates: Partial<GameItem> }> {
+  const currentFavIds = new Set(getFavoriteGames(games).map((g) => g.id));
+  const nextSet = new Set(orderedIds.slice(0, MAX_FAVORITES));
+  const ops: Array<{ id: string; updates: Partial<GameItem> }> = [];
+
+  // Removidos: volta à nota anterior (ou perde a nota) e limpa os campos de favorito.
+  games.forEach((g) => {
+    if (currentFavIds.has(g.id) && !nextSet.has(g.id)) {
+      ops.push(buildUnfavoriteUpdates(g));
+    }
+  });
+
+  // Adicionados / reordenados: nota 11 + notaAnterior + favoritoEm crescente pela ordem.
+  orderedIds.slice(0, MAX_FAVORITES).forEach((id, i) => {
+    const g = games.find((x) => x.id === id);
+    if (!g) return;
+    if (!currentFavIds.has(id)) {
+      ops.push({
+        id,
+        updates: {
+          nota: FAVORITE_NOTA,
+          notaAnterior: g.nota ?? null,
+          favoritoEm: now + i,
+        },
+      });
+    } else if (typeof g.favoritoEm !== 'number' || g.favoritoEm !== now + i) {
+      ops.push({ id, updates: { favoritoEm: now + i } });
+    }
+  });
+
+  return ops;
+}
