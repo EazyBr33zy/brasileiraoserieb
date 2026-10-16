@@ -246,8 +246,11 @@
   .dashboard-stats-grid {
     gap: 12px !important;
     height: 100% !important;
+    justify-content: stretch !important; /* remove espaçamento extra entre os cartões */
   }
   .dashboard-stats-grid > div {
+    flex: 1 1 auto;               /* mesma altura entre si (coluna = altura do perfil) */
+    min-height: 0;
     padding: 14px 16px !important;
     display: flex !important;
     flex-direction: column !important;
@@ -1358,6 +1361,35 @@
   .dashboard-page [class*="space-y-"] > * + *,
   .dashboard-main-grid {
     margin-top: 12px !important;
+  }
+}
+
+/* ── D-ACCENT (≥1024px): coluna direita do hero do Painel — sem a linha colorida
+   no rodapé dos cartões; faixa de acento de 3px na borda esquerda, na cor de cada
+   cartão. Cartões com a mesma altura entre si. Abaixo de 1024px nada muda. */
+@media (min-width: 1024px) {
+  /* Remove a linha de acento do StatCard e o ::after herdado das regras móveis */
+  .dashboard-stats-grid > * > div:last-child[aria-hidden="true"] {
+    display: none !important;
+  }
+  .dashboard-stats-grid > *::after {
+    content: none !important;
+  }
+  /* Faixa de acento de 3px na borda esquerda (currentColor = cor do acento) */
+  .dashboard-stats-grid > * {
+    border-left: 3px solid currentColor !important;
+  }
+  /* Mesma altura entre si: flex com gap fixo (sem justify-between espalhando) */
+  .dashboard-stats-grid {
+    justify-content: flex-start !important;
+  }
+  .dashboard-stats-grid > * {
+    flex: 1 1 0 !important;
+    min-height: 0;
+  }
+  /* META ANUAL: barra de progresso logo abaixo do cabeçalho, sem linha extra */
+  .dashboard-stats-grid > *:first-child > div:nth-child(2) {
+    margin-top: 8px;
   }
 }
 

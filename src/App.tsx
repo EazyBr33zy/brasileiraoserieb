@@ -15,10 +15,18 @@ import { ToastContainer } from './components/ToastContainer';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AlertCircle, Gamepad2, LogIn, Lock } from 'lucide-react';
 
-import { DashboardView } from './components/DashboardView';
-import { BacklogView } from './components/BacklogView';
-import { GameDetailView } from './components/GameDetailView';
-import { WrapUpView } from './components/WrapUpView';
+const DashboardView = React.lazy(() =>
+  import('./components/DashboardView').then((m) => ({ default: m.DashboardView }))
+);
+const BacklogView = React.lazy(() =>
+  import('./components/BacklogView').then((m) => ({ default: m.BacklogView }))
+);
+const GameDetailView = React.lazy(() =>
+  import('./components/GameDetailView').then((m) => ({ default: m.GameDetailView }))
+);
+const WrapUpView = React.lazy(() =>
+  import('./components/WrapUpView').then((m) => ({ default: m.WrapUpView }))
+);
 
 const AppContent: React.FC = () => {
   const { serverSyncStatus } = useGame();

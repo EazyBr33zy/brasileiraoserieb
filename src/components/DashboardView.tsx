@@ -157,10 +157,8 @@ export const DashboardView: React.FC = () => {
   const currentGoal = annualGoal && annualGoal >= 1 && annualGoal <= 500 ? annualGoal : 24;
 
   // ── 1. ACTIVE GAMES: SORTED BY LATEST SESSION (WITH DATA_INICIO & TITLE FALLBACK) ──
-  const activeGamesList = useMemo(() => {
-    const playing = games.filter((g) => g.status === 'jogando');
-    return sortActiveGames(playing);
-  }, [games]);
+  const playingGames = useMemo(() => games.filter((g) => g.status === 'jogando'), [games]);
+  const activeGamesList = useMemo(() => sortActiveGames(playingGames), [playingGames]);
 
   const slideGames = useMemo(() => {
     return activeGamesList.length > 0 ? activeGamesList : games.slice(0, 10);
@@ -168,6 +166,11 @@ export const DashboardView: React.FC = () => {
 
   const safeSlideIndex = activeSlideIndex >= slideGames.length ? 0 : activeSlideIndex;
   const currentFeaturedGame: GameItem | undefined = slideGames[safeSlideIndex];
+
+  // Cartões da coluna direita do hero — em desktop (≥1024px) o 2º cartão vira "ZERADOS {ANO}".
+  // Abaixo de 1024px: se não houver zerados no ciclo, o cartão ZERADOS sai e entra EM ANDAMENTO,
+  // mantendo os mesmos 4 cartões de hoje.
+  const showZeradosCard = totalZerados2026 > 0;
 
   // Other active games for the right column ("Em Andamento") - Showing up to 4 games
   const otherActiveGames = useMemo(() => {
@@ -493,13 +496,24 @@ export const DashboardView: React.FC = () => {
             ) : undefined}
           />
 
-          {/* EM ANDAMENTO */}
+          {/* ZERADOS {ANO} — substitui "Em Andamento" (≥1024px; ou <1024px quando há zerados) */}
           <StatCard
+            className={showZeradosCard ? 'flex' : 'hidden lg:flex'}
+            label={`Zerados ${currentCycleYear}`}
+            description="jogos concluídos no ciclo"
+            icon={<Trophy className="h-5 w-5" aria-hidden="true" />}
+            accent="purple"
+            value={totalZerados2026}
+          />
+
+          {/* EM ANDAMENTO — permanece abaixo de 1024px quando não há zerados no ciclo */}
+          <StatCard
+            className={showZeradosCard ? 'hidden lg:hidden' : 'flex'}
             label="Em Andamento"
             description="jogando agora"
             icon={<Layers className="h-5 w-5" aria-hidden="true" />}
             accent="purple"
-            value={activeGamesList.length}
+            value={playingGames.length}
           />
 
           {/* ACERVO TOTAL */}

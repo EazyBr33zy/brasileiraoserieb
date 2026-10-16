@@ -2,26 +2,30 @@ import type { ReactNode } from 'react';
 
 export type StatAccent = 'cyan' | 'purple' | 'blue' | 'amber';
 
-const ACCENTS: Record<StatAccent, { border: string; iconBg: string; bar: string }> = {
+const ACCENTS: Record<StatAccent, { border: string; iconBg: string; bar: string; color: string }> = {
   cyan: {
     border: 'border-[#22d3ee]/15 hover:border-[#22d3ee]/40',
     iconBg: 'bg-[#22d3ee]/10 text-[#22d3ee]',
     bar: 'bg-[#22d3ee]',
+    color: '#22d3ee',
   },
   purple: {
     border: 'border-[#a855f7]/15 hover:border-[#a855f7]/40',
     iconBg: 'bg-[#a855f7]/10 text-[#a855f7]',
     bar: 'bg-[#a855f7]',
+    color: '#a855f7',
   },
   blue: {
     border: 'border-[#38bdf8]/15 hover:border-[#38bdf8]/40',
     iconBg: 'bg-[#38bdf8]/10 text-[#38bdf8]',
     bar: 'bg-[#38bdf8]',
+    color: '#38bdf8',
   },
   amber: {
     border: 'border-[#fbbf24]/15 hover:border-[#fbbf24]/40',
     iconBg: 'bg-[#fbbf24]/10 text-[#fbbf24]',
     bar: 'bg-[#fbbf24]',
+    color: '#fbbf24',
   },
 };
 
@@ -34,6 +38,7 @@ interface StatCardProps {
   progress?: number; // 0-100 — quando presente, renderiza a barra de progresso
   progressLabel?: string;
   action?: ReactNode; // ex.: lápis de editar meta (somente dono)
+  className?: string; // utilitários de exibição (ex.: alternância desktop ZERADOS/EM ANDAMENTO)
 }
 
 export function StatCard({
@@ -45,15 +50,17 @@ export function StatCard({
   progress,
   progressLabel,
   action,
+  className,
 }: StatCardProps) {
   const a = ACCENTS[accent];
 
   return (
     <div
-      className={`relative overflow-hidden flex h-full flex-col justify-center rounded-xl border bg-[#0d1117]/80 py-3 px-3 sm:px-[14px] pb-3 transition-colors ${a.border}`}
+      style={{ color: a.color }}
+      className={`relative overflow-hidden flex h-full flex-col justify-center rounded-xl border bg-[#0d1117]/80 py-3 px-3 sm:px-[14px] pb-3 transition-colors ${a.border}${className ? ` ${className}` : ''}`}
     >
       {/* Cabeçalho: ícone · texto · valor */}
-      <div className="grid w-full grid-cols-[36px_minmax(0,1fr)_auto] sm:grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2 sm:gap-2.5">
+      <div className="grid w-full shrink-0 grid-cols-[36px_minmax(0,1fr)_auto] sm:grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2 sm:gap-2.5">
         <span
           className={`flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg ${a.iconBg}`}
           aria-hidden="true"
@@ -78,7 +85,7 @@ export function StatCard({
 
       {/* Barra de progresso (apenas META ANUAL): logo abaixo do cabeçalho */}
       {typeof progress === 'number' && (
-        <div className="mt-2.5 flex items-center gap-2">
+        <div className="mt-2.5 flex shrink-0 items-center gap-2">
           <div className="h-2 flex-1 overflow-hidden rounded-full bg-[#21262d]">
             <div
               className="h-full rounded-full bg-gradient-to-r from-[#22d3ee] to-[#a855f7] transition-all duration-700"
