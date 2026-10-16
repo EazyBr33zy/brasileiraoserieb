@@ -284,7 +284,7 @@ export const WrapUpResumoTab: React.FC<WrapUpResumoTabProps> = ({
                 </div>
                 <div className="min-w-0 flex-1">
                   <div
-                    className="truncate text-xs font-bold uppercase tracking-wider lg:text-[12px] lg:tracking-normal lg:whitespace-normal lg:overflow-visible"
+                    className="truncate text-xs font-bold uppercase tracking-wider lg:text-[12px] lg:tracking-normal lg:whitespace-normal lg:overflow-visible lg:min-h-[2.5rem] lg:[display:-webkit-box] lg:[-webkit-box-orient:vertical] lg:[-webkit-line-clamp:2] lg:line-clamp-2"
                     style={{ color: item.cor }}
                   >
                     {item.cat}
