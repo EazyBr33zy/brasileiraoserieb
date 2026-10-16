@@ -1365,19 +1365,27 @@
 }
 
 /* ── D-ACCENT (≥1024px): coluna direita do hero do Painel — sem a linha colorida
-   no rodapé dos cartões; faixa de acento de 3px na borda esquerda, na cor de cada
-   cartão. Cartões com a mesma altura entre si. Abaixo de 1024px nada muda. */
+   no rodapé dos cartões; faixa de acento na borda DIREITA (5px, toda a altura,
+   acompanhando o raio do lado direito), na cor de cada cartão. Cartões com a mesma
+   altura entre si. Abaixo de 1024px nada muda. */
 @media (min-width: 1024px) {
-  /* Remove a linha de acento do StatCard e o ::after herdado das regras móveis */
-  .dashboard-stats-grid > * > div:last-child[aria-hidden="true"] {
-    display: none !important;
+  /* Linha de acento horizontal do StatCard vira faixa vertical na borda direita.
+     A cor vem do próprio elemento (mesmo bg do gradiente/cor do cartão). */
+  .dashboard-stats-grid > * .wu-stat-accent {
+    position: absolute !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+    right: 0 !important;
+    width: 5px !important;
+    height: auto !important;
+    opacity: 1 !important;
+    border-top-right-radius: inherit;
+    border-bottom-right-radius: inherit;
   }
-  .dashboard-stats-grid > *::after {
-    content: none !important;
-  }
-  /* Faixa de acento de 3px na borda esquerda (currentColor = cor do acento) */
-  .dashboard-stats-grid > * {
-    border-left: 3px solid currentColor !important;
+  /* Padding interno deslocado à direita: conteúdo nunca fica atrás da faixa de 5px */
+  .dashboard-stats-grid > * > div {
+    padding-right: 5px;
   }
   /* Mesma altura entre si: flex com gap fixo (sem justify-between espalhando) */
   .dashboard-stats-grid {

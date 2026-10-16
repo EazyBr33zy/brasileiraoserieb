@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useGame } from '../context/GameContext';
 import { useHashRoute } from '../hooks/useHashRoute';
 import { 
@@ -26,6 +26,7 @@ import {
   sortActiveGames 
 } from '../utils/markdownParser';
 import { getPlatformStyle } from '../utils/platformStyles';
+import { getCurrentCycleYear } from '../utils/cycleYear';
 import { useIsOwner } from '../hooks/useIsOwner';
 import { PROFILE_NAME } from '../config/profile';
 import { ProfileAvatar } from './ProfileAvatar';
@@ -153,7 +154,8 @@ export const DashboardView: React.FC = () => {
   const [activeChartMonth, setActiveChartMonth] = useState<number | null>(null);
   const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
 
-  const currentCycleYear = 2026;
+  // Ano do ciclo dinâmico (mesma helper usada no contexto). Mantém 2026 em 2026.
+  const currentCycleYear = getCurrentCycleYear();
   const currentGoal = annualGoal && annualGoal >= 1 && annualGoal <= 500 ? annualGoal : 24;
 
   // ── 1. ACTIVE GAMES: SORTED BY LATEST SESSION (WITH DATA_INICIO & TITLE FALLBACK) ──
@@ -173,13 +175,47 @@ export const DashboardView: React.FC = () => {
   const showZeradosCard = totalZerados2026 > 0;
 
   // Other active games for the right column ("Em Andamento") - Showing up to 4 games
+  // Altura do card principal (esquerda) em desktop: lista "OUTROS" na direita estica até ela.
+  const featuredCardRef = useRef<HTMLDivElement | null>(null);
+  const [othersMaxHeight, setOthersMaxHeight] = useState<number | undefined>(undefined);
+
   const otherActiveGames = useMemo(() => {
     if (!currentFeaturedGame) return [];
     const list = slideGames.filter((g) => g.id !== currentFeaturedGame.id);
-    if (list.length >= 4) return list.slice(0, 4);
+    if (list.length >= 4) return list;
     const fallbackList = games.filter((g) => g.id !== currentFeaturedGame.id && !list.some(item => item.id === g.id));
-    return [...list, ...fallbackList].slice(0, 4);
+
+    return [...list, ...fallbackList];
   }, [slideGames, currentFeaturedGame, games]);
+
+  // Desktop (≥1024px): a lista "OUTROS EM ANDAMENTO" cresce até a altura do card
+  // principal (esquerda) e exibe o máximo de jogos INTEIROS possível sem scroll.
+  useEffect(() => {
+    const el = featuredCardRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const update = () => {
+      setOthersMaxHeight(window.innerWidth >= 1024 ? el.offsetHeight : undefined);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener('resize', update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, [currentFeaturedGame]);
+
+  // Nº de jogos exibidos na lista: padrão atual = 4 (Painel e telas <1024px). Em desktop
+  // (≥1024px) sobe para até 5 quando o card principal tem espaço para os itens completos.
+  const othersVisibleCount = useMemo(() => {
+    const base = Math.min(4, otherActiveGames.length);
+    if (othersMaxHeight === undefined || window.innerWidth < 1024) return base;
+    const ITEM_H = 92; // ≈ altura real do item com barra HLTB
+    const GAP = 8;
+    const fits = Math.max(1, Math.floor((othersMaxHeight - GAP + 8) / (ITEM_H + GAP)));
+    return Math.min(Math.max(4, fits), otherActiveGames.length);
+  }, [othersMaxHeight, otherActiveGames.length]);
 
   const handlePrevSlide = () => {
     setActiveSlideIndex((prev) => (prev === 0 ? slideGames.length - 1 : prev - 1));
@@ -598,9 +634,9 @@ export const DashboardView: React.FC = () => {
             </div>
           </div>
 
-          <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-5 items-stretch">
+          <div className="dashboard-playing-grid relative grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-5 items-stretch">
             {/* CARD PRINCIPAL DO JOGO (FEATURED) */}
-            <div className="lg:col-span-8 rounded-2xl border border-[#a855f7]/30 bg-gradient-to-b from-[#0d1117]/90 to-[#0d1117]/60 p-3 sm:p-5 flex flex-col justify-between h-full shadow-inner backdrop-blur-sm">
+            <div ref={featuredCardRef} className="dashboard-featured-card lg:col-span-8 rounded-2xl border border-[#a855f7]/30 bg-gradient-to-b from-[#0d1117]/90 to-[#0d1117]/60 p-3 sm:p-5 flex flex-col justify-between h-full shadow-inner backdrop-blur-sm">
               <div className="flex flex-col md:flex-row gap-4 sm:gap-6 items-center">
                 {/* Capa */}
                 <div className="w-full md:w-60 shrink-0 max-w-[260px] mx-auto">
@@ -616,7 +652,7 @@ export const DashboardView: React.FC = () => {
                 </div>
 
                 {/* Detalhes */}
-                <div className="flex-1 w-full flex flex-col justify-between space-y-3">
+                <div className="dashboard-featured-info flex-1 w-full flex flex-col justify-between space-y-3">
                   <div>
                     <div className="flex items-center gap-2 flex-wrap mb-2">
                       <span className="rounded-md bg-[#0c2238] border border-[#0284c7]/70 px-2.5 py-1 text-xs font-bold font-mono text-[#38bdf8]">
@@ -738,7 +774,7 @@ export const DashboardView: React.FC = () => {
 
             {/* LISTA EM ANDAMENTO (COLUNA DIREITA) - ORDENADO POR SESSÃO RECENTE */}
             <div className="dashboard-others-panel lg:col-span-4 relative rounded-xl border border-[#22d3ee]/25 bg-[#0d1117]/70 overflow-hidden min-h-[300px] lg:min-h-0">
-              <div className="p-3 sm:p-4 lg:absolute lg:inset-0 flex flex-col justify-between">
+              <div className="p-3 sm:p-4 lg:p-5 flex flex-col justify-between h-full">
                 <div className="flex items-center justify-between border-b border-[#22d3ee]/25 pb-2 mb-2.5 shrink-0">
                   <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
                     <span className="text-[#f97316]" aria-hidden="true">≡</span>
@@ -749,8 +785,8 @@ export const DashboardView: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="dashboard-others-list space-y-2 flex-1 min-h-0 overflow-y-auto pr-1 flex flex-col justify-between">
-                  {otherActiveGames.map((g, gi) => {
+                <div className="dashboard-others-list space-y-2 flex-1 min-h-0 overflow-y-auto pr-1 flex flex-col justify-between" style={othersMaxHeight ? { maxHeight: othersMaxHeight } : undefined}>
+                  {otherActiveGames.slice(0, othersVisibleCount).map((g, gi) => {
                     const pStyle = getPlatformStyle(g.console);
                     const gPlayedMin = parseToMinutes(g.tempo);
                     const gHltbMin = parseToMinutes(g.hltb);

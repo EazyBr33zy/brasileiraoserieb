@@ -922,7 +922,8 @@ export const GameDetailView: React.FC = () => {
         // o GameSidebar usa absolute inset-0 internamente, então NUNCA estica a linha.
         // Mobile (<lg): coluna única com altura máx. própria e rolagem interna no GameSidebar.
         <aside className={`relative min-h-0 w-full lg:h-full${isPlayingTab ? '' : ' hidden lg:block'}`}>
-          <GameSidebar game={game} playingGames={playingGames} navigate={navigate} />
+          {/* Desktop (≥1024px): na aba #/jogando a lista exibe 5 jogos; demais rotas sem limite. */}
+          <GameSidebar game={game} playingGames={playingGames} navigate={navigate} maxVisible={isPlayingTab ? 5 : undefined} />
         </aside>
       )}
       </div>
