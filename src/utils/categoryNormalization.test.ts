@@ -48,10 +48,10 @@ describe('groupByCategory', () => {
       ['PlayStation 4', { count: 4, hours: 20 }],
       ['playstation  4', { count: 1, hours: 6 }],
     ]);
-    expect(out).toEqual([
-      ['PlayStation 4', { count: 5, hours: 26 }],
-      ['NES', { count: 5, hours: 15 }],
-    ]);
+    const map = new Map(out);
+    expect(map.get('NES')).toEqual({ count: 5, hours: 15 });
+    expect(map.get('PlayStation 4')).toEqual({ count: 5, hours: 26 });
+    expect(out.map(([n]) => n)).toEqual(['NES', 'PlayStation 4']);
   });
 
   it('ordena por quantidade desc e depois por nome', () => {
