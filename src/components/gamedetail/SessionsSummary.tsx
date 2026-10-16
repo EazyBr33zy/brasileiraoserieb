@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { GameplayDaySession } from '../../types/game';
 import { fmtMinutes } from '../../utils/markdownParser';
+import { sortSessionsForDisplay } from '../../utils/gameCalculations';
 
 interface SessionsSummaryProps {
   sessions: GameplayDaySession[];
@@ -38,24 +39,26 @@ const StatCard: React.FC<{ label: string; value: string; accent?: string }> = ({
  * (sem campos novos no banco e sem alterar nenhuma lógica de salvamento).
  */
 export const SessionsSummary: React.FC<SessionsSummaryProps> = ({ sessions, hideSummary = false }) => {
-  const [showAllMonths, setShowAllMonths] = useState(false);
+  // SOMENTE EXIBIÇÃO: ordena por data real (mais recente primeiro) antes de agrupar por mês.
+  // Os dados salvos e os cálculos de tempo permanecem inalterados.
+  const orderedSessions = useMemo(() => sortSessionsForDisplay(sessions), [sessions]);
 
   const summary = useMemo(() => {
     if (hideSummary) {
       return { total: 0, totalMin: 0, avg: 0, biggest: null, groups: [] };
     }
-    const total = sessions.length;
-    const totalMin = sessions.reduce((acc, s) => acc + (s.totalMinutos || 0), 0);
+    const total = orderedSessions.length;
+    const totalMin = orderedSessions.reduce((acc, s) => acc + (s.totalMinutos || 0), 0);
     const avg = total > 0 ? Math.round(totalMin / total) : 0;
-    const biggest = sessions.reduce<GameplayDaySession | null>(
+    const biggest = orderedSessions.reduce<GameplayDaySession | null>(
       (max, s) => (!max || (s.totalMinutos || 0) > (max.totalMinutos || 0) ? s : max),
       null
     );
 
-    // Agrupa por mês (ordem original: mais recentes primeiro, conforme game.sessoes)
+    // Agrupa por mês (ordem: mais recentes primeiro, conforme sessões já ordenadas acima)
     const groups: { key: string; label: string; minutes: number; days: Set<string> }[] = [];
     const byKey = new Map<string, (typeof groups)[number]>();
-    for (const s of sessions) {
+    for (const s of orderedSessions) {
       const m = monthKeyOf(s.data);
       if (!m) continue;
       let g = byKey.get(m.key);
@@ -69,12 +72,10 @@ export const SessionsSummary: React.FC<SessionsSummaryProps> = ({ sessions, hide
     }
 
     return { total, totalMin, avg, biggest, groups };
-  }, [sessions, hideSummary]);
+  }, [orderedSessions, hideSummary]);
 
   // Solicitação do dono: remover o resumo/agrupamentos por mês (aba #/jogando) — só JSX de exibição
   if (hideSummary || summary.total === 0) return null;
-
-  const visibleGroups = showAllMonths ? summary.groups : summary.groups.slice(0, 3);
 
   return (
     <div className="rounded-xl border border-[#30363d]/70 bg-[#0d1117] p-3.5 space-y-3">
@@ -94,15 +95,15 @@ export const SessionsSummary: React.FC<SessionsSummaryProps> = ({ sessions, hide
         />
         <StatCard
           label="Dias jogados"
-          value={String(new Set(sessions.map((s) => s.data)).size)}
+          value={String(new Set(orderedSessions.map((s) => s.data)).size)}
           accent="text-emerald-400"
         />
       </div>
 
-      {/* Cabeçalhos de mês com total do mês (agrupamento apenas visual) */}
-      {visibleGroups.length > 0 && (
+      {/* Cabeçalhos de mês com total do mês (agrupamento apenas visual, ordenado da mais recente para a mais antiga) */}
+      {summary.groups.length > 0 && (
         <ul className="space-y-1">
-          {visibleGroups.map((g) => (
+          {summary.groups.map((g) => (
             <li
               key={g.key}
               className="flex items-center justify-between gap-3 rounded-lg border border-[#30363d]/50 bg-[#161b22] px-3 py-2 text-xs"
@@ -115,16 +116,6 @@ export const SessionsSummary: React.FC<SessionsSummaryProps> = ({ sessions, hide
             </li>
           ))}
         </ul>
-      )}
-
-      {summary.groups.length > 3 && (
-        <button
-          type="button"
-          onClick={() => setShowAllMonths((v) => !v)}
-          className="min-h-[44px] w-full rounded-lg border border-[#30363d] bg-[#161b22] px-3 text-xs font-bold uppercase text-[#9aa4b2] hover:text-white hover:bg-white/5 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22d3ee]"
-        >
-          {showAllMonths ? 'Mostrar menos meses' : `Ver todos os ${summary.groups.length} meses`}
-        </button>
       )}
     </div>
   );

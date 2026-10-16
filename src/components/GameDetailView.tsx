@@ -46,6 +46,7 @@ import {
   formatDateBRToISO,
   formatISOToDateBR,
   sortSessionsDescending,
+  sortSessionsForDisplay,
 } from '../utils/gameCalculations';
 import { getAutoBeatenDate } from '../utils/recentBeatenGames';
 

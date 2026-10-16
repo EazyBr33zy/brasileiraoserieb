@@ -44,11 +44,11 @@ const StatBox: React.FC<{
   sub?: string;
   valueClass?: string;
 }> = ({ label, value, sub, valueClass = 'text-white' }) => (
-  <div className="flex h-full min-w-0 w-full flex-col justify-start rounded-lg border border-[#30363d] bg-black/25 px-2.5 py-2 sm:px-3 sm:py-2.5 lg:px-[14px] lg:py-3">
-    <div className="text-[11px] lg:text-[10.5px] font-bold uppercase leading-4 tracking-tight sm:tracking-[0.04em] text-[#9aa4b2] whitespace-nowrap">{label}</div>
-    <div className={`mt-0.5 whitespace-nowrap font-mono font-bold leading-tight ${valueClass}`}>{value}</div>
+  <div className="gd-stat-box flex h-full min-w-0 w-full flex-col justify-start overflow-hidden rounded-lg border border-[#30363d] bg-black/25 px-2.5 py-2 sm:px-3 sm:py-2.5 lg:px-[14px] lg:py-3">
+    <div className="gd-stat-label text-[11px] lg:text-[10.5px] font-bold uppercase leading-4 tracking-tight sm:tracking-[0.04em] text-[#9aa4b2] whitespace-nowrap">{label}</div>
+    <div className={`gd-stat-value mt-0.5 whitespace-nowrap font-mono font-bold leading-tight ${valueClass}`}>{value}</div>
     {sub ? (
-      <div className="mt-0.5 whitespace-nowrap text-[11px] sm:text-xs lg:text-[13px] text-[#9aa4b2]" title={sub}>{sub}</div>
+      <div className="gd-stat-sub mt-0.5 whitespace-nowrap text-[11px] sm:text-xs lg:text-[13px] text-[#9aa4b2]" title={sub}>{sub}</div>
     ) : null}
   </div>
 );
@@ -102,7 +102,7 @@ export const GameHero: React.FC<GameHeroProps> = ({
 
       <div className={`relative z-10 grid gap-6 gd-hero-grid ${compactCover ? 'gd-hero-compact' : ''}`}>
         {/* Capa: proporção fixa 264/374 (IGDB — PROBLEMA/G3); largura/height definidos só no CSS desktop */}
-        <div className="mx-auto w-40 shrink-0 sm:w-52 md:mx-0 md:w-[260px]" style={{ aspectRatio: '264 / 374' }}>
+        <div className="gd-hero-coverbox mx-auto w-40 shrink-0 sm:w-52 md:mx-0 md:w-[260px]" style={{ aspectRatio: '264 / 374' }}>
           {/* Capa na caixa 264/374 com object-cover + recorte topo (desktop: sem esticar a altura do card) */}
           <GameCover
             src={game.capa}
@@ -169,7 +169,7 @@ export const GameHero: React.FC<GameHeroProps> = ({
           {/* Grade de 4 caixas iguais */}
           <div className="gd-stats-grid grid grid-cols-2 [grid-template-columns:repeat(2,minmax(0,1fr))] gap-2.5 w-full min-w-0 lg:gap-3 lg:grid-cols-4 lg:[grid-template-columns:repeat(4,minmax(0,1fr))]">
             <StatBox
-              label="Tempo registrado"
+              label="Tempo jogado"
               value={tempoRegistrado ? formatTempoDisplay(tempoRegistrado) : '0h00'}
               valueClass="text-[#22d3ee]"
             />
@@ -193,8 +193,10 @@ export const GameHero: React.FC<GameHeroProps> = ({
           {/* Progresso HLTB (bloco original, inalterado) */}
           {hltbBlock}
 
-          {/* Painel do dono (original, movido via slot) */}
-          {controls}
+          {/* Painel do dono: no desktop ≥1024px vira linha de largura total abaixo das duas
+              colunas (regra CSS .gd-hero-grid > *:last-child — grid-column 1/-1).
+              Abaixo de 1024px permanece exatamente como hoje (dentro da coluna de dados). */}
+          <div className="gd-owner-slot">{controls}</div>
         </div>
       </div>
     </section>
