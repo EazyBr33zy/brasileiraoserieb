@@ -1035,6 +1035,7 @@ export const GamesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     availableYears,
     addGame,
     updateGame,
+    updateGameBatch,
     deleteGame,
     clearAllGames,
     importDualObsidianFiles,

@@ -33,8 +33,9 @@ export const FavoriteEditorModal: React.FC<FavoriteEditorModalProps> = ({
   onClose,
   currentCycleYear,
 }) => {
-  const { games, setGames } = useGame() as ReturnType<typeof useGame> & {
+  const { games, setGames, updateGameBatch } = useGame() as ReturnType<typeof useGame> & {
     setGames: React.Dispatch<React.SetStateAction<GameItem[]>>;
+    updateGameBatch: (ops: ReturnType<typeof buildFavoritesListUpdates>) => Promise<void>;
   };
 
   const [orderedIds, setOrderedIds] = useState<string[]>([]);
