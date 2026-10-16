@@ -46,8 +46,15 @@ export interface MigrationPreview {
   };
 }
 
+/** Opção de atualização em lote (editor de favoritos): null → deleteField no Firestore. */
+export interface BatchUpdateOp {
+  id: string;
+  updates: Partial<GameItem>;
+}
+
 export interface GamesContextType {
   games: GameItem[];
+  setGames: React.Dispatch<React.SetStateAction<GameItem[]>>;
   uniqueZerados: GameItem[];
   uniqueZeradosTitleSet: Set<string>;
   totalZerados2026: number;
@@ -59,6 +66,7 @@ export interface GamesContextType {
   // Mutations
   addGame: (game: Partial<GameItem>, forceCreate?: boolean) => GameItem;
   updateGame: (id: string, updates: Partial<GameItem>) => void;
+  updateGameBatch: (ops: BatchUpdateOp[]) => Promise<void>;
   deleteGame: (id: string) => void;
   clearAllGames: () => Promise<void>;
   importDualObsidianFiles: (backlogContent: string, coversContent?: string, backlogName?: string) => Promise<{ success: boolean; count: number; matchedCovers: number; message: string }>;
@@ -548,6 +556,50 @@ export const GamesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }, [games, isOwner]);
 
+  /**
+   * Grava TODAS as ops de uma vez em um único writeBatch (editor de favoritos).
+   * Atualização otimista: aplica no estado imediatamente; em erro, faz rollback
+   * do snapshot anterior e mostra toast específico. null → deleteField().
+   */
+  const updateGameBatch = useCallback(async (ops: BatchUpdateOp[]) => {
+    if (ops.length === 0) return;
+    const byId = new Map(ops.map((op) => [op.id, op]));
+    const previousGames = games;
+
+    setGames((prev) =>
+      prev.map((g) => {
+        const op = byId.get(g.id);
+        if (!op) return g;
+        const res: GameItem = { ...g, ...cleanForFirestore(op.updates) };
+        // null em nota → remove o campo (jogo volta a "não avaliado")
+        if ('nota' in op.updates && op.updates.nota === null) delete res.nota;
+        if ('notaAnterior' in op.updates && (op.updates.notaAnterior === null || op.updates.notaAnterior === undefined)) delete res.notaAnterior;
+        if ('favoritoEm' in op.updates && (op.updates.favoritoEm === null || op.updates.favoritoEm === undefined)) delete res.favoritoEm;
+        return res;
+      })
+    );
+
+    if (!isOwner) return;
+
+    try {
+      const batch = writeBatch(db);
+      ops.forEach((op) => {
+        const fieldsToUpdate: Record<string, any> = cleanForFirestore({ ...op.updates });
+        Object.keys(fieldsToUpdate).forEach((k) => {
+          if (fieldsToUpdate[k] === null) fieldsToUpdate[k] = deleteField();
+        });
+        if ('nota' in op.updates && op.updates.nota === null) fieldsToUpdate.nota = deleteField();
+        if ('notaAnterior' in op.updates && (op.updates.notaAnterior === null || op.updates.notaAnterior === undefined)) fieldsToUpdate.notaAnterior = deleteField();
+        if ('favoritoEm' in op.updates && (op.updates.favoritoEm === null || op.updates.favoritoEm === undefined)) fieldsToUpdate.favoritoEm = deleteField();
+        batch.update(doc(db, 'games', op.id), fieldsToUpdate);
+      });
+      await batch.commit();
+    } catch (err: any) {
+      setGames(previousGames);
+      handleFirestoreError(err, OperationType.UPDATE, 'favoritos');
+    }
+  }, [games, isOwner]);
+
   const deleteGame = useCallback((id: string) => {
     const deletedGame = games.find((g) => g.id === id);
     if (!deletedGame) return;
@@ -973,6 +1025,7 @@ export const GamesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const value = {
     games,
+    setGames,
     uniqueZerados,
     uniqueZeradosTitleSet,
     totalZerados2026,

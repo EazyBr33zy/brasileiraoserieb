@@ -249,3 +249,62 @@ export function parseDateBRToTimestamp(dateBR: string): number {
 export function sortSessionsDescending(sessions: GameplayDaySession[]): GameplayDaySession[] {
   return [...sessions].sort((a, b) => parseDateBRToTimestamp(b.data) - parseDateBRToTimestamp(a.data));
 }
+
+/**
+ * SOMENTE EXIBIÇÃO: ordena sessões por data real (mais recente primeiro), interpretando as
+ * partes das datas (DD/MM/AAAA, DD/MM e YYYY-MM-DD) como NÚMEROS — nunca como texto.
+ * Empate na mesma data → ordena pelo horário de término mais recente (cruza madrugada tratada).
+ * Não altera dados salvos nem os cálculos de tempo (usa apenas cópia).
+ */
+export function sortSessionsForDisplay(sessions: GameplayDaySession[]): GameplayDaySession[] {
+  const tsOf = (data: string): number => {
+    if (!data) return 0;
+    const clean = String(data).trim().split('T')[0];
+    let y: number, m: number, d: number;
+    if (clean.includes('-')) {
+      const p = clean.split('-');
+      if (p[0]?.length === 4 && p.length >= 3) {
+        y = parseInt(p[0], 10); m = parseInt(p[1], 10); d = parseInt(p[2], 10);
+      } else if (p.length >= 3) {
+        d = parseInt(p[0], 10); m = parseInt(p[1], 10); y = parseInt(p[2], 10);
+      } else return 0;
+    } else if (clean.includes('/')) {
+      const p = clean.split('/');
+      if (p[0]?.length === 4 && p.length >= 3) {
+        y = parseInt(p[0], 10); m = parseInt(p[1], 10); d = parseInt(p[2], 10);
+      } else if (p.length >= 3) {
+        d = parseInt(p[0], 10); m = parseInt(p[1], 10); y = parseInt(p[2], 10);
+      } else if (p.length === 2) {
+        // DD/MM sem ano → ano corrente (mesma regra de parseDateBRToTimestamp)
+        d = parseInt(p[0], 10); m = parseInt(p[1], 10); y = new Date().getFullYear();
+      } else return 0;
+    } else {
+      return new Date(clean).getTime() || 0;
+    }
+    if ([y, m, d].some(isNaN)) return 0;
+    return new Date(y, m - 1, d).getTime();
+  };
+
+  const lastEndMinutes = (s: GameplayDaySession): number => {
+    let best = -1;
+    for (const i of s.intervalos || []) {
+      const fim = typeof i?.fim === 'string' ? i.fim : '';
+      const [h, min] = fim.split(':').map(Number);
+      if (isNaN(h) || isNaN(min)) continue;
+      const start = (() => {
+        const [sh, sm] = String(i.inicio || '').split(':').map(Number);
+        return !isNaN(sh) && !isNaN(sm) ? sh * 60 + sm : NaN;
+      })();
+      const val = h * 60 + min;
+      // Término antes do início → cruza a madrugada (+24h), mesma regra de calculateIntervalDuration
+      best = Math.max(best, !isNaN(start) && val < start ? val + 24 * 60 : val);
+    }
+    return best;
+  };
+
+  return [...sessions].sort((a, b) => {
+    const diff = tsOf(b.data) - tsOf(a.data);
+    if (diff !== 0) return diff;
+    return lastEndMinutes(b) - lastEndMinutes(a);
+  });
+}
