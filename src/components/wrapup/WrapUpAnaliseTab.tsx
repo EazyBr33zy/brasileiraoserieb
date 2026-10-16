@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { fmtH } from '../../utils/markdownParser';
 import { getScoreLabel } from '../../utils/platformStyles';
 import { GameItem } from '../../types/game';
@@ -102,7 +102,6 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
     return Math.max(1, meses.slice(0, Math.max(peakIdx, 1)).filter((m) => m.qtd > 0).length);
   }, [meses, mesPico]);
 
-  const [showAllNotas, setShowAllNotas] = useState(false);
   const ritmoMedio = (total / (meses.filter((m) => m.qtd > 0).length || 1)).toFixed(1);
 
   return (
@@ -202,7 +201,6 @@ export const WrapUpAnaliseTab: React.FC<WrapUpAnaliseTabProps> = ({
             </div>
           </div>
         </div>
-      </div>
       </div>
 
       {/* Seção 2: Atividade mensal */}
