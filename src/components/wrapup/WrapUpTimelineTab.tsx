@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
+  Clock,
   Trophy,
 } from 'lucide-react';
-import { fmtH, parseDateParts, formatDateBR } from '../../utils/markdownParser';
+import { fmtH, parseDateParts, formatDateBR, parseTime } from '../../utils/markdownParser';
 import { getPlatformStyle } from '../../utils/platformStyles';
 import { GameItem } from '../../types/game';
+import { Modal } from '../Modal';
+
+interface ActiveMonthDataShape {
+  monthGames: GameItem[];
+  totalGames: number;
+  totalHours: number;
+  mediaNotas: string;
+  avgHoursPerGame: number;
+  destaque: GameItem | null;
+  consolesList: Array<[string, number]>;
+  generosList: Array<[string, number]>;
+}
 
 interface WrapUpTimelineTabProps {
   ANO: number;
@@ -24,16 +37,7 @@ interface WrapUpTimelineTabProps {
     games: GameItem[];
   }>;
   maxMes: number;
-  activeMonthData: {
-    monthGames: GameItem[];
-    totalGames: number;
-    totalHours: number;
-    mediaNotas: string;
-    avgHoursPerGame: number;
-    destaque: GameItem | null;
-    consolesList: Array<[string, number]>;
-    generosList: Array<[string, number]>;
-  };
+  activeMonthData: ActiveMonthDataShape;
   recordesAno: {
     diaMaisZeradoFormatted: string;
     jogoMaisLongo: GameItem | null;
@@ -45,6 +49,521 @@ interface WrapUpTimelineTabProps {
   setTimelineMonthFilter: (filter: 'ALL' | number) => void;
   onGameClick: (id: string) => void;
 }
+
+/* ─── Helpers da aba Timeline (desktop ≥1024px) ─── */
+
+const gameHours = (g: GameItem): number =>
+  g.tempoMinutos ? g.tempoMinutos / 60 : parseTime(g.tempo);
+
+const notaLabel = (n?: number): string =>
+  n !== undefined && !isNaN(n) ? `★ ${n.toFixed(1)}` : '—';
+
+/** Miniatura de capa inteira (object-contain, proporção natural) — só desktop. */
+const TlCover: React.FC<{ g: GameItem; className?: string }> = ({ g, className = '' }) => (
+  <div
+    className={`wu-tl-cover relative aspect-[3/4] overflow-hidden rounded-[10px] border border-white/10 bg-[#0d1117] ${className}`}
+  >
+    {g.capa ? (
+      <img
+        src={g.capa}
+        alt={g.title}
+        referrerPolicy="no-referrer"
+        className="h-full w-full object-contain"
+      />
+    ) : (
+      <div className="flex h-full w-full items-center justify-center px-1 text-center">
+        <span className="text-xs font-bold text-slate-500 line-clamp-2">{g.title}</span>
+      </div>
+    )}
+  </div>
+);
+
+/** Chip compacto com estilo de plataforma existente. */
+const TlPlatformChip: React.FC<{ consoleName: string; small?: boolean }> = ({
+  consoleName,
+  small = false,
+}) => {
+  const pStyle = getPlatformStyle(consoleName);
+  return (
+    <span
+      className={`rounded-md font-mono font-bold uppercase ${
+        small ? 'px-1.5 py-0.5 text-xs' : 'px-2 py-0.5 text-xs'
+      }`}
+      style={{
+        color: pStyle.col,
+        backgroundColor: `${pStyle.col}20`,
+        border: `1px solid ${pStyle.col}40`,
+      }}
+    >
+      {pStyle.ico} {consoleName}
+    </span>
+  );
+};
+
+/** Ranking compacto top-5 com barra ciano e quantidade à direita (só desktop). */
+const TlMiniRanking: React.FC<{
+  title: string;
+  list: Array<[string, number]>;
+  total: number;
+  withIcon?: boolean;
+}> = ({ title, list, total, withIcon = false }) => (
+  <div className="space-y-2">
+    <div className="text-xs font-heading font-bold uppercase tracking-wide text-slate-400">
+      {title}
+    </div>
+    {list.slice(0, 5).map(([nome, count]) => {
+      const pct = total > 0 ? (count / total) * 100 : 0;
+      const s = getPlatformStyle(nome);
+      return (
+        <div key={nome} className="flex items-center gap-2">
+          <span className="min-w-0 flex-1 truncate text-xs text-[#f0f6fc]" title={nome}>
+            {withIcon && <span className="mr-1 text-slate-500">{s.ico}</span>}
+            {nome}
+          </span>
+          <div className="h-1.5 w-20 flex-shrink-0 overflow-hidden rounded-full bg-[#1f2937]">
+            <div className="h-full bg-[#22d3ee]" style={{ width: `${pct}%` }}></div>
+          </div>
+          <span className="w-6 flex-shrink-0 text-right font-mono text-xs font-bold text-[#22d3ee]">
+            {count}
+          </span>
+        </div>
+      );
+    })}
+  </div>
+);
+
+/** Lista de jogos do dia dentro do Modal (todas as telas). */
+const DayGamesList: React.FC<{
+  games: GameItem[];
+  onGameClick: (id: string) => void;
+}> = ({ games, onGameClick }) => (
+  <div className="space-y-2">
+    {games.map((g) => (
+      <div
+        key={g.id}
+        onClick={() => onGameClick(g.id)}
+        className="flex cursor-pointer items-center gap-3 rounded-lg border border-[#30363d] bg-black/40 p-2 transition-colors hover:border-[#22d3ee]"
+      >
+        <TlCover g={g} className="w-10 flex-shrink-0 lg:w-12" />
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-semibold text-[#f0f6fc]">{g.title}</div>
+          <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+            <span>{g.console}</span>
+            <span className="font-mono">⏱ {g.tempo ? g.tempo : '—'}</span>
+          </div>
+        </div>
+        <span className="flex-shrink-0 font-mono text-sm font-bold text-[#fbbf24]">
+          {notaLabel(g.nota)}
+        </span>
+      </div>
+    ))}
+  </div>
+);
+
+interface DesktopCalendarProps {
+  ANO: number;
+  firstDay: number;
+  daysInMonth: number;
+  monthGames: GameItem[];
+  isToday: (day: number) => boolean;
+  onOpenDay: (day: number, games: GameItem[]) => void;
+}
+
+/** Calendário semanal (uma linha por semana, capas inteiras) — só desktop. */
+const DesktopCalendar: React.FC<DesktopCalendarProps> = ({
+  ANO,
+  firstDay,
+  daysInMonth,
+  monthGames,
+  isToday,
+  onOpenDay,
+}) => {
+  const weeks: Array<Array<number | null>> = [];
+  let current: Array<number | null> = [];
+  for (let i = 0; i < firstDay; i++) current.push(null);
+  for (let day = 1; day <= daysInMonth; day++) {
+    current.push(day);
+    if (current.length === 7) {
+      weeks.push(current);
+      current = [];
+    }
+  }
+  if (current.length > 0) {
+    while (current.length < 7) current.push(null);
+    weeks.push(current);
+  }
+
+  const gamesByDay = new Map<number, GameItem[]>();
+  monthGames.forEach((g) => {
+    const parts = parseDateParts(g.data_zerado);
+    if (!parts) return;
+    const arr = gamesByDay.get(parts.day) || [];
+    arr.push(g);
+    gamesByDay.set(parts.day, arr);
+  });
+
+  return (
+    <div className="hidden lg:block">
+      <div className="mb-2 grid grid-cols-7 gap-2 text-center text-xs font-black uppercase tracking-wide text-slate-400">
+        {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((d) => (
+          <div key={d}>{d}</div>
+        ))}
+      </div>
+      <div className="space-y-2">
+        {weeks.map((week, wi) => {
+          const weekHasGames = week.some((d) => d !== null && gamesByDay.has(d));
+          return (
+            <div key={wi} className={`grid grid-cols-7 gap-2 ${weekHasGames ? 'wu-tl-week-active' : ''}`}>
+              {week.map((day, di) => {
+                if (day === null) return <div key={di} className="min-h-16" aria-hidden="true"></div>;
+                const dayGames = gamesByDay.get(day) || [];
+                const today = isToday(day);
+                const shown = dayGames.slice(0, 2);
+                const extra = dayGames.length - shown.length;
+                const titlesAttr = dayGames.map((g) => g.title).join(', ');
+
+                if (dayGames.length === 0) {
+                  return (
+                    <div
+                      key={day}
+                      className={`flex min-h-16 flex-col rounded-[10px] border p-1.5 ${
+                        today
+                          ? 'border-orange-500/60 bg-orange-500/10 ring-1 ring-orange-500/30'
+                          : 'border-white/5 bg-[#0d1117]/60'
+                      }`}
+                    >
+                      <span
+                        className={`font-mono text-xs font-bold leading-none ${
+                          today ? 'text-orange-400' : 'text-slate-400'
+                        }`}
+                      >
+                        {day}
+                      </span>
+                      {today && (
+                        <span className="mt-auto self-end h-2 w-2 rounded-full bg-orange-400 animate-pulse"></span>
+                      )}
+                    </div>
+                  );
+                }
+
+                return (
+                  <div
+                    key={day}
+                    role="button"
+                    tabIndex={0}
+                    title={titlesAttr}
+                    onClick={() => onOpenDay(day, dayGames)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') onOpenDay(day, dayGames);
+                    }}
+                    className={`flex cursor-pointer flex-col rounded-[10px] border border-[#30363d] bg-[#161b22] p-1.5 transition-colors hover:border-[#22d3ee] ${
+                      today ? 'ring-1 ring-orange-500/50' : ''
+                    }`}
+                  >
+                    <div className="relative flex min-h-0 flex-1 gap-1">
+                      {shown.map((g) => (
+                        <div key={g.id} className="relative w-1/2 min-w-0">
+                          <TlCover g={g} />
+                          {g.nota !== undefined && !isNaN(g.nota) && (
+                            <span className="absolute right-0.5 top-0.5 rounded-full bg-[#fbbf24] px-1 py-px font-mono text-xs font-bold leading-tight text-black shadow">
+                              ★{g.nota.toFixed(1)}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                      <span className="absolute left-0.5 top-0.5 rounded-full bg-black/70 px-1.5 py-px font-mono text-xs font-bold leading-tight text-white">
+                        {day}
+                      </span>
+                      {extra > 0 && (
+                        <span className="absolute bottom-0.5 right-0.5 rounded-full bg-[#22d3ee] px-1.5 py-px text-xs font-black leading-tight text-black">
+                          +{extra}
+                        </span>
+                      )}
+                    </div>
+                    {shown.length === 1 ? (
+                      <div className="mt-2 min-w-0">
+                        <div
+                          className="line-clamp-2 text-xs font-semibold leading-tight text-[#f0f6fc]"
+                          title={shown[0].title}
+                        >
+                          {shown[0].title}
+                        </div>
+                        <div className="mt-0.5 truncate text-xs text-slate-400" title={shown[0].console}>
+                          {shown[0].console}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-2 text-xs text-slate-400">{dayGames.length} jogos</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+/** Detalhe do mês no layout desktop novo (KPIs + lista + destaque/rankings + gráfico). */
+const DesktopMonthDetail: React.FC<{
+  ANO: number;
+  activeMonthIndex: number;
+  setActiveMonthIndex: React.Dispatch<React.SetStateAction<number>>;
+  NOMES_MESES_COMPLETOS: string[];
+  meses: WrapUpTimelineTabProps['meses'];
+  maxMes: number;
+  activeMonthData: ActiveMonthDataShape;
+  setTimelineMonthFilter: (filter: 'ALL' | number) => void;
+  onGameClick: (id: string) => void;
+}> = ({
+  ANO,
+  activeMonthIndex,
+  setActiveMonthIndex,
+  NOMES_MESES_COMPLETOS,
+  meses,
+  maxMes,
+  activeMonthData,
+  setTimelineMonthFilter,
+  onGameClick,
+}) => {
+  const { totalGames, totalHours, mediaNotas, avgHoursPerGame, destaque, monthGames } =
+    activeMonthData;
+  const mesNome = NOMES_MESES_COMPLETOS[activeMonthIndex];
+
+  const mediaMensal = maxMes > 0 ? meses.reduce((a, m) => a + m.qtd, 0) / 12 : 0;
+
+  return (
+    <div className="hidden lg:flex flex-col gap-6">
+      {/* a) Faixa de 4 KPIs do mês */}
+      <div className="grid grid-cols-4 gap-6">
+        {[
+          { label: 'ZERADOS', value: String(totalGames), cor: '#22d3ee' },
+          { label: 'HORAS', value: fmtH(totalHours), cor: '#34d399' },
+          { label: 'MÉDIA DE NOTAS', value: mediaNotas, cor: '#fbbf24' },
+          { label: 'Ø POR JOGO', value: fmtH(avgHoursPerGame), cor: '#a78bfa' },
+        ].map((kpi) => (
+          <div
+            key={kpi.label}
+            className="wu-kpi-card flex flex-col items-center justify-center rounded-2xl border border-[#30363d] bg-[#161b22] px-6 py-4"
+          >
+            <div className="font-mono text-[28px] font-black leading-none tabular-nums" style={{ color: kpi.cor }}>
+              {kpi.value}
+            </div>
+            <div className="mt-2 text-xs font-bold uppercase tracking-wide text-slate-500">
+              {kpi.label}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {totalGames === 0 ? (
+        <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-6 text-center text-sm text-slate-400">
+          Nenhum jogo zerado em {mesNome} de {ANO}.
+        </div>
+      ) : (
+        <>
+          {/* b) Grid 1fr + 380px */}
+          <div className="grid gap-6" style={{ gridTemplateColumns: 'minmax(0, 1fr) 380px' }}>
+            {/* Esquerda: Jogos concluídos no mês */}
+            <div className="min-w-0 rounded-2xl border border-[#30363d] bg-[#161b22] p-6">
+              <div className="wu-section-title mb-4 flex items-center gap-2 text-sm font-heading font-bold uppercase tracking-wide text-white">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#22d3ee]"></span>
+                Jogos concluídos no mês ({totalGames})
+              </div>
+              <div className="flex flex-col gap-3">
+                {monthGames.map((g) => {
+                  const parts = parseDateParts(g.data_zerado);
+                  const datePill = parts
+                    ? `${String(parts.day).padStart(2, '0')}/${String(parts.month + 1).padStart(2, '0')}`
+                    : '—';
+                  return (
+                    <div
+                      key={g.id}
+                      onClick={() => onGameClick(g.id)}
+                      className="group flex h-24 cursor-pointer items-center gap-4 rounded-xl border border-[#30363d] bg-[#0d1117] p-3 transition-colors hover:border-[#22d3ee]"
+                    >
+                      <span className="flex-shrink-0 rounded-full border border-[#30363d] bg-black/40 px-2 py-1 font-mono text-xs font-bold text-[#22d3ee]">
+                        {datePill}
+                      </span>
+                      <TlCover g={g} className="w-16 flex-shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-base font-semibold text-[#f0f6fc] transition-colors group-hover:text-[#22d3ee]">
+                          {g.title}
+                        </div>
+                        <div className="mt-1 flex flex-wrap items-center gap-2">
+                          <TlPlatformChip consoleName={g.console} small />
+                          <span className="rounded-md border border-[#a78bfa]/40 bg-[#a78bfa]/15 px-1.5 py-0.5 text-xs font-bold uppercase text-[#a78bfa]">
+                            {g.genero || 'Geral'}
+                          </span>
+                        </div>
+                        <div className="mt-1 flex items-center gap-3 text-xs text-slate-400">
+                          <span className="flex items-center gap-1 font-mono">
+                            <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+                            {g.tempo ? g.tempo : '—'}
+                          </span>
+                          {g.data_zerado && (
+                            <span className="font-mono">
+                              zerado em {formatDateBR(g.data_zerado)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <span className="flex-shrink-0 self-center font-mono text-base font-black text-[#fbbf24]">
+                        {notaLabel(g.nota)}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Direita: Destaque + Gêneros e consoles */}
+            <div className="flex min-w-0 flex-col gap-6">
+              {destaque && (() => {
+                const dHours = gameHours(destaque);
+                const dHltbHours = destaque.hltb ? parseFloat(destaque.hltb) || dHours : dHours;
+                const vsHltbPct = dHltbHours > 0 ? Math.round((dHours / dHltbHours) * 100) : 100;
+                return (
+                  <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-6">
+                    <div className="wu-section-title mb-4 flex items-center gap-2 text-sm font-heading font-bold uppercase tracking-wide text-white">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#fbbf24]"></span>
+                      Destaque do mês
+                    </div>
+                    <TlCover g={destaque} className="mx-auto w-full max-w-[240px]" />
+                    <div
+                      onClick={() => onGameClick(destaque.id)}
+                      className="mt-3 cursor-pointer text-center text-base font-bold text-[#f0f6fc] transition-colors hover:text-[#22d3ee]"
+                      title={destaque.title}
+                    >
+                      {destaque.title}
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+                      <TlPlatformChip consoleName={destaque.console} small />
+                      <span className="rounded-md border border-[#a78bfa]/40 bg-[#a78bfa]/15 px-1.5 py-0.5 text-xs font-bold uppercase text-[#a78bfa]">
+                        {destaque.genero || 'Geral'}
+                      </span>
+                    </div>
+                    <div className="mt-4 grid grid-cols-3 gap-2 border-t border-[#30363d] pt-4 text-center">
+                      <div>
+                        <div className="font-mono text-sm font-bold text-[#34d399]">
+                          {destaque.tempo || fmtH(dHours)}
+                        </div>
+                        <div className="mt-0.5 text-xs font-bold uppercase tracking-wide text-slate-500">
+                          TEMPO
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-mono text-sm font-bold text-[#fbbf24]">
+                          {destaque.hltb || (destaque.tempo ? destaque.tempo : '—')}
+                        </div>
+                        <div className="mt-0.5 text-xs font-bold uppercase tracking-wide text-slate-500">
+                          HLTB
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-mono text-sm font-bold text-[#22d3ee]">{vsHltbPct}%</div>
+                        <div className="mt-0.5 text-xs font-bold uppercase tracking-wide text-slate-500">
+                          VS HLTB
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-3 text-center font-mono text-lg font-black text-[#fbbf24]">
+                      {notaLabel(destaque.nota)}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-6">
+                <div className="wu-section-title mb-4 flex items-center gap-2 text-sm font-heading font-bold uppercase tracking-wide text-white">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#22d3ee]"></span>
+                  Gêneros e consoles do mês
+                </div>
+                <div className="space-y-5">
+                  <TlMiniRanking
+                    title="Gêneros"
+                    list={activeMonthData.generosList}
+                    total={totalGames}
+                  />
+                  <TlMiniRanking
+                    title="Consoles"
+                    list={activeMonthData.consolesList}
+                    total={totalGames}
+                    withIcon
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* c) Gráfico Jogos por mês em largura total */}
+          <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-6">
+            <div className="wu-section-title mb-4 flex items-center gap-2 text-sm font-heading font-bold uppercase tracking-wide text-white">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#22d3ee]"></span>
+              Jogos por mês — {ANO}
+            </div>
+            <div className="relative flex h-36 items-end gap-2 pt-6 pb-1">
+              {mediaMensal > 0 && maxMes > 0 && (
+                <div className="wu-month-avg-wrap pointer-events-none absolute left-0 right-0 top-6 bottom-6">
+                  <div
+                    className="absolute left-0 right-0 border-t border-dashed border-[#a78bfa]/60"
+                    style={{ bottom: `${(mediaMensal / maxMes) * 100}%` }}
+                  ></div>
+                </div>
+              )}
+              {meses.map((m, idx) => {
+                const isSelected = activeMonthIndex === idx;
+                const heightPct = maxMes > 0 ? (m.qtd / maxMes) * 100 : 0;
+                return (
+                  <div
+                    key={m.nome}
+                    onClick={() => {
+                      setActiveMonthIndex(idx);
+                      setTimelineMonthFilter(idx);
+                    }}
+                    className="group/bar flex h-full min-w-0 flex-1 cursor-pointer flex-col items-center justify-end"
+                    title={`${m.nomeCompleto}: ${m.qtd} jogos`}
+                  >
+                    <span
+                      className={`mb-1 font-mono text-xs font-bold ${
+                        m.qtd > 0 ? (isSelected ? 'text-[#fbbf24]' : 'text-white') : 'text-transparent'
+                      }`}
+                    >
+                      {m.qtd > 0 ? m.qtd : 0}
+                    </span>
+                    {m.qtd > 0 ? (
+                      <div className="relative flex w-full flex-1 items-end">
+                        <div
+                          className={`w-full rounded-t-md transition-colors ${
+                            isSelected ? 'bg-[#fbbf24]' : 'bg-[#22d3ee]/80 group-hover/bar:bg-[#22d3ee]'
+                          }`}
+                          style={{ height: `${Math.max(6, heightPct)}%` }}
+                        ></div>
+                      </div>
+                    ) : (
+                      <div className="flex w-full flex-1 items-end">
+                        <div className="h-1 w-2/3 self-end rounded-full bg-[#1f2937]"></div>
+                      </div>
+                    )}
+                    <span
+                      className={`mt-1.5 font-mono text-xs uppercase ${
+                        isSelected ? 'font-black text-[#fbbf24]' : 'text-slate-500'
+                      }`}
+                    >
+                      {m.nome.slice(0, 3)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
   ANO,
@@ -72,6 +591,14 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
   });
 
   const monthHours = monthGames.reduce((acc, curr) => acc + (curr.tempoMinutos ? curr.tempoMinutos / 60 : 0), 0);
+
+  // Modal com a lista do dia (aberto ao clicar num dia com jogos — desktop; e em telas menores quando o clique não tem ação própria)
+  const [selectedDay, setSelectedDay] = useState<{ day: number; games: GameItem[] } | null>(null);
+
+  const isTodayFn = (day: number): boolean => {
+    const now = new Date();
+    return ANO === now.getFullYear() && monthIndex === now.getMonth() && day === now.getDate();
+  };
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -143,8 +670,8 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
             </div>
           </div>
 
-          {/* Grid de Dias do Mês */}
-          <div className="overflow-x-auto rounded-xl border border-white/10 bg-black/40 p-2 sm:p-4">
+          {/* Grid de Dias do Mês — tablet/mobile (inalterado abaixo de 1024px) */}
+          <div className="overflow-x-auto rounded-xl border border-white/10 bg-black/40 p-2 sm:p-4 lg:hidden">
             <div className="min-w-[320px] sm:min-w-0">
               {/* Dias da Semana */}
               <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 text-center text-[10px] min-[390px]:text-xs font-black text-slate-400 uppercase tracking-tight sm:tracking-wider">
@@ -252,8 +779,18 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
             </div>
           </div>
 
-          {/* ── SEÇÃO DETALHADA DO MÊS (ESTILO MESES 1.JPG) ── */}
-          <div className="space-y-4 pt-2">
+          {/* Calendário desktop (≥1024px): uma linha por semana, capas inteiras */}
+          <DesktopCalendar
+            ANO={ANO}
+            firstDay={firstDay}
+            daysInMonth={daysInMonth}
+            monthGames={monthGames}
+            isToday={isTodayFn}
+            onOpenDay={(day, games) => setSelectedDay({ day, games })}
+          />
+
+          {/* ── SEÇÃO DETALHADA DO MÊS (ESTILO MESES 1.JPG) — tablet/mobile ── */}
+          <div className="space-y-4 pt-2 lg:hidden">
             <div className="flex items-center justify-between text-xs pb-1 border-b border-white/10">
               <div className="flex items-center gap-2 font-heading text-sm sm:text-base font-black uppercase text-white tracking-wider">
                 <span className="flex h-5 w-5 items-center justify-center rounded bg-[#22d3ee]/20 text-[#22d3ee] text-xs font-mono">
@@ -609,8 +1146,32 @@ export const WrapUpTimelineTab: React.FC<WrapUpTimelineTabProps> = ({
               </>
             )}
           </div>
+
+          {/* Detalhe do mês — desktop (≥1024px): KPIs, lista, destaque/rankings e gráfico */}
+          <DesktopMonthDetail
+            ANO={ANO}
+            activeMonthIndex={activeMonthIndex}
+            setActiveMonthIndex={setActiveMonthIndex}
+            NOMES_MESES_COMPLETOS={NOMES_MESES_COMPLETOS}
+            meses={meses}
+            maxMes={maxMes}
+            activeMonthData={activeMonthData}
+            setTimelineMonthFilter={setTimelineMonthFilter}
+            onGameClick={onGameClick}
+          />
         </div>
       </div>
+
+      {/* Modal com a lista de jogos do dia (calendário desktop) */}
+      <Modal
+        isOpen={selectedDay !== null}
+        onClose={() => setSelectedDay(null)}
+        title={`Dia ${String(selectedDay?.day ?? '').padStart(2, '0')} de ${NOMES_MESES_COMPLETOS[monthIndex]} de ${ANO}`}
+        description={`${selectedDay?.games.length ?? 0} jogo(s) zerado(s) neste dia`}
+        maxWidth="max-w-lg"
+      >
+        {selectedDay && <DayGamesList games={selectedDay.games} onGameClick={onGameClick} />}
+      </Modal>
 
       {/* ── SEÇÃO RECORDES DO ANO ({ANO}) ── */}
       <div className="rounded-2xl border border-white/10 bg-[#161b22] p-3.5 sm:p-5 shadow-2xl space-y-4">
