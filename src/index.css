@@ -1462,3 +1462,23 @@
     min-height: 0;
   }
 }
+
+/* ── Aba TIMELINE do Wrap-Up — desktop (≥1024px) ──
+   Tarefa: calendário por semanas com capas inteiras + novo layout abaixo do calendário.
+   Abaixo de 1024px nada aqui se aplica (blocos usam hidden lg:*). */
+@media (min-width: 1024px) {
+  /* Célula do dia com jogo: capa em proporção natural, altura da linha cresce com o conteúdo */
+  .wu-tl-week-active {
+    align-items: stretch;
+  }
+  .wu-tl-cover img {
+    height: auto;
+    width: 100%;
+    position: static;
+  }
+  .wu-tl-cover {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
