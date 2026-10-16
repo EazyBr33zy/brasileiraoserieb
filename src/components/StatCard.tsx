@@ -57,7 +57,7 @@ export function StatCard({
   return (
     <div
       style={{ color: a.color }}
-      className={`relative overflow-hidden flex h-full flex-col justify-center rounded-xl border bg-[#0d1117]/80 py-3 px-3 sm:px-[14px] pb-3 transition-colors ${a.border}${className ? ` ${className}` : ''}`}
+      className={`wu-stat-card relative overflow-hidden flex h-full flex-col justify-center rounded-xl border bg-[#0d1117]/80 py-3 px-3 sm:px-[14px] pb-3 transition-colors ${a.border}${className ? ` ${className}` : ''}`}
     >
       {/* Cabeçalho: ícone · texto · valor */}
       <div className="grid w-full shrink-0 grid-cols-[36px_minmax(0,1fr)_auto] sm:grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-2 sm:gap-2.5">
@@ -100,8 +100,9 @@ export function StatCard({
         </div>
       )}
 
-      {/* Linha fina colorida de acento colada na base do cartão */}
-      <div className={`absolute bottom-0 left-0 right-0 h-[2px] w-full opacity-40 ${a.bar}`} aria-hidden="true" />
+      {/* Linha fina colorida de acento colada na base do cartão (mobile/tablet; no
+          desktop ≥1024px é reposicionada como faixa vertical na borda direita via CSS) */}
+      <div className={`wu-stat-accent absolute bottom-0 left-0 right-0 h-[2px] w-full opacity-40 ${a.bar}`} aria-hidden="true" />
     </div>
   );
 }

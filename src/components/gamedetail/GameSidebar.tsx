@@ -8,6 +8,8 @@ export interface GameSidebarProps {
   game: GameItem;
   playingGames: GameItem[];
   navigate: (hash: string) => void;
+  /** Limite de itens na lista "Outros em andamento". Padrão = sem limite (comportamento atual). */
+  maxVisible?: number;
 }
 
 // fill: o card preenche exatamente o contêiner (position:absolute inset:0) — assim o painel
@@ -28,7 +30,7 @@ const Card: React.FC<{ title: React.ReactNode; right?: React.ReactNode; children
   </div>
 );
 
-export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, navigate }) => {
+export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, navigate, maxVisible }) => {
   const others = playingGames.filter((g) => g.id !== game.id);
   // Tempo efetivo dos jogos em andamento (mesma helper da ficha; exibe apenas o texto já formatado)
   const effectiveTempoOf = (g: GameItem): string => getGameEffectiveTime(g).tempo || g.tempo || '0:00';
@@ -55,7 +57,7 @@ export const GameSidebar: React.FC<GameSidebarProps> = ({ game, playingGames, na
           }
         >
           <div className="max-h-[calc(420px-76px)] space-y-3 overflow-y-auto pr-1 lg:max-h-none lg:min-h-0 lg:flex-1 lg:space-y-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#30363d #161b22' }}>
-            {others.map((pg) => {
+            {(maxVisible ? others.slice(0, maxVisible) : others).map((pg) => {
               const played = parseToMinutes(effectiveTempoOf(pg));
               const h = parseToMinutes(pg.hltb);
               const pct = h > 0 ? Math.min(100, Math.round((played / h) * 100)) : null;

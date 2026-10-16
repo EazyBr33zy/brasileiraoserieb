@@ -169,7 +169,7 @@ interface DesktopCalendarProps {
   onOpenDay: (day: number, games: GameItem[]) => void;
 }
 
-/** Calendário semanal (uma linha por semana, capas inteiras) — só desktop. */
+/** Calendário semanal (uma linha por semana) no estilo do "DIAS QUE JOGUEI" do Painel — só desktop. */
 const DesktopCalendar: React.FC<DesktopCalendarProps> = ({
   ANO,
   firstDay,
@@ -215,10 +215,10 @@ const DesktopCalendar: React.FC<DesktopCalendarProps> = ({
           return (
             <div key={wi} className={`grid grid-cols-7 gap-2 ${weekHasGames ? 'wu-tl-week-active' : ''}`}>
               {week.map((day, di) => {
-                if (day === null) return <div key={di} className="min-h-16" aria-hidden="true"></div>;
+                if (day === null) return <div key={di} className="wu-tl-cell min-h-[96px]" aria-hidden="true"></div>;
                 const dayGames = gamesByDay.get(day) || [];
                 const today = isToday(day);
-                const shown = dayGames.slice(0, 2);
+                const shown = dayGames.slice(0, 1);
                 const extra = dayGames.length - shown.length;
                 const titlesAttr = dayGames.map((g) => g.title).join(', ');
 
@@ -226,7 +226,7 @@ const DesktopCalendar: React.FC<DesktopCalendarProps> = ({
                   return (
                     <div
                       key={day}
-                      className={`flex min-h-16 flex-col rounded-[10px] border p-1.5 ${
+                      className={`wu-tl-cell relative flex min-h-[96px] flex-col overflow-hidden rounded-[10px] border p-1.5 ${
                         today
                           ? 'border-orange-500/60 bg-orange-500/10 ring-1 ring-orange-500/30'
                           : 'border-white/5 bg-[#0d1117]/60'
@@ -240,12 +240,13 @@ const DesktopCalendar: React.FC<DesktopCalendarProps> = ({
                         {day}
                       </span>
                       {today && (
-                        <span className="mt-auto self-end h-2 w-2 rounded-full bg-orange-400 animate-pulse"></span>
+                        <span className="mt-auto self-end h-2 w-2 rounded-full bg-orange-400 motion-reduce:animate-none"></span>
                       )}
                     </div>
                   );
                 }
 
+                const coverSrc = shown[0].capa;
                 return (
                   <div
                     key={day}
@@ -256,45 +257,49 @@ const DesktopCalendar: React.FC<DesktopCalendarProps> = ({
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') onOpenDay(day, dayGames);
                     }}
-                    className={`flex cursor-pointer flex-col rounded-[10px] border border-[#30363d] bg-[#161b22] p-1.5 transition-colors hover:border-[#22d3ee] ${
+                    className={`wu-tl-cell wu-tl-cell-game group relative flex min-h-[96px] cursor-pointer flex-col justify-end overflow-hidden rounded-[10px] border border-[#30363d] bg-[#0d1117] p-1.5 transition-colors hover:border-[#22d3ee] ${
                       today ? 'ring-1 ring-orange-500/50' : ''
                     }`}
                   >
-                    <div className="relative flex min-h-0 flex-1 gap-1">
-                      {shown.map((g) => (
-                        <div key={g.id} className="relative w-1/2 min-w-0">
-                          <TlCover g={g} />
-                          {g.nota !== undefined && !isNaN(g.nota) && (
-                            <span className="absolute right-0.5 top-0.5 rounded-full bg-[#fbbf24] px-1 py-px font-mono text-xs font-bold leading-tight text-black shadow">
-                              ★{g.nota.toFixed(1)}
-                            </span>
-                          )}
-                        </div>
-                      ))}
-                      <span className="absolute left-0.5 top-0.5 rounded-full bg-black/70 px-1.5 py-px font-mono text-xs font-bold leading-tight text-white">
-                        {day}
-                      </span>
-                      {extra > 0 && (
-                        <span className="absolute bottom-0.5 right-0.5 rounded-full bg-[#22d3ee] px-1.5 py-px text-xs font-black leading-tight text-black">
-                          +{extra}
-                        </span>
-                      )}
-                    </div>
-                    {shown.length === 1 ? (
-                      <div className="mt-2 min-w-0">
-                        <div
-                          className="line-clamp-2 text-xs font-semibold leading-tight text-[#f0f6fc]"
-                          title={shown[0].title}
-                        >
-                          {shown[0].title}
-                        </div>
-                        <div className="mt-0.5 truncate text-xs text-slate-400" title={shown[0].console}>
-                          {shown[0].console}
-                        </div>
-                      </div>
+                    {/* Capa como fundo da célula + degradê escuro por cima */}
+                    {coverSrc ? (
+                      <img
+                        src={coverSrc}
+                        alt=""
+                        aria-hidden="true"
+                        referrerPolicy="no-referrer"
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
                     ) : (
-                      <div className="mt-2 text-xs text-slate-400">{dayGames.length} jogos</div>
+                      <div className="absolute inset-0 flex items-center justify-center bg-[#161b22] px-1">
+                        <span className="line-clamp-2 text-center text-xs font-bold text-slate-500">{shown[0].title}</span>
+                      </div>
                     )}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" aria-hidden="true"></div>
+
+                    {/* Número do dia — canto superior esquerdo */}
+                    <span className="absolute left-1 top-1 z-10 rounded-full bg-black/70 px-1.5 py-px font-mono text-xs font-bold leading-tight text-white">
+                      {day}
+                    </span>
+                    {/* Badge "+N" — canto superior direito (mais de um zerado no dia) */}
+                    {extra > 0 && (
+                      <span className="absolute right-1 top-1 z-10 rounded-full bg-[#22d3ee] px-1.5 py-px text-xs font-black leading-tight text-black">
+                        +{extra}
+                      </span>
+                    )}
+
+                    {/* Título (máx. 2 linhas) + nota (★) na parte de baixo */}
+                    <div className="relative z-10 mt-6">
+                      <div
+                        className="line-clamp-2 text-xs font-semibold leading-tight text-[#f0f6fc] transition-colors group-hover:text-[#22d3ee]"
+                        title={shown[0].title}
+                      >
+                        {shown[0].title}
+                      </div>
+                      <div className="mt-0.5 font-mono text-xs font-bold leading-tight text-[#fbbf24]">
+                        {notaLabel(shown[0].nota)}
+                      </div>
+                    </div>
                   </div>
                 );
               })}
